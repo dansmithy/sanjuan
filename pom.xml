@@ -50,9 +50,9 @@
             <url>http://maven.springframework.org/milestone</url>
         </repository>
         <repository>
-            <id>jboss</id>
-            <url>http://repository.jboss.org/maven2</url>
-        </repository>         
+           <id>jboss</id>
+           <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>       
     </repositories>
     <properties>
     	<aspectj.version>1.5.4</aspectj.version>
@@ -75,7 +75,7 @@
 		<mockito.version>1.8.5</mockito.version>
 		<mysql.connector.java.version>5.1.16</mysql.connector.java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<resteasy.dependency.version>2.1.0.GA</resteasy.dependency.version>
+		<resteasy.dependency.version>2.2.1.GA</resteasy.dependency.version>
 		<rest.driver.version>1.1.2</rest.driver.version>
 		<servlet.version>2.5</servlet.version> 
 		<spring.version>3.0.5.RELEASE</spring.version>
