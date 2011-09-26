@@ -1,0 +1,19 @@
+    <div class="container" ng:controller="GamesController">
+    
+        <div class="row">
+            <a href="" ng:click="createGame()">Create new game</a>
+        </div>
+        
+        <div class="row">
+            <p>&nbsp;</p>
+        </div>
+                
+        <div class="row game-listing" ng:repeat="game in games">
+          <div class="span2"><h2><a ng:href="#/games/{{game.gameId}}">{{game.state | lowercase}}</a></h2></div>
+          <div class="span3"><h2><small><span ng:repeat="player in game.players">{{player.name}} </span></small></h2></div>
+          <div class="span2">&nbsp;<button ng:show="game.owner == user" class="btn danger" ng:click="deleteGame(game)">Delete</button></div>
+          <div ng:show="game.state == 'RECRUITING'">
+            <div class="span8"><form ng:submit="addPlayer(game)"><input name="game.playerToAdd" /> <input type="submit" class="btn primary" value="Add player" ng:disabled="game.players.length > 4"> <button ng:disabled="game.players.length < 2" class="btn success" ng:click="startGame(game)">Start game</button></form></div>
+          </div>
+        </div>
+    </div>

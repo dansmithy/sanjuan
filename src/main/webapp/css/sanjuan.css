@@ -1,0 +1,27 @@
+.card { 
+	background: #CCCCCC; 
+	height: 70px; 
+	border-radius: 5px;
+}
+
+.phase-empty {
+	background: #EEEEEE;
+}
+
+.player {
+	border-radius: 15px;
+	background: green;
+}
+
+.self {
+	background: red;
+}
+
+.player-inner {
+	padding: 10px;
+}
+
+.game-listing {
+	background: #CCCCCC; 
+	border-radius: 5px;
+}

@@ -1,0 +1,60 @@
+
+  
+    <div class="container" ng:controller="GameController">
+        <div class="row">
+          <div class="span2"><h1><small>Round</small> {{game.roundNumber}}</h1></div>
+          <div class="span2"><h1><small>Phases</small></h1></div>
+          <div class="span1 card phase-{{phase.name}}" ng:repeat="phase in phases"><img ng:src="images/{{phase.name}}.gif" width="55" height="70" /></div>
+          <div class="span5"><h1><small>Cards remaining</small> {{game.deck.supplyCount}}<small>/{{game.deck.supplyCount + game.deck.discardCount}}</small></h1></div>
+        </div>
+
+        <div class="row">
+            <p>&nbsp;</p>
+        </div>
+        
+        <div class="row">
+            <div class="span2">&nbsp;</div>
+            <div class="span2"><h1><small>Tariff</small></h1></div>
+            <div class="span1" ng:repeat="price in tariff"><h1>{{price}}</h1></div>
+        </div>
+        
+        <div class="alert-message info">
+          <p>Waiting for player <strong>Dave</strong> to make his move.</p>
+        </div>        
+
+        <div class="player-row" ng:repeat="player in game.players">
+            <div class="row">
+                <div class="span2 player {{isSelf(player.name)}}">
+                    <div class="player-inner">
+                        <h2>{{player.name}}</h2>
+                        <h1>{{player.victory}} <small>pts</small></h1>
+                        <h3>{{player.buildings.length}} <small>/12</small></h3>
+                        <span class="label important" ng:show="player.governor">Governor</span>
+                        <span class="label warning" ng:show="player.governor">Privilege</span>
+                    </div>
+                </div>
+                
+                <div class="span14">
+                    <div class="row" ng:show="player.hand">
+                        <div class="span2"><h1><small>Hand</small></h1></div>
+                        <div class="span1 card" ng:repeat="hardCard in player.hand"><img ng:src="{{cardImageUrl(hardCard)}}" width="55" height="80" /></div>
+                    </div>
+                    <div class="row" ng:show="player.hand">
+                        <p>&nbsp;</p>
+                    </div>                 
+                    <div class="row">
+                        <div class="span2"><h1><small>Buildings</small></h1></div>
+                        <div class="span1 card" ng:repeat="hardCard in player.buildings"><img ng:src="{{cardImageUrl(hardCard)}}" width="55" height="80" /></div>
+                    </div>
+                   
+                </div>
+            </div>
+            
+            <div class="row">
+                <p>&nbsp;</p>
+            </div>   
+        </div>  
+    </div>
+
+
+    

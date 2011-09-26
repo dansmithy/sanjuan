@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:ng="http://angularjs.org"> 
+  <head> 
+    <title>Test page</title> 
+    <script src="js/angular-0.9.17.js" ng:autobind></script> 
+    <script src="js/app.controllers.js"></script>
+    <script src="js/angular.ext.api.js"></script>        
+    <script src="js/angular.ext.directives.js"></script>
+    <script src="js/angular.ext.filters.js"></script>        
+    <script src="js/jquery.min.1.5.1.js"></script>
+    <script src="js/jquery-ui-1.8.12.custom.min.js"></script>
+    
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
+    <link rel="stylesheet" href="css/sanjuan.css">
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+      }
+    </style>
+
+  </head> 
+  <body ng:controller="MainController">
+  
+   <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <ul>
+            <li class="brand"><a href="#/games">San Juan</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  
+    <ng:view>Loading ...</ng:view>
+    
+    </body>
+</html>

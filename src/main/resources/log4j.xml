@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+
+	<appender name="console" class="org.apache.log4j.ConsoleAppender"> 
+		<param name="Target" value="System.out" /> 
+		<layout class="org.apache.log4j.PatternLayout"> 
+			<param name="ConversionPattern" value="%-5p %c{1} - %m%n" /> 
+		</layout> 
+	</appender> 
+	<appender name="file" class="org.apache.log4j.RollingFileAppender"> 
+		<param name="file" value="sanjuan.log" /> 
+		<param name="maxFileSize" value="10MB" /> 
+		<param name="maxBackupIndex" value="5" /> 
+		<layout class="org.apache.log4j.PatternLayout"> 
+			<param name="ConversionPattern" value="%p %t %c - %m%n" /> 
+		</layout> 
+	</appender> 
+	<logger name="org.springframework.security"> 
+		<level value="INFO" /> 
+	</logger> 
+	<logger name="com.github.dansmithy"> 
+		<level value="DEBUG" /> 
+	</logger> 
+	<root> 
+		<priority value="INFO" /> 
+		<appender-ref ref="console" /> 
+		<appender-ref ref="file" /> 
+	</root> 
+
+</log4j:configuration>
