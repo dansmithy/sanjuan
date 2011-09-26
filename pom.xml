@@ -48,7 +48,11 @@
             <id>spring-milestone</id>
             <name>Spring Maven MILESTONE Repository</name>
             <url>http://maven.springframework.org/milestone</url>
-        </repository>    
+        </repository>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.org/maven2</url>
+        </repository>         
     </repositories>
     <properties>
     	<aspectj.version>1.5.4</aspectj.version>
