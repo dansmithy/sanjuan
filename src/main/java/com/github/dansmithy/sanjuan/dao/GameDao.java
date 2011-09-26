@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.WebApplicationException;
 
-import org.mortbay.jetty.Response;
 import org.springframework.data.document.mongodb.MongoTemplate;
 import org.springframework.data.document.mongodb.query.Query;
 
@@ -59,7 +58,7 @@ public class GameDao {
 		if (response != null) {
 			return response;
 		} else {
-			throw new WebApplicationException(Response.SC_NOT_FOUND);
+			throw new WebApplicationException(org.eclipse.jetty.server.Response.SC_NOT_FOUND);
 		}
 	}
 	
