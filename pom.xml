@@ -217,12 +217,12 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-<!--         
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>${commons.lang.version}</version>
         </dependency>
+<!--         
         
         <dependency>
             <groupId>commons-beanutils</groupId>
