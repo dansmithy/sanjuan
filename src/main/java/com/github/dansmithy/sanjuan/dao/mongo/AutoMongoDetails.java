@@ -2,6 +2,8 @@ package com.github.dansmithy.sanjuan.dao.mongo;
 
 import javax.inject.Named;
 
+import org.springframework.data.authentication.UserCredentials;
+
 @Named
 public class AutoMongoDetails extends MongoDetails {
 
@@ -20,6 +22,10 @@ public class AutoMongoDetails extends MongoDetails {
 		} else {
 			return DEFAULT_URI;
 		}
+	}
+
+	public UserCredentials createUserCredentials() {
+		return new UserCredentials(this.getUsername(), this.getPassword());
 	}
 
 }

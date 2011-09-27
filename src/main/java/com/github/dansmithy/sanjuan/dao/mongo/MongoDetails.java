@@ -34,7 +34,9 @@ public class MongoDetails {
 		Matcher matcher = URI_PATTERN.matcher(uri);
 		System.out.println(matcher.groupCount());
 		if (matcher.matches() && matcher.groupCount() == 5) {
-			return details.withUsername(matcher.group(1)).withPassword(matcher.group(2)).withHost(matcher.group(3)).withPort(Integer.valueOf(matcher.group(4))).withDatabase(matcher.group(5));
+			String username = matcher.group(1).length() == 0 ? null : matcher.group(1);
+			String password = matcher.group(2).length() == 0 ? null : matcher.group(2);
+			return details.withUsername(username).withPassword(password).withHost(matcher.group(3)).withPort(Integer.valueOf(matcher.group(4))).withDatabase(matcher.group(5));
 		}
 		throw new RuntimeException(String.format("Unable to get details from URI [%s]", uri));
 	}

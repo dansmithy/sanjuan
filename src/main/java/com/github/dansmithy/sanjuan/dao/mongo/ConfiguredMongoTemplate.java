@@ -15,7 +15,7 @@ public class ConfiguredMongoTemplate extends MongoTemplate {
 
 	@Inject
 	public ConfiguredMongoTemplate(AutoMongoDetails mongoDetails) throws UnknownHostException, MongoException {
-		super(new Mongo(mongoDetails.getHost(), mongoDetails.getPort()), mongoDetails.getDatabase());
+		super(new Mongo(mongoDetails.getHost(), mongoDetails.getPort()), mongoDetails.getDatabase(), mongoDetails.createUserCredentials());
 	}
 
 }

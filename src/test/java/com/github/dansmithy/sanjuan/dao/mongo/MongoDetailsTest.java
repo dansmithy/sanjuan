@@ -20,7 +20,7 @@ public class MongoDetailsTest {
 	public void testCreateFromDefaultUri() {
 		
 		MongoDetails details = MongoDetails.createFromUri("mongodb://:@localhost:27017/test");
-		MongoDetails expectedDetails = new MongoDetails().withUsername("").withPassword("").withHost("localhost").withPort(27017).withDatabase("test");
+		MongoDetails expectedDetails = new MongoDetails().withUsername(null).withPassword(null).withHost("localhost").withPort(27017).withDatabase("test");
 		Assert.assertThat(details, is(equalTo(expectedDetails)));
 	}	
 	
@@ -29,7 +29,7 @@ public class MongoDetailsTest {
 	public void testAutoMongoDetails() {
 		
 		AutoMongoDetails details = new AutoMongoDetails();
-		MongoDetails expectedDetails = new MongoDetails().withUsername("").withPassword("").withHost("localhost").withPort(27017).withDatabase("test");
+		MongoDetails expectedDetails = new MongoDetails().withUsername(null).withPassword(null).withHost("localhost").withPort(27017).withDatabase("test");
 		Assert.assertThat(details, is(equalTo(expectedDetails)));
 	}		
 }
