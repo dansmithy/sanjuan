@@ -10,6 +10,15 @@ public class Phase {
 	private String leadPlayer;
 	private PhaseState state = PhaseState.AWAITING_ROLE_CHOICE;
 	
+	public Phase() {
+		super();
+	}
+	
+	public Phase(String leadPlayer) {
+		super();
+		this.leadPlayer = leadPlayer;
+	}
+
 	public PhaseType getType() {
 		return type;
 	}

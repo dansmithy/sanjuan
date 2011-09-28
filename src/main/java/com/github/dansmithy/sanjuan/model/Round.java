@@ -11,7 +11,7 @@ public class Round {
 	public Round(String governor) {
 		super();
 		this.governor = governor;
-		this.phases.add(new Phase());
+		this.phases.add(new Phase(governor));
 	}
 
 	public String getGovernor() {
