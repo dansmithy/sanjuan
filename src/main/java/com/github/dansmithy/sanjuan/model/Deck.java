@@ -35,7 +35,6 @@ public class Deck {
 
 	public Integer takeOne() {
 		Integer cardId = supply.remove(0);
-		discard.add(cardId);
 		return cardId;
 	}
 	
