@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 
 @Named
 @Path("/ws/games")
@@ -52,5 +53,11 @@ public interface GameResource {
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	List<Game> getGames(@QueryParam("player") String player);
+	
+	@PUT
+	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/type")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	Game chooseRole(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, RoleChoice choice);
 	
 }

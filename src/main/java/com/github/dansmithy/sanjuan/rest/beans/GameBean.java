@@ -9,7 +9,9 @@ import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
+import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.security.UserProvider;
 
@@ -87,6 +89,17 @@ public class GameBean implements GameResource {
 	@Override
 	public void deleteGame(Integer gameId) {
 		gameDao.deleteGame(gameId);
+	}
+
+	@Override
+	public Game chooseRole(Integer gameId, Integer roundIndex,
+			Integer phaseIndex, RoleChoice choice) {
+		
+		Game game = getGame(gameId);
+		Phase phase = game.getRounds().get(roundIndex-1).getPhases().get(phaseIndex-1);
+		phase.selectRole(choice.getRole());
+		gameDao.updatePhase(gameId, roundIndex-1, phaseIndex-1, phase);
+		return game;
 	}
 
 
