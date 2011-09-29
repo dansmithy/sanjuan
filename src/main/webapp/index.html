@@ -4,7 +4,8 @@
     <title>Test page</title> 
     <script src="js/angular-0.9.17.js" ng:autobind></script> 
     <script src="js/app.controllers.js"></script>
-    <script src="js/angular.ext.api.js"></script>        
+    <script src="js/angular.ext.api.js"></script>
+    <script src="js/angular.ext.service.js"></script>        
     <script src="js/angular.ext.directives.js"></script>
     <script src="js/angular.ext.filters.js"></script>        
     <script src="js/jquery.min.1.5.1.js"></script>
@@ -25,9 +26,14 @@
    <div class="topbar">
       <div class="fill">
         <div class="container">
-          <ul>
-            <li class="brand"><a href="#/games">San Juan</a></li>
-          </ul>
+            <a class="brand" href="#/games">San Juan</a>
+          <form ng:show="userManager.isVerifiedButUnauthenticated()" ng:submit="login()" action="" class="pull-right">
+            <input class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
+            <input class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
+            <button class="btn" type="submit">Sign in</button>
+          </form>     
+          <p ng:show="userManager.isAuthenticated()" class="pull-right" ng:click="logout()"><a href="#">Logout</a></p>
+          <p ng:show="userManager.isAuthenticated()" class="pull-right">Logged in as <a href="#">{{userManager.user.username}}</a></p>
         </div>
       </div>
     </div>
