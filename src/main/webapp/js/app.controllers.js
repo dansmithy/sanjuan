@@ -55,17 +55,25 @@ MainController.prototype = {
 
 function GameController($xhr) {
 	
+	
+	// modes = 
+	//	awaiting_other_player, role_choice, governor_discard_choice, ...
+	
+	this.responder = { "mode" : "none" };
+	
+	this.role = "undecided";
+	
 	this.cardTypes = {};
 	this.cardMap = {};
 	
-	this.phases = [ 
-	                { "name" : "governer" },
+	this.roles = [ 
+	                { "name" : "Governor" },
 	                { "name" : "empty" },
-	                { "name" : "builder" },
-	                { "name" : "trader" },
-	                { "name" : "producer" },
-	                { "name" : "councillor" },
-	                { "name" : "prospector" },
+	                { "name" : "Builder", "selectable" : true },
+	                { "name" : "Trader", "selectable" : true },
+	                { "name" : "Producer", "selectable" : true },
+	                { "name" : "Councillor", "selectable" : true },
+	                { "name" : "Prospector", "selectable" : true },
 	                ];
 	
 	this.tariff = [ 1, 1, 2, 2, 3 ];
@@ -109,7 +117,7 @@ GameController.prototype = {
 		},
 		
 		gameCallback : function(code, response) {
-			this.game = response;
+			this.processGame(response);
 		},
 		
 		isSelf : function(playerName) {
@@ -118,8 +126,64 @@ GameController.prototype = {
 		
 		cardImageUrl : function(id) {
 			return "images/PlayingCards/" + this.cardMap[id] + ".BMP";
+		},
+		
+		clickRoleCard : function(role) {
+			if (this.responder.mode == "role_choice" && role.selectable) {
+				this.responder.response.role = role.name;
+			}
+		},
+		
+		showSelected : function(role) {
+			return this.responder.mode == "role_choice" && role.name == this.responder.response.role;
+		},
+		
+		processGame : function(game) {
+			game.$round = game.rounds[game.roundNumber-1];
+			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
+			if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
+//				this.mode = "role_choice";
+				this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
+			} else if (game.$round.$phase.state === "PLAYING") {
+				this.responder = new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+			}
+		},
+		
+		commitResponse : function() {
+			this.responder.sendResponse();
 		}
 		
+};
+
+function GovernorChoiceResponse($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.response = { "role" : "Builder" };
+	this.mode = "role_choice";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+GovernorChoiceResponse.prototype = {
+	
+	sendResponse : function(game) {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/type", this.response, this.gameCallback);
+	}
+};
+
+
+function DoSomethingResponder($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.response = "OK";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+DoSomethingResponder.prototype = {
+	
+	sendResponse : function(game) {
+		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playIndex, this.response);
+	}
 };
 
 

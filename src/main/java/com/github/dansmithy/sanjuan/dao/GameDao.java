@@ -8,9 +8,11 @@ import javax.ws.rs.WebApplicationException;
 
 import org.springframework.data.document.mongodb.MongoTemplate;
 import org.springframework.data.document.mongodb.query.Query;
+import org.springframework.data.document.mongodb.query.Update;
 
 import com.github.dansmithy.sanjuan.dao.util.MongoHelper;
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.Phase;
 
 @Named
 public class GameDao {
@@ -86,5 +88,13 @@ public class GameDao {
 	public void deleteGame(Integer gameId) {
 		Query query = MongoHelper.createSimpleQuery("gameId", gameId);
 		mongoTemplate.remove(query, Game.class);
+	}
+
+	public void updatePhase(Integer gameId, Integer roundIndex,
+			Integer phaseIndex, Phase phase) {
+		String updateElement = String.format("rounds.%d.phases.%d", roundIndex, phaseIndex);
+		Update update = new Update().set(updateElement, phase);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+		
 	}
 }

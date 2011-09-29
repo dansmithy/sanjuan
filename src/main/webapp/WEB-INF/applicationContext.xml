@@ -20,17 +20,6 @@
 
     <context:component-scan base-package="com.github.dansmithy"/>
 
-    <!-- Default bean name is 'mongo' -->
-    <mongo:mongo host="localhost" port="27017" />
-
-    <!-- Offers convenience methods and automatic mapping between MongoDB 
-        JSON documents and your domain classes. -->
-    <bean id="mongoTemplate"
-        class="org.springframework.data.document.mongodb.MongoTemplate">
-        <constructor-arg ref="mongo" />
-        <constructor-arg value="test" />
-    </bean>
-    
     
     <!-- Security -->
     <bean id="loginRedirectStrategy" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseRedirectStrategy" />
@@ -66,6 +55,4 @@
         <sec:intercept-url pattern="/**" access="permitAll" filters="none" />
     </sec:http>
         
-        
-    
 </beans>

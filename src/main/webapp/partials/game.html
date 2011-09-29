@@ -1,18 +1,23 @@
 
   
-    <div class="container" ng:controller="GameController">
+    <div class="container">
         <div class="row">
-          <div class="span2"><h1><small>Round</small> {{game.roundNumber}}</h1></div>
-          <div class="span2"><h1><small>Phases</small></h1></div>
-          <div class="span1 card phase-{{phase.name}}" ng:repeat="phase in phases"><img ng:src="images/{{phase.name}}.gif" width="55" height="70" /></div>
-          <div class="span5"><h1><small>Cards remaining</small> {{game.deck.supplyCount}}<small>/{{game.deck.supplyCount + game.deck.discardCount}}</small></h1></div>
+          <div class="span2"><h1><small>Round</small> {{responder.game.roundNumber}}</h1></div>
+          <div class="span2"><h1><small>Roles</small></h1></div>
+          <div class="span1 card role-{{role.name}}" ng:click="clickRoleCard(role)" ng:repeat="role in roles"><img class="selectable-card selected-{{showSelected(role)}}" ng:src="images/{{role.name | lowercase}}.gif" width="55" height="70" /></div>
+          <div class="span5"><h1><small>Cards remaining</small> {{responder.game.deck.supplyCount}}<small>/{{responder.game.deck.supplyCount + responder.game.deck.discardCount}}</small></h1></div>
         </div>
 
         <div class="row">
-            <p>&nbsp;</p>
+            <p>&nbsp;<pre></pre></p>
         </div>
         
-        <div class="row">
+        <div class="row" ng:show="responder.mode == 'role_choice'">
+            <div class="span5"><h3>Choose the {{responder.response.role}} role</h3></div>
+            <div class="span3"><button ng:disabled="!responder.response.role" class="btn success" ng:click="commitResponse()">Choose role</button></div>
+        </div>
+        
+        <div class="row" ng:show="role == 'trader'">
             <div class="span2">&nbsp;</div>
             <div class="span2"><h1><small>Tariff</small></h1></div>
             <div class="span1" ng:repeat="price in tariff"><h1>{{price}}</h1></div>
@@ -22,7 +27,7 @@
           <p>Waiting for player <strong>Dave</strong> to make his move.</p>
         </div>        
 
-        <div class="player-row" ng:repeat="player in game.players">
+        <div class="player-row" ng:repeat="player in responder.game.players">
             <div class="row">
                 <div class="span2 player {{isSelf(player.name)}}">
                     <div class="player-inner">
@@ -55,6 +60,3 @@
             </div>   
         </div>  
     </div>
-
-
-    
