@@ -2,10 +2,13 @@ package com.github.dansmithy.sanjuan;
 
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringContextLoaderListener;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Debug class used for running jetty within Eclipse.
@@ -26,6 +29,9 @@ public class SanJuanStart {
          WebAppContext context = new WebAppContext();
          context.setContextPath("/");
          server.setHandler(context);
+         DelegatingFilterProxy filterProxy = new DelegatingFilterProxy();
+         filterProxy.setTargetBeanName("springSecurityFilterChain");
+         context.addFilter(new FilterHolder(filterProxy), "/*", FilterMapping.DEFAULT);
          context.addEventListener(new ResteasyBootstrap());
          context.addEventListener(new SpringContextLoaderListener());
          context.addServlet(HttpServletDispatcher.class, "/ws/*");

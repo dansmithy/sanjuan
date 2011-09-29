@@ -20,4 +20,39 @@
 
     <context:component-scan base-package="com.github.dansmithy"/>
 
+    
+    <!-- Security -->
+    <bean id="loginRedirectStrategy" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseRedirectStrategy" />
+    <bean id="loginSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+        <property name="redirectStrategy" ref="loginRedirectStrategy" />
+    </bean>
+
+    <bean id="userService" class="com.github.dansmithy.sanjuan.security.user.SanJuanUserDetailsService" />
+    <bean id="forbiddenEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+    <bean id="http403AuthenticationFailureHandler" class="com.github.dansmithy.sanjuan.security.spring.Http403AuthenticationFailureHandler" />
+    <bean id="retrieveDetailsFilter" class="com.github.dansmithy.sanjuan.security.spring.RetrieveUserDetailsFilter" />
+    
+    <bean id="jsonPayloadAuthenticationFilter" class="com.github.dansmithy.sanjuan.security.spring.JsonPayloadUsernamePasswordAuthenticationFilter">
+        <property name="authenticationManager" ref="authenticationManager" />
+        <property name="authenticationSuccessHandler" ref="loginSuccessHandler" />
+        <property name="authenticationFailureHandler" ref="http403AuthenticationFailureHandler" />
+        <property name="sessionAuthenticationStrategy">
+            <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
+        </property>
+    </bean>
+    
+    <sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="userService" >
+			<sec:password-encoder hash="md5" />
+		</sec:authentication-provider>        
+    </sec:authentication-manager>
+    
+    <sec:global-method-security jsr250-annotations="enabled" />
+    <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true" >
+        <sec:custom-filter position="FORM_LOGIN_FILTER" ref="jsonPayloadAuthenticationFilter" />
+        <sec:custom-filter before="FORM_LOGIN_FILTER" ref="retrieveDetailsFilter" />
+        <sec:logout />
+        <sec:intercept-url pattern="/**" access="permitAll" filters="none" />
+    </sec:http>
+        
 </beans>

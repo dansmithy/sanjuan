@@ -13,17 +13,17 @@ import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
-import com.github.dansmithy.sanjuan.security.UserProvider;
+import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
 @Named
 public class GameBean implements GameResource {
 	
-	private UserProvider userProvider;
+	private AuthenticatedSessionProvider userProvider;
 	private GameDao gameDao;
 	private GameService gameService;
 	
 	@Inject
-	public GameBean(UserProvider userProvider, GameDao gameDao, GameService gameService) {
+	public GameBean(AuthenticatedSessionProvider userProvider, GameDao gameDao, GameService gameService) {
 		super();
 		this.userProvider = userProvider;
 		this.gameDao = gameDao;
@@ -33,7 +33,7 @@ public class GameBean implements GameResource {
 	@Override
 	public Game createNewGame(String ownerName) {
 		
-		String loggedInUser = userProvider.getLoggedInUser();
+		String loggedInUser = userProvider.getAuthenticatedUsername();
 		//check is logged in
 		
 		Player owner = new Player(ownerName);
