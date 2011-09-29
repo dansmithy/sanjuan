@@ -9,13 +9,10 @@
         </div>
 
         <div class="row">
-            <p>&nbsp;<pre></pre></p>
+            <p>&nbsp;</p>
         </div>
         
-        <div class="row" ng:show="responder.mode == 'role_choice'">
-            <div class="span5"><h3>Choose the {{responder.response.role}} role</h3></div>
-            <div class="span3"><button ng:disabled="!responder.response.role" class="btn success" ng:click="commitResponse()">Choose role</button></div>
-        </div>
+        <ng:include src="responder.template"></ng:include>
         
         <div class="row" ng:show="role == 'trader'">
             <div class="span2">&nbsp;</div>

@@ -30,8 +30,12 @@ public class UserDao {
 		return null;
 	}
 	
-	private String encrypt(String password) {
+	public String encrypt(String password) {
 		return DigestUtils.md5Hex(password);
-	}		
+	}	
+	
+	public static void main(String[] args) {
+		System.out.println(new UserDao(null).encrypt("isabelle"));
+	}
 	
 }

@@ -49,17 +49,18 @@ MainController.prototype = {
 		logout : function() {
 			this.userManager.unauthenticated();
 			this.$xhr("GET", "j_spring_security_logout", angular.noop);
-		},
+		}
 		
-}
+};
 
-function GameController($xhr) {
+function GameController($xhr, userManager) {
 	
+	this.userManager = userManager;
 	
 	// modes = 
 	//	awaiting_other_player, role_choice, governor_discard_choice, ...
 	
-	this.responder = { "mode" : "none" };
+	this.responder = { "mode" : "none", "template" : "partials/none.html" };
 	
 	this.role = "undecided";
 	
@@ -77,8 +78,6 @@ function GameController($xhr) {
 	                ];
 	
 	this.tariff = [ 1, 1, 2, 2, 3 ];
-	
-	this.user = "daniel";
 	
 //	this.players = [
 //	  {   
@@ -103,7 +102,7 @@ function GameController($xhr) {
 	this.$xhr("GET", "ws/cards", this.firstCallback);
 
 };
-GameController.$inject = [ "$xhr" ];
+GameController.$inject = [ "$xhr", "userManager" ];
 GameController.prototype = {
 		
 		firstCallback : function(code, response) {
@@ -121,7 +120,7 @@ GameController.prototype = {
 		},
 		
 		isSelf : function(playerName) {
-			return playerName === this.user ? "self" : "";
+			return playerName === this.userManager.user.username ? "self" : "";
 		},
 		
 		cardImageUrl : function(id) {
@@ -141,11 +140,13 @@ GameController.prototype = {
 		processGame : function(game) {
 			game.$round = game.rounds[game.roundNumber-1];
 			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
-			if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
+			if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE" && this.userManager.user.username === game.$round.$phase.leadPlayer) {
 //				this.mode = "role_choice";
 				this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
 			} else if (game.$round.$phase.state === "PLAYING") {
 				this.responder = new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+			} else {
+				this.responder = new DoSomethingElseResponder(this.$xhr, game, this.gameCallback);
 			}
 		},
 		
@@ -159,6 +160,7 @@ function GovernorChoiceResponse($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = { "role" : "Builder" };
 	this.mode = "role_choice";
+	this.template = "partials/chooseRole.html";
 	this.game = game;
 	this.gameCallback = gameCallback;
 };
@@ -174,6 +176,7 @@ GovernorChoiceResponse.prototype = {
 function DoSomethingResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = "OK";
+	this.template = "partials/none.html";
 	this.mode = "do_something";
 	this.game = game;
 	this.gameCallback = gameCallback;
@@ -186,38 +189,73 @@ DoSomethingResponder.prototype = {
 	}
 };
 
+function DoSomethingElseResponder($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.response = "OK";
+	this.template = "partials/none.html";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
 
-function GamesController($xhr, $location) {
+DoSomethingElseResponder.prototype = {
+	
+};
+
+
+function GamesController($xhr, $location, userManager) {
+	
+	var self = this;
 	
 	this.$xhr = $xhr;
 	this.$location = $location;
-	this.user = "daniel";
+	this.userManager = userManager;
 	this.games = [];
-	this.refresh();
+	this.openGames = [];
+	
+	this.$watch("userManager.user", function(username) {
+		if (username) {
+			self.refresh();
+		}
+	});
 }
 
-GamesController.$inject = [ "$xhr", "$location" ];
+GamesController.$inject = [ "$xhr", "$location", "userManager" ];
 
 GamesController.prototype = {
 	
 	refresh : function() {
-		this.$xhr("GET", "ws/games?player=" + this.user, this.gamesCallback);
+		this.$xhr("GET", "ws/games?player=" + this.userManager.user.username, this.gamesCallback);
+		this.$xhr("GET", "ws/games?state=RECRUITING", this.openGamesCallback);
 	},
 	
 	gamesCallback : function(code, response) {
 		this.games = response;
 	},
 	
+	openGamesCallback : function(code, response) {
+		var username = this.userManager.user.username;
+		this.openGames = angular.Array.filter(response, function(game) {
+			var include = true;
+			angular.forEach(game.players, function(player) {
+				if (username === player.name) {
+					include = false;
+				}
+			});
+			return include;
+		});
+	},
+	
 	createGame : function() {
 		var self = this;
-		this.$xhr("POST", "ws/games", this.user, function(code, response) {
+		this.$xhr("POST", "ws/games", this.userManager.user.username, function(code, response) {
 			self.refresh();
 		});
 	},
 	
-	addPlayer : function(game) {
+	joinGame : function(game) {
 		var self = this;
-		this.$xhr("POST", "ws/games/" + game.gameId + "/players", game.playerToAdd, function(code, response) {
+		this.$xhr("POST", "ws/games/" + game.gameId + "/players", this.userManager.user.username, function(code, response) {
 			self.refresh();
 		});
 	},

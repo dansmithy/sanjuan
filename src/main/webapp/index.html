@@ -38,7 +38,18 @@
       </div>
     </div>
   
-    <ng:view>Loading ...</ng:view>
+  
+    <div class="container" ng:show="userManager.isUnauthenticated()">
     
+        <div class="row">
+            <h1>Welcome to San Juan</h1>
+            <h3>Please login to play!</h3>
+        </div>
+        
+    </div>
+    
+    <div ng:show="userManager.isAuthenticated()">  
+    <ng:view>Loading ...</ng:view>
+    </div>
     </body>
 </html>

@@ -103,5 +103,14 @@ public class Game {
 	public void addPlayer(Player player) {
 		players.add(player);
 	}
+
+	public boolean hasPlayer(String playerName) {
+		for (Player player : players) {
+			if (player.getName().equals(playerName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 	

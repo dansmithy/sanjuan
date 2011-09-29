@@ -52,7 +52,7 @@ public interface GameResource {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	List<Game> getGames(@QueryParam("player") String player);
+	List<Game> getGames(@QueryParam("player") String player, @QueryParam("state") String state);
 	
 	@PUT
 	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/type")

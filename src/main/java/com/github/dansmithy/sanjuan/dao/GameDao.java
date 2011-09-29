@@ -76,6 +76,14 @@ public class GameDao {
 		}
 		return mongoTemplate.find(query, Game.class);
 	}
+	
+	public List<Game> getGamesInState(String state) {
+		Query query = MongoHelper.createSimpleQuery("state", state);		
+		for (String include : BASIC_GAME_FIELDS) {
+			query.fields().include(include);
+		}
+		return mongoTemplate.find(query, Game.class);
+	}	
 
 	public List<Game> getGames() {
 		Query query = new Query();		
@@ -97,4 +105,6 @@ public class GameDao {
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 		
 	}
+
+
 }
