@@ -23,6 +23,7 @@ public class Game {
 	private int currentTariff = 0;
 	private List<Tariff> tariffs;
 	private List<Round> rounds = new ArrayList<Round>();
+	private Long version;
 	@Id
 	private ObjectId id;
 	
@@ -98,6 +99,15 @@ public class Game {
 	
 	public String getOwner() {
 		return owner;
+	}
+	
+	@JsonIgnore
+	public Long getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 
 	public void addPlayer(Player player) {

@@ -12,7 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Player;
@@ -36,7 +39,7 @@ public interface GameResource {
 	@GET
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	Game getGame(@PathParam("gameId") Integer gameId);
+	Response getGame(@PathParam("gameId") Integer gameId, @Context Request request);
 	
 	@DELETE
 	@Path("{gameId}")

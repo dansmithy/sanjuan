@@ -36,6 +36,7 @@ public class GameDao {
 	
 	public Game createGame(Game game) {
 		game.setGameId(mongoIdGenerator.getNextLongId(GAME_ID_TYPE));
+		game.setVersion(1L);
 		mongoTemplate.insert(game);
 		return game;
 	}
@@ -65,6 +66,7 @@ public class GameDao {
 	}
 	
 	public void saveGame(Game game) {
+		game.setVersion(game.getVersion()+1);
 		mongoTemplate.save(game);
 		
 	}

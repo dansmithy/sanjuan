@@ -5,6 +5,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
@@ -69,9 +73,21 @@ public class GameBean implements GameResource {
 		return player;
 	}
 
-	@Override
-	public Game getGame(Integer gameId) {
+	private Game getGame(Integer gameId) {
 		return gameDao.getGame(gameId);
+	}
+	
+	@Override
+	public Response getGame(Integer gameId, Request request) {
+		
+		Game game = getGame(gameId);
+		EntityTag tag = new EntityTag(Long.toString(game.getVersion()));
+		ResponseBuilder builder = request.evaluatePreconditions(tag);
+		if (builder != null) {
+			return builder.build();
+		} else {
+			return Response.ok(game).tag(tag).build();
+		}
 	}
 
 	@Override
