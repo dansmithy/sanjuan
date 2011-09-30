@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.rest.jaxrs;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,8 +21,10 @@ import javax.ws.rs.core.Response;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
+import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
 @Named
+@RolesAllowed({ SanJuanRole.PLAYER })
 @Path("/ws/games")
 public interface GameResource {
 

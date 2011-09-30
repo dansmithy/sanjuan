@@ -1,6 +1,6 @@
 package com.github.dansmithy.sanjuan.exception;
 
-public class SanJuanException extends RuntimeException {
+public abstract class SanJuanException extends RuntimeException {
 
 	public SanJuanException() {
 		super();
@@ -17,4 +17,7 @@ public class SanJuanException extends RuntimeException {
 	public SanJuanException(Throwable cause) {
 		super(cause);
 	}
+	
+	public abstract String getType();
+	
 }

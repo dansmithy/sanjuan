@@ -12,13 +12,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
+import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
-import com.github.dansmithy.sanjuan.rest.exception.AccessException;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
@@ -42,7 +42,7 @@ public class GameBean implements GameResource {
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!ownerName.equals(loggedInUser)) {
-			throw new AccessException(String.format("Unable to create game as authenticated user is not %s", ownerName));
+			throw new NotResourceOwnerAccessException(String.format("Unable to create game as authenticated user is not %s", ownerName));
 		}
 		
 		Player owner = new Player(ownerName);
@@ -56,7 +56,7 @@ public class GameBean implements GameResource {
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!playerName.equals(loggedInUser)) {
-			throw new AccessException(String.format("Unable to join game as authenticated user is not %s", playerName));
+			throw new NotResourceOwnerAccessException(String.format("Unable to join game as authenticated user is not %s", playerName));
 		}
 
 		Game game = gameDao.getGame(gameId);
@@ -97,7 +97,7 @@ public class GameBean implements GameResource {
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(game.getOwner())) {
-			throw new AccessException(String.format("Must be game owner to start game."));
+			throw new NotResourceOwnerAccessException(String.format("Must be game owner to start game."));
 		}
 		
 		GameState gameState = GameState.valueOf(stateName);
@@ -125,7 +125,7 @@ public class GameBean implements GameResource {
 			
 			String loggedInUser = userProvider.getAuthenticatedUsername();
 			if (!playerName.equals(loggedInUser)) {
-				throw new AccessException(String.format("Unable to get games as authenticated user is not %s", playerName));
+				throw new NotResourceOwnerAccessException(String.format("Unable to get games as authenticated user is not %s", playerName));
 			}
 			
 			return gameDao.getGamesForPlayer(playerName);
@@ -133,8 +133,6 @@ public class GameBean implements GameResource {
 			
 			return gameDao.getGamesInState(state);
 		}
-		
-
 	}
 
 	@Override
@@ -144,7 +142,7 @@ public class GameBean implements GameResource {
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(game.getOwner())) {
-			throw new AccessException(String.format("Must be game owner to delete game."));
+			throw new NotResourceOwnerAccessException(String.format("Must be game owner to delete game."));
 		}
 		
 		gameDao.deleteGame(gameId);
@@ -159,7 +157,7 @@ public class GameBean implements GameResource {
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
-			throw new AccessException(String.format("It is not your turn to choose role."));
+			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
 		}
 
 		phase.selectRole(choice.getRole());

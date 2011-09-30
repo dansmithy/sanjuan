@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.WebApplicationException;
 
 import org.springframework.data.document.mongodb.MongoTemplate;
 import org.springframework.data.document.mongodb.query.Query;
 import org.springframework.data.document.mongodb.query.Update;
 
 import com.github.dansmithy.sanjuan.dao.util.MongoHelper;
+import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Phase;
 
@@ -54,14 +54,14 @@ public class GameDao {
 			query.fields().exclude(exclude);
 		}
 		Game game = mongoTemplate.findOne(query, Game.class);
-		return convertNullTo404(game);
+		return convertNullTo404(game, "game", gameId.toString());
 	}	
 
-	private <T> T convertNullTo404(T response) {
+	private <T> T convertNullTo404(T response, String type, String id) {
 		if (response != null) {
 			return response;
 		} else {
-			throw new WebApplicationException(org.eclipse.jetty.server.Response.SC_NOT_FOUND);
+			throw new ResourceNotFoundException(String.format("Unable to locate %s with id %s.", type, id));
 		}
 	}
 	

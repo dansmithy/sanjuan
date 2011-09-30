@@ -1,8 +1,7 @@
-package com.github.dansmithy.sanjuan.rest.exception;
+package com.github.dansmithy.sanjuan.exception;
 
-import com.github.dansmithy.sanjuan.exception.SanJuanException;
 
-public class AccessException extends SanJuanException {
+public abstract class AccessException extends SanJuanException {
 
 	public AccessException() {
 		super();

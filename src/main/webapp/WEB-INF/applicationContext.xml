@@ -28,7 +28,7 @@
     </bean>
 
     <bean id="userService" class="com.github.dansmithy.sanjuan.security.user.SanJuanUserDetailsService" />
-    <bean id="forbiddenEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+    <bean id="forbiddenEntryPoint" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseHttp403AuthenticationEntryPoint" />
     <bean id="http403AuthenticationFailureHandler" class="com.github.dansmithy.sanjuan.security.spring.Http403AuthenticationFailureHandler" />
     <bean id="retrieveDetailsFilter" class="com.github.dansmithy.sanjuan.security.spring.RetrieveUserDetailsFilter" />
     
