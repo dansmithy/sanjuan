@@ -53,9 +53,10 @@ MainController.prototype = {
 		
 };
 
-function GameController($xhr, userManager) {
+function GameController($xhr, $defer, userManager) {
 	
 	this.userManager = userManager;
+	this.$defer = $defer;
 	
 	// modes = 
 	//	awaiting_other_player, role_choice, governor_discard_choice, ...
@@ -99,11 +100,21 @@ function GameController($xhr, userManager) {
 	
 	this.$xhr = $xhr;
 	
+	this.isActivePlayer = true;
+	
 	this.$xhr("GET", "ws/cards", this.firstCallback);
+	this.$defer(this.autoRefresh, 5000);
 
 };
-GameController.$inject = [ "$xhr", "userManager" ];
+GameController.$inject = [ "$xhr", "$defer", "userManager" ];
 GameController.prototype = {
+		
+		autoRefresh : function() {
+			if (!this.isActivePlayer) {
+				this.updateGame();
+				this.$defer(this.autoRefresh, 5000);
+			}
+		},
 		
 		firstCallback : function(code, response) {
 			this.cardMap = response;
@@ -112,6 +123,10 @@ GameController.prototype = {
 		
 		secondCallback : function(code, response) {
 			this.cardTypes = response;
+			this.updateGame();
+		},
+		
+		updateGame : function() {
 			this.$xhr("GET", "ws/games/" + this.params.gameId, this.gameCallback);
 		},
 		
@@ -140,16 +155,45 @@ GameController.prototype = {
 		processGame : function(game) {
 			game.$round = game.rounds[game.roundNumber-1];
 			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
-			if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE" && this.userManager.user.username === game.$round.$phase.leadPlayer) {
-//				this.mode = "role_choice";
-				this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
-			} else if (game.$round.$phase.state === "PLAYING") {
-				this.responder = new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+			if (game.$round.$phase.state === "PLAYING") {
+				game.$round.$phase.$play = game.$round.$phase.plays[game.$round.$phase.playNumber-1];
+				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.$play.player);
+				if (this.isActivePlayer) {
+					this.responder = this.determineActivePlayerResponder(game);
+				}
+			} else if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
+				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.leadPlayer);
+				if (this.isActivePlayer) {
+					this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
+				}
 			} else {
-				this.responder = new DoSomethingElseResponder(this.$xhr, game, this.gameCallback);
+				// completed
+				// not sure
+			}
+			
+			if (!this.isActivePlayer) {
+				this.responder = new InactivePlayerResponder(this.$xhr, game, this.gameCallback);
 			}
 		},
 		
+		determineActivePlayerResponder : function(game) {
+			return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+		},
+		
+		isNameActivePlayer : function(playerName) {
+			return this.userManager.user.username === playerName;
+		},
+		
+//		computeIsActivePlayer : function(game, isRoleChosen) {
+//			return this.userManager.username !== this.computeActivePlayer(game, isRoleChosen);
+//		},
+//
+//		computeActivePlayer : function(game, isRoleChosen) {
+//			if (!isRoleChosen) {
+//				return this.$round.$phase.leadPlayer;
+//			}
+//		},
+
 		commitResponse : function() {
 			this.responder.sendResponse();
 		}
@@ -189,7 +233,7 @@ DoSomethingResponder.prototype = {
 	}
 };
 
-function DoSomethingElseResponder($xhr, game, gameCallback) {
+function InactivePlayerResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = "OK";
 	this.template = "partials/none.html";
@@ -198,7 +242,7 @@ function DoSomethingElseResponder($xhr, game, gameCallback) {
 	this.gameCallback = gameCallback;
 };
 
-DoSomethingElseResponder.prototype = {
+InactivePlayerResponder.prototype = {
 	
 };
 

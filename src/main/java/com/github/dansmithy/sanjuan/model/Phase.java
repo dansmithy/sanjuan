@@ -31,6 +31,11 @@ public class Phase {
 	public PhaseState getState() {
 		return state;
 	}
+	
+	public int getPlayNumber() {
+		return plays.size();
+	}
+	
 	public void selectRole(String role) {
 		this.type = PhaseType.valueOf(role.toUpperCase());
 		this.state = PhaseState.PLAYING;
