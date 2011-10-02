@@ -104,6 +104,7 @@ public class GameDao {
 			Integer phaseIndex, Phase phase) {
 		String updateElement = String.format("rounds.%d.phases.%d", roundIndex, phaseIndex);
 		Update update = new Update().set(updateElement, phase);
+		update.inc("version", 1);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 		
 	}

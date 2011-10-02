@@ -101,7 +101,6 @@ public class Game {
 		return owner;
 	}
 	
-	@JsonIgnore
 	public Long getVersion() {
 		return version;
 	}

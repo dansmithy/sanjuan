@@ -22,6 +22,7 @@
 
     
     <!-- Security -->
+    
     <bean id="loginRedirectStrategy" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseRedirectStrategy" />
     <bean id="loginSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
         <property name="redirectStrategy" ref="loginRedirectStrategy" />
@@ -51,6 +52,7 @@
     <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true" >
         <sec:custom-filter position="FORM_LOGIN_FILTER" ref="jsonPayloadAuthenticationFilter" />
         <sec:custom-filter before="FORM_LOGIN_FILTER" ref="retrieveDetailsFilter" />
+        <sec:access-denied-handler ref="forbiddenEntryPoint" />
         <sec:logout />
         <sec:intercept-url pattern="/**" access="permitAll" filters="none" />
     </sec:http>

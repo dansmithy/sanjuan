@@ -1,1 +1,3 @@
 db.user.update({"username" : "danny"}, { "$set" : { "roles" : [ "player" ] } });
+
+db.user.update({"username" : "isabelle"}, { "$set" : { "roles" : [ "player" ] } });

@@ -11,13 +11,15 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.github.dansmithy.sanjuan.exception.JsonError;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
-public class JsonResponseHttp403AuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class JsonResponseHttp403AuthenticationEntryPoint implements AuthenticationEntryPoint, AccessDeniedHandler {
 
 	private AuthenticatedSessionProvider authenticatedSessionProvider;
 	private ObjectMapper mapper = new ObjectMapper();
@@ -36,14 +38,17 @@ public class JsonResponseHttp403AuthenticationEntryPoint implements Authenticati
 			HttpServletResponse response, AuthenticationException authException)
 			throws IOException, ServletException {
 		
-		
-		if (this.authenticatedSessionProvider.getAuthentication() == null) {
-			sendResponse(response, new JsonError("You need to be logged in to access this resource.", "NO_AUTH"), HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			sendResponse(response, new JsonError("You do not have permissions to access this resource.", "NO_PERM"), HttpServletResponse.SC_FORBIDDEN);
-		}
-		
+		sendResponse(response, new JsonError("You need to be logged in to access this resource.", "NO_AUTH"), HttpServletResponse.SC_UNAUTHORIZED);
 	}
+	
+	@Override
+	public void handle(HttpServletRequest request,
+			HttpServletResponse response,
+			AccessDeniedException accessDeniedException) throws IOException,
+			ServletException {
+		
+		sendResponse(response, new JsonError("You do not have permissions to access this resource.", "NO_PERM"), HttpServletResponse.SC_FORBIDDEN);
+	}		
 
 	private void sendResponse(HttpServletResponse response,
 			JsonError jsonError, int code) throws IOException {
@@ -63,6 +68,6 @@ public class JsonResponseHttp403AuthenticationEntryPoint implements Authenticati
 			return DEFAULT_JSON;
 		}
 
-	}	
-	
+	}
+
 }
