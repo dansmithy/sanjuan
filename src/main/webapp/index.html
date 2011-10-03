@@ -27,7 +27,7 @@
       <div class="fill">
         <div class="container">
             <a class="brand" href="#/games">San Juan</a>
-          <form ng:show="userManager.isVerifiedButUnauthenticated()" ng:submit="login()" action="" class="pull-right">
+          <form ng:show="userManager.isVerifiedButUnauthenticated()" ng:submit="login()" action="" class="pull-right input-errors-{{userManager.hasErrors()}}">
             <input class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
             <input class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
             <button class="btn" type="submit">Sign in</button>

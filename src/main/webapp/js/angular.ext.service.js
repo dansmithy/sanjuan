@@ -48,7 +48,12 @@ angular.service("userManager", function() {
 		
 		isProcessing : function() {
 			return this.isAuthenticating() || this.isVerifying();
+		},
+		
+		hasErrors : function() {
+			return angular.isDefined(this.error);
 		}
+		
 	};
 	
 });

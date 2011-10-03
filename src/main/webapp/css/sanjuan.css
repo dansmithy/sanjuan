@@ -41,3 +41,7 @@ img {
 .hand-payment {
 	border: 2px solid green;
 }
+
+form.input-errors-true input {
+	background: red;
+}
