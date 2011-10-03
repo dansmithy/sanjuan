@@ -13,7 +13,7 @@
 	background: green;
 }
 
-.self {
+.self-true {
 	background: red;
 }
 
@@ -30,6 +30,14 @@
 	border: 2px solid white;
 }
 
-.selected-true {
+img {
+	border: 2px solid white;	
+}
+
+.selected-true, .hand-to-build {
 	border: 2px solid red;
+}
+
+.hand-payment {
+	border: 2px solid green;
 }

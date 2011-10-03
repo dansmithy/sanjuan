@@ -135,7 +135,11 @@ GameController.prototype = {
 		},
 		
 		isSelf : function(playerName) {
-			return playerName === this.userManager.user.username ? "self" : "";
+			return playerName === this.userManager.user.username;
+		},
+		
+		getResponder : function(playerName) {
+			return this.isSelf(playerName) ? this.responder : angular.noop;
 		},
 		
 		cardImageUrl : function(id) {
@@ -177,7 +181,11 @@ GameController.prototype = {
 		},
 		
 		determineActivePlayerResponder : function(game) {
-			return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+			if (game.$round.$phase.type === "BUILDER") {
+				return new BuilderResponder(this.$xhr, game, this.gameCallback);
+			} else {
+				return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
+			}
 		},
 		
 		isNameActivePlayer : function(playerName) {
@@ -230,6 +238,66 @@ DoSomethingResponder.prototype = {
 	
 	sendResponse : function(game) {
 		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playIndex, this.response);
+	}
+};
+
+
+function BuilderResponder($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.response = { "build" : -1, "payment" : [] };
+	this.template = "partials/builder.html";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+BuilderResponder.prototype = {
+	
+	sendResponse : function(game) {
+		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playIndex, this.response);
+	},
+	
+	choicesMade : function() {
+		return false;
+	},
+	
+	handCardSelectedType : function(handCard) {
+		if (handCard === this.response.build) {
+			return "hand-to-build";
+		} else if (this.isPaymentCard(handCard)) {
+			return "hand-payment";
+		}
+	},
+	
+	isPaymentCard : function(card) {
+		return angular.Array.indexOf(this.response.payment, card) !== -1;
+	},
+	
+	removePayment : function(card) {
+		angular.Array.remove(this.response.payment, card);
+	},
+	
+	clickHandCard : function(handCard) {
+		if (handCard === this.response.build) {
+			this.response.build = -1;
+		} else {
+			if (this.response.build === -1) {
+				if (this.isPaymentCard(handCard)) {
+					this.removePayment(handCard);
+				}
+				this.response.build = handCard;
+				// wipe out over payments
+				
+			} else { // have something to build
+				if (this.isPaymentCard(handCard)) {
+					this.removePayment(handCard);
+				} else {
+					this.response.payment.push(handCard);
+				}
+				
+			}
+			
+		}
 	}
 };
 

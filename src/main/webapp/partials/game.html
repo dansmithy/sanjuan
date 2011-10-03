@@ -10,6 +10,8 @@
 
         <div class="row">
             <p>&nbsp;</p>
+<!--             <pre>{{responder.response}}</pre> -->
+            
         </div>
         
         <ng:include src="responder.template"></ng:include>
@@ -26,7 +28,7 @@
 
         <div class="player-row" ng:repeat="player in responder.game.players">
             <div class="row">
-                <div class="span2 player {{isSelf(player.name)}}">
+                <div class="span2 player self-{{isSelf(player.name)}}">
                     <div class="player-inner">
                         <h2>{{player.name}}</h2>
                         <h1>{{player.victory}} <small>pts</small></h1>
@@ -39,14 +41,14 @@
                 <div class="span14">
                     <div class="row" ng:show="player.hand">
                         <div class="span2"><h1><small>Hand</small></h1></div>
-                        <div class="span1 card" ng:repeat="hardCard in player.hand"><img ng:src="{{cardImageUrl(hardCard)}}" width="55" height="80" /></div>
+                        <div class="span1 card" ng:repeat="handCard in player.hand" ng:click="getResponder(player.name).clickHandCard(handCard)"><img class="{{responder.handCardSelectedType(handCard)}}" ng:src="{{cardImageUrl(handCard)}}" width="55" height="80" /></div>
                     </div>
                     <div class="row" ng:show="player.hand">
                         <p>&nbsp;</p>
                     </div>                 
                     <div class="row">
                         <div class="span2"><h1><small>Buildings</small></h1></div>
-                        <div class="span1 card" ng:repeat="hardCard in player.buildings"><img ng:src="{{cardImageUrl(hardCard)}}" width="55" height="80" /></div>
+                        <div class="span1 card" ng:repeat="building in player.buildings"><img ng:src="{{cardImageUrl(building)}}" width="55" height="80" /></div>
                     </div>
                    
                 </div>
