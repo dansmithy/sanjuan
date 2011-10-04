@@ -65,4 +65,8 @@ public class GameUpdater {
 		return update;
 	}
 
+	public Play getCurrentPlay(Game game) {
+		return game.getRounds().get(roundIndex).getPhases().get(phaseIndex).getPlays().get(playIndex);
+	}
+
 }

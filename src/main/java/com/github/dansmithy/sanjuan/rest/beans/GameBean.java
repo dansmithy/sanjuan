@@ -173,6 +173,9 @@ public class GameBean implements GameResource {
 	public Game makePlay(Integer gameId, Integer roundIndex,
 			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
 		
+		if (playChoice.getSkip()) {
+			return playSkip(gameId, roundIndex, phaseIndex, playIndex, playChoice);
+		}
 		if (playChoice.getBuild() != null) {
 			return playBuild(gameId, roundIndex, phaseIndex, playIndex, playChoice);
 		} else {
@@ -180,6 +183,18 @@ public class GameBean implements GameResource {
 		}
 	}
 	
+	private Game playSkip(Integer gameId, Integer roundIndex,
+			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+		
+		GameUpdater gameUpdater = new GameUpdater(roundIndex-1, phaseIndex-1, playIndex-1);
+		Game game = getGame(gameId);
+		Play play = gameUpdater.getCurrentPlay(game);
+		play.makePlay(playChoice);
+		gameUpdater.completedPlay(play);
+		gameUpdater.createNextStep(game);
+		return gameDao.gameUpdate(gameId, gameUpdater);
+	}
+
 	private Player getCurrentPlayer(Game game) {
 		for (Player player : game.getPlayers()) {
 			if (userProvider.getAuthenticatedUsername().equals(player.getName())) {
@@ -197,15 +212,10 @@ public class GameBean implements GameResource {
 		GameUpdater gameUpdater = new GameUpdater(roundIndex-1, phaseIndex-1, playIndex-1);
 		
 		Game game = getGame(gameId);
-//		long existingVersion = game.getVersion();
-//		game.setVersion(existingVersion+1);
-		Phase phase = game.getRounds().get(roundIndex-1).getPhases().get(phaseIndex-1);
-		Play play = phase.getPlays().get(playIndex-1);
+		Play play = gameUpdater.getCurrentPlay(game);
 		play.makePlay(playChoice);
 		
 		gameUpdater.completedPlay(play);
-		
-//		game.moveToNext();
 		
 		Player player = getCurrentPlayer(game);
 		int playerIndex = game.getPlayerIndex(player.getName());
@@ -220,12 +230,6 @@ public class GameBean implements GameResource {
 		
 		return gameDao.gameUpdate(gameId, gameUpdater);
 		
-//		gameDao.updatePlayer(gameId, playerIndex, player);
-//		gameDao.updatePlay(gameId, roundIndex-1, phaseIndex-1, playIndex-1, play);
-//		gameDao.updateDeck(gameId, game.getDeck());
-//		gameDao.updateVersion(gameId, game.getVersion());
-		
-//		return game;
 	}
 
 

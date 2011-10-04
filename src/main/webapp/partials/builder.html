@@ -1,5 +1,8 @@
         <div class="row">
             <div ng:show="responder.response.build == -1" class="span6"><h3>What do you want do build?</h3></div>
             <div ng:show="responder.response.build != -1" class="span6"><h3>Choosing to build a {{cardMap[responder.response.build]}}</h3></div>
-            <div class="span3"><button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="commitResponse()">Build</button></div>
+            <div class="span3">
+                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Build</button>
+                <button class="btn" ng:click="responder.commitSkipResponse()">Skip build</button>
+            </div>
         </div>

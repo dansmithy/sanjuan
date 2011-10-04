@@ -10,6 +10,8 @@ public class PlayChoice {
 	private Integer build;
 	//Spring Mongo integration can't cope with arrays here if the array is empty (which it may be)
 	private List<Integer> payment = new ArrayList<Integer>();
+	private Boolean skip = null;
+	
 	public Integer getBuild() {
 		return build;
 	}
@@ -21,6 +23,14 @@ public class PlayChoice {
 	}
 	public void setPayment(List<Integer> payment) {
 		this.payment = payment;
+	}
+	
+	public void setSkip(Boolean skip) {
+		this.skip = skip;
+	}
+	
+	public Boolean getSkip() {
+		return skip;
 	}
 	@JsonIgnore
 	public Integer[] getPaymentAsArray() {

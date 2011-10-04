@@ -96,8 +96,6 @@ function GameController($xhr, $defer, userManager) {
 //	                
 //	];
 	
-	this.game = {};
-	
 	this.$xhr = $xhr;
 	
 	this.isActivePlayer = true;
@@ -190,7 +188,7 @@ GameController.prototype = {
 		
 		isNameActivePlayer : function(playerName) {
 			return this.userManager.user.username === playerName;
-		},
+		}
 		
 //		computeIsActivePlayer : function(game, isRoleChosen) {
 //			return this.userManager.username !== this.computeActivePlayer(game, isRoleChosen);
@@ -202,9 +200,6 @@ GameController.prototype = {
 //			}
 //		},
 
-		commitResponse : function() {
-			this.responder.sendResponse();
-		}
 		
 };
 
@@ -219,7 +214,7 @@ function GovernorChoiceResponse($xhr, game, gameCallback) {
 
 GovernorChoiceResponse.prototype = {
 	
-	sendResponse : function(game) {
+	sendResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", this.response, this.gameCallback);
 	}
 };
@@ -228,7 +223,8 @@ GovernorChoiceResponse.prototype = {
 function DoSomethingResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = "OK";
-	this.template = "partials/none.html";
+	this.emptyResponse = { "skip" : true };
+	this.template = "partials/otherRole.html";
 	this.mode = "do_something";
 	this.game = game;
 	this.gameCallback = gameCallback;
@@ -236,8 +232,8 @@ function DoSomethingResponder($xhr, game, gameCallback) {
 
 DoSomethingResponder.prototype = {
 	
-	sendResponse : function(game) {
-		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber, this.response);
+	commitSkipResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.emptyResponse, this.gameCallback);
 	}
 };
 
@@ -245,6 +241,7 @@ DoSomethingResponder.prototype = {
 function BuilderResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = { "build" : -1, "payment" : [] };
+	this.emptyResponse = { "skip" : true };
 	this.template = "partials/builder.html";
 	this.mode = "do_something";
 	this.game = game;
@@ -253,8 +250,12 @@ function BuilderResponder($xhr, game, gameCallback) {
 
 BuilderResponder.prototype = {
 	
-	sendResponse : function(game) {
+	sendResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
+	},
+	
+	commitSkipResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.emptyResponse, this.gameCallback);
 	},
 	
 	choicesMade : function() {
