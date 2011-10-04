@@ -220,7 +220,7 @@ function GovernorChoiceResponse($xhr, game, gameCallback) {
 GovernorChoiceResponse.prototype = {
 	
 	sendResponse : function(game) {
-		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/type", this.response, this.gameCallback);
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", this.response, this.gameCallback);
 	}
 };
 
@@ -237,7 +237,7 @@ function DoSomethingResponder($xhr, game, gameCallback) {
 DoSomethingResponder.prototype = {
 	
 	sendResponse : function(game) {
-		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playIndex, this.response);
+		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber, this.response);
 	}
 };
 
@@ -254,11 +254,11 @@ function BuilderResponder($xhr, game, gameCallback) {
 BuilderResponder.prototype = {
 	
 	sendResponse : function(game) {
-		this.$xhr("GET", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playIndex, this.response);
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
 	},
 	
 	choicesMade : function() {
-		return false;
+		return this.response.build != -1;
 	},
 	
 	handCardSelectedType : function(handCard) {

@@ -19,13 +19,24 @@ public class Player {
 		return 3;
 	}
 	
-	public void addToBuildings(Integer cardId) {
+	public void moveToBuildings(Integer cardId) {
+		removeHandCard(cardId);
 		buildings.add(cardId);
 	}
 	
 	public void addToHand(Integer cardId) {
 		hand.add(cardId);
 	}	
+
+	public void removeHandCards(Integer[] cardIds) {
+		for (Integer cardId : cardIds) {
+			removeHandCard(cardId);
+		}
+	}
+	
+	private void removeHandCard(Integer cardId) {
+		hand.remove(cardId);
+	}
 
 	public String getName() {
 		return name;

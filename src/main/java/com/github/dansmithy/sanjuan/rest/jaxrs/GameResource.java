@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
@@ -61,9 +62,15 @@ public interface GameResource {
 	List<Game> getGames(@QueryParam("player") String player, @QueryParam("state") String state);
 	
 	@PUT
-	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/type")
+	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/role")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	Game chooseRole(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, RoleChoice choice);
-	
+
+	@PUT
+	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/plays/{playIndex}/decision")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	Game makePlay(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, @PathParam("phaseIndex") Integer playIndex, PlayChoice playChoice);
+
 }

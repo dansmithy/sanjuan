@@ -11,8 +11,11 @@ import org.springframework.data.document.mongodb.query.Update;
 
 import com.github.dansmithy.sanjuan.dao.util.MongoHelper;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.Play;
+import com.github.dansmithy.sanjuan.model.Player;
 
 @Named
 public class GameDao {
@@ -107,6 +110,26 @@ public class GameDao {
 		update.inc("version", 1);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 		
+	}
+
+	public void updatePlayer(Integer gameId, int playerIndex, Player player) {
+		Update update = new Update().set(String.format("players.%d", playerIndex), player);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+	}
+
+	public void updatePlay(Integer gameId, int roundIndex, int phaseIndex, Integer playIndex, Play play) {
+		Update update = new Update().set(String.format("rounds.%d.phases.%d.plays.%d", roundIndex, phaseIndex, playIndex), play);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+	}
+	
+	public void updateVersion(Integer gameId, long version) {
+		Update update = new Update().set("version", version);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+	}
+
+	public void updateDeck(Integer gameId, Deck deck) {
+		Update update = new Update().set("deck", deck);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 	}
 
 

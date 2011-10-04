@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
+import com.github.dansmithy.sanjuan.model.update.GameUpdate;
+import com.github.dansmithy.sanjuan.model.update.RoundUpdate;
 
 public class Game {
 	
@@ -43,7 +45,7 @@ public class Game {
 		state = GameState.PLAYING;
 		List<Integer> orderedDeck = cardFactory.createOrderedDeck();
 		for (Player player : players) {
-			player.addToBuildings(orderedDeck.remove(orderedDeck.size()-1));
+			player.moveToBuildings(orderedDeck.remove(orderedDeck.size()-1));
 		}
 		Collections.shuffle(orderedDeck);
 		deck = new Deck(orderedDeck);
@@ -114,12 +116,43 @@ public class Game {
 	}
 
 	public boolean hasPlayer(String playerName) {
+		return getPlayerIndex(playerName) != -1;
+	}
+
+	public int getPlayerIndex(String playerName) {
+		int index = 0;
 		for (Player player : players) {
 			if (player.getName().equals(playerName)) {
-				return true;
+				return index;
 			}
+			index++;
 		}
-		return false;
+		return -1;
+	}
+
+	public GameUpdate moveToNext() {
+		Round round = getCurrentRound();
+		if (!round.isComplete()) {
+			return round.moveToNext();
+		} else {
+			int governorIndex = getPlayerIndex(round.getGovernor());
+			int nextGovernorIndex = nextGovernor(governorIndex);
+			startNewRound(nextGovernorIndex);
+			return new RoundUpdate(getRoundNumber()-1, getCurrentRound());
+		}
+	}
+
+	private int nextGovernor(int governorIndex) {
+		int index = governorIndex++;
+		if (index >= players.size()) {
+			index = 0;
+		}
+		return index;
+	}
+
+	@JsonIgnore
+	private Round getCurrentRound() {
+		return rounds.get(getRoundNumber()-1);
 	}
 }
 	

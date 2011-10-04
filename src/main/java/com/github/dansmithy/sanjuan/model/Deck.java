@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -25,6 +26,10 @@ public class Deck {
 		return discard;
 	}
 	
+	public void discard(Integer[] payment) {
+		discard.addAll(Arrays.asList(payment));
+	}	
+	
 	public int getSupplyCount() {
 		return supply.size();
 	}
@@ -37,6 +42,5 @@ public class Deck {
 		Integer cardId = supply.remove(0);
 		return cardId;
 	}
-	
-	
+
 }

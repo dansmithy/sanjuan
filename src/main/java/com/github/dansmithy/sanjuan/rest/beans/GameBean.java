@@ -13,11 +13,14 @@ import javax.ws.rs.core.Response.Status;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
@@ -162,6 +165,51 @@ public class GameBean implements GameResource {
 
 		phase.selectRole(choice.getRole());
 		gameDao.updatePhase(gameId, roundIndex-1, phaseIndex-1, phase);
+		return game;
+	}
+
+	@Override
+	public Game makePlay(Integer gameId, Integer roundIndex,
+			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+		
+		if (playChoice.getBuild() != null) {
+			return playBuild(gameId, roundIndex, phaseIndex, playIndex, playChoice);
+		} else {
+			return null;
+		}
+	}
+	
+	private Player getCurrentPlayer(Game game) {
+		for (Player player : game.getPlayers()) {
+			if (userProvider.getAuthenticatedUsername().equals(player.getName())) {
+				return player;
+			}
+		}
+		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", userProvider.getAuthenticatedUsername()));
+	}
+
+	private Game playBuild(Integer gameId, Integer roundIndex,
+			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+		
+		// verify access
+		
+		Game game = getGame(gameId);
+		long existingVersion = game.getVersion();
+		game.setVersion(existingVersion+1);
+		Phase phase = game.getRounds().get(roundIndex-1).getPhases().get(phaseIndex-1);
+		Play play = phase.getPlays().get(playIndex-1);
+		play.makePlay(playChoice);
+		game.moveToNext();
+		Player player = getCurrentPlayer(game);
+		int playerIndex = game.getPlayerIndex(player.getName());
+		player.moveToBuildings(playChoice.getBuild());
+		player.removeHandCards(playChoice.getPayment());
+		game.getDeck().discard(playChoice.getPayment());
+		gameDao.updatePlayer(gameId, playerIndex, player);
+		gameDao.updatePlay(gameId, roundIndex-1, phaseIndex-1, playIndex-1, play);
+		gameDao.updateDeck(gameId, game.getDeck());
+		gameDao.updateVersion(gameId, game.getVersion());
+		
 		return game;
 	}
 

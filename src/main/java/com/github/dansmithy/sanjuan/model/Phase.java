@@ -41,4 +41,5 @@ public class Phase {
 		this.state = PhaseState.PLAYING;
 		plays.add(new Play(this.leadPlayer, true));
 	}
+
 }

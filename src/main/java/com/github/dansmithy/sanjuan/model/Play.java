@@ -1,7 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.dansmithy.sanjuan.model.input.PlayChoice;
+import com.github.dansmithy.sanjuan.model.update.GameUpdate;
 
 public class Play {
 
@@ -9,7 +9,7 @@ public class Play {
 	private boolean hasPrivilige;
 	private PlayState state = PlayState.AWAITING_INPUT;
 	
-	private Map<String, Object> detail = new HashMap<String, Object>();
+	private PlayChoice playChoice;
 
 	public Play() {
 		super();
@@ -32,6 +32,22 @@ public class Play {
 	public PlayState getState() {
 		return state;
 	}
-	
+
+	public PlayChoice getPlayChoice() {
+		return playChoice;
+	}
+
+	public void setPlayChoice(PlayChoice playChoice) {
+		this.playChoice = playChoice;
+	}
+
+	public void makePlay(PlayChoice playChoice) {
+		this.playChoice = playChoice;
+		state = PlayState.COMPLETED;
+	}
+
+	public boolean isComplete() {
+		return PlayState.COMPLETED.equals(state);
+	}
 	
 }
