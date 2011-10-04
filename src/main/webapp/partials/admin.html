@@ -1,0 +1,18 @@
+<div class="container">
+        
+        <div class="row" ng:repeat="user in users">
+            <div class="span3">Username: {{user.username}}</div>
+            <div class="span8">Password: <input name="user.password" /><button ng:click="update(user)" class="btn success">Update</button></div>
+        </div>
+        <div class="row">
+            <div class="span4"><a href="" ng:click="createNew()">Add new</a></div>            
+        </div>
+        <div class="row" ng:show="adding">
+            <div class="span6">Username: <input name="newUser.username" /></div>
+            <div class="span8">Password: <input name="newUser.password" /><button ng:click="create(newUser)" class="btn success">Add</button><button class="btn" ng:click="cancelAdd()">Cancel</button></div>
+        </div>
+        
+        <div class="row">
+        <pre>{{users}}</pre>
+        </div>
+</div>

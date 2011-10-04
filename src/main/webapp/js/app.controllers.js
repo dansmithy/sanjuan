@@ -9,6 +9,7 @@ function MainController($route, $xhr, userManager) {
 
 	$route.when("/games", { template : "partials/games.html", controller : GamesController });
 	$route.when("/games/:gameId", { template : "partials/game.html", controller : GameController });
+	$route.when("/admin", { template : "partials/admin.html", controller : AdminController });
 	$route.otherwise( { "redirectTo" : "/games" });
 	$route.onChange(function() {
         $route.current.scope.params = $route.current.params;
@@ -405,5 +406,50 @@ GamesController.prototype = {
 		});
 		
 	}
+		
+};
+
+
+
+function AdminController($xhr, userManager) {
+	
+	this.userManager = userManager;
+	this.$xhr = $xhr;
+	this.adding = false;
+	
+	this.users = [];
+	this.newUser = {};
+	this.getUsers();
+	
+
+};
+AdminController.$inject = [ "$xhr", "userManager" ];
+AdminController.prototype = {
+		
+		getUsers : function() {
+			this.$xhr("GET", "ws/users", this.userCallback);			
+		},
+		
+		userCallback : function(code, response) {
+			this.users = response;
+		},
+		
+		update : function(user) {
+			this.$xhr("PUT", "ws/users/" + user.username, user, this.getUsers);
+		},
+		
+		create : function(user) {
+			this.$xhr("POST", "ws/users", user, this.getUsers);
+		},
+		
+		createNew : function() {
+			this.adding = true;
+		},
+		
+		cancelAdd : function() {
+			this.adding = false;
+		}
+		
+		
 		
 };

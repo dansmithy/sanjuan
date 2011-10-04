@@ -1,9 +1,10 @@
 package com.github.dansmithy.sanjuan.dao;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.document.mongodb.MongoTemplate;
 import org.springframework.data.document.mongodb.query.Query;
 
@@ -26,16 +27,28 @@ public class UserDao {
 		return mongoTemplate.findOne(query, User.class);		
 	}
 	
+	public List<User> getUsers() {
+		return mongoTemplate.findAll(User.class);
+	}
+	
+	public void createUser(User user) {
+		mongoTemplate.insert(user);
+	}
+	
+	public void updateUser(User userUpdate) {
+		User currentUser = getUser(userUpdate.getUsername());
+		currentUser.setHashedPassword(userUpdate.getHashedPassword());
+		currentUser.setRoles(userUpdate.getRoles());
+		mongoTemplate.save(currentUser);
+	}
+	
 	public User addUser(User user) {
 		return null;
 	}
-	
-	public String encrypt(String password) {
-		return DigestUtils.md5Hex(password);
-	}	
-	
-	public static void main(String[] args) {
-		System.out.println(new UserDao(null).encrypt("isabelle"));
+
+	public void removeUser(String username) {
+		Query query = MongoHelper.createSimpleQuery("username", username);	
+		mongoTemplate.remove(query, User.class);
 	}
 	
 }
