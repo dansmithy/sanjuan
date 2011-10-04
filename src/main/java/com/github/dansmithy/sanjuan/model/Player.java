@@ -1,7 +1,11 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import com.github.dansmithy.sanjuan.game.GameService;
 
 public class Player {
 
@@ -9,16 +13,14 @@ public class Player {
 	private List<Integer> hand = new ArrayList<Integer>();
 	private List<Integer> buildings = new ArrayList<Integer>();
 	private List<Integer> goods = new ArrayList<Integer>();
+
+	private Integer victoryPoints;
 	
 	public Player(String name) {
 		super();
 		this.name = name;
 	}
 
-	public int getVictory() {
-		return 3;
-	}
-	
 	public void moveToBuildings(Integer cardId) {
 		removeHandCard(cardId);
 		buildings.add(cardId);
@@ -68,6 +70,28 @@ public class Player {
 
 	public void setGoods(List<Integer> goods) {
 		this.goods = goods;
+	}
+	
+	public Integer getVictoryPoints() {
+		return victoryPoints;
+	}
+
+	public void calculatePoints(GameService gameService) {
+		List<BuildingType> buildingList = gameService.getBuildings(buildings);
+		Collections.sort(buildingList, new Comparator<BuildingType>() {
+
+			@Override
+			public int compare(BuildingType first, BuildingType second) {
+				return first.getComputeOrder().compareTo(second.getComputeOrder());
+			}
+			
+		});
+		
+		int victoryPointsCalc = 0;
+		for (BuildingType building : buildingList) {
+			victoryPointsCalc += building.getVictoryPoints();
+		}
+		victoryPoints = victoryPointsCalc;
 	}
 
 }

@@ -84,13 +84,14 @@ public class GameBean implements GameResource {
 	
 	@Override
 	public Response getGame(Long gameId, Request request) {
-		
 		Game game = getGame(gameId);
 		EntityTag tag = new EntityTag(Long.toString(game.getVersion()));
 		ResponseBuilder builder = request.evaluatePreconditions(tag);
 		if (builder != null) {
 			return builder.build();
 		} else {
+			
+			game.calculatePoints(gameService);
 			return Response.ok(game).tag(tag).build();
 		}
 	}
