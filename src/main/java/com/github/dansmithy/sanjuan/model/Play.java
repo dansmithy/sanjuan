@@ -1,20 +1,19 @@
 package com.github.dansmithy.sanjuan.model;
 
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
-import com.github.dansmithy.sanjuan.model.update.GameUpdate;
 
 public class Play {
 
 	private String player;
 	private boolean hasPrivilige;
 	private PlayState state = PlayState.AWAITING_INPUT;
-	
+
 	private PlayChoice playChoice;
 
 	public Play() {
 		super();
 	}
-	
+
 	public Play(String player, boolean hasPrivilige) {
 		super();
 		this.player = player;
@@ -49,5 +48,5 @@ public class Play {
 	public boolean isComplete() {
 		return PlayState.COMPLETED.equals(state);
 	}
-	
+
 }

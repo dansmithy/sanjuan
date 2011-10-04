@@ -71,6 +71,6 @@ public interface GameResource {
 	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/plays/{playIndex}/decision")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Game makePlay(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, @PathParam("phaseIndex") Integer playIndex, PlayChoice playChoice);
+	Game makePlay(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, @PathParam("playIndex") Integer playIndex, PlayChoice playChoice);
 
 }

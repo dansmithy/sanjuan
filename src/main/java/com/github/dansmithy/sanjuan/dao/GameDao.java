@@ -16,6 +16,7 @@ import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 
 @Named
 public class GameDao {
@@ -130,6 +131,13 @@ public class GameDao {
 	public void updateDeck(Integer gameId, Deck deck) {
 		Update update = new Update().set("deck", deck);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+	}
+
+	public Game gameUpdate(Integer gameId, GameUpdater gameUpdater) {
+		Update update = gameUpdater.createMongoUpdate();
+		update.inc("version", 1);
+		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
+		return getGame(gameId);
 	}
 
 

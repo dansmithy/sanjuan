@@ -22,6 +22,7 @@ import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
+import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
@@ -193,24 +194,38 @@ public class GameBean implements GameResource {
 		
 		// verify access
 		
+		GameUpdater gameUpdater = new GameUpdater(roundIndex-1, phaseIndex-1, playIndex-1);
+		
 		Game game = getGame(gameId);
-		long existingVersion = game.getVersion();
-		game.setVersion(existingVersion+1);
+//		long existingVersion = game.getVersion();
+//		game.setVersion(existingVersion+1);
 		Phase phase = game.getRounds().get(roundIndex-1).getPhases().get(phaseIndex-1);
 		Play play = phase.getPlays().get(playIndex-1);
 		play.makePlay(playChoice);
-		game.moveToNext();
+		
+		gameUpdater.completedPlay(play);
+		
+//		game.moveToNext();
+		
 		Player player = getCurrentPlayer(game);
 		int playerIndex = game.getPlayerIndex(player.getName());
 		player.moveToBuildings(playChoice.getBuild());
-		player.removeHandCards(playChoice.getPayment());
-		game.getDeck().discard(playChoice.getPayment());
-		gameDao.updatePlayer(gameId, playerIndex, player);
-		gameDao.updatePlay(gameId, roundIndex-1, phaseIndex-1, playIndex-1, play);
-		gameDao.updateDeck(gameId, game.getDeck());
-		gameDao.updateVersion(gameId, game.getVersion());
+		player.removeHandCards(playChoice.getPaymentAsArray());
+		gameUpdater.updatePlayer(playerIndex, player);
+
+		game.getDeck().discard(playChoice.getPaymentAsArray());
+		gameUpdater.updateDeck(game.getDeck());
 		
-		return game;
+		gameUpdater.createNextStep(game);
+		
+		return gameDao.gameUpdate(gameId, gameUpdater);
+		
+//		gameDao.updatePlayer(gameId, playerIndex, player);
+//		gameDao.updatePlay(gameId, roundIndex-1, phaseIndex-1, playIndex-1, play);
+//		gameDao.updateDeck(gameId, game.getDeck());
+//		gameDao.updateVersion(gameId, game.getVersion());
+		
+//		return game;
 	}
 
 

@@ -10,8 +10,7 @@ import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
-import com.github.dansmithy.sanjuan.model.update.GameUpdate;
-import com.github.dansmithy.sanjuan.model.update.RoundUpdate;
+import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 
 public class Game {
 	
@@ -59,7 +58,7 @@ public class Game {
 	}
 
 	private void startNewRound(int governorPlayerIndex) {
-		rounds.add(new Round(players.get(governorPlayerIndex).getName()));
+		rounds.add(new Round(players.get(governorPlayerIndex).getName(), players.size()));
 	}
 
 	public Long getGameId() {
@@ -130,29 +129,25 @@ public class Game {
 		return -1;
 	}
 
-	public GameUpdate moveToNext() {
-		Round round = getCurrentRound();
-		if (!round.isComplete()) {
-			return round.moveToNext();
-		} else {
-			int governorIndex = getPlayerIndex(round.getGovernor());
-			int nextGovernorIndex = nextGovernor(governorIndex);
-			startNewRound(nextGovernorIndex);
-			return new RoundUpdate(getRoundNumber()-1, getCurrentRound());
-		}
-	}
-
-	private int nextGovernor(int governorIndex) {
-		int index = governorIndex++;
-		if (index >= players.size()) {
-			index = 0;
-		}
-		return index;
-	}
-
 	@JsonIgnore
-	private Round getCurrentRound() {
+	public Round getCurrentRound() {
 		return rounds.get(getRoundNumber()-1);
 	}
+
+	public PlayerCycle createPlayerCycle() {
+		List<String> playerNames = new ArrayList<String>();
+		for (Player player : players) {
+			playerNames.add(player.getName());
+		}
+		return new PlayerCycle(playerNames);
+	}
+
+	public Round nextRound(PlayerCycle cycle) {
+		String nextGovernor = cycle.next(getCurrentRound().getGovernor());
+		Round nextRound = new Round(nextGovernor, players.size());
+		rounds.add(nextRound);
+		return nextRound;
+	}
+
 }
 	
