@@ -18,6 +18,7 @@ import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
@@ -56,7 +57,7 @@ public class GameBean implements GameResource {
 	}
 
 	@Override
-	public Player joinGame(Integer gameId, String playerName) {
+	public Player joinGame(Long gameId, String playerName) {
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!playerName.equals(loggedInUser)) {
@@ -77,12 +78,12 @@ public class GameBean implements GameResource {
 		return player;
 	}
 
-	private Game getGame(Integer gameId) {
+	private Game getGame(Long gameId) {
 		return gameDao.getGame(gameId);
 	}
 	
 	@Override
-	public Response getGame(Integer gameId, Request request) {
+	public Response getGame(Long gameId, Request request) {
 		
 		Game game = getGame(gameId);
 		EntityTag tag = new EntityTag(Long.toString(game.getVersion()));
@@ -95,7 +96,7 @@ public class GameBean implements GameResource {
 	}
 
 	@Override
-	public Game changeGameState(Integer gameId, String stateName) {
+	public Game changeGameState(Long gameId, String stateName) {
 		
 		Game game = gameDao.getGame(gameId);
 		
@@ -140,7 +141,7 @@ public class GameBean implements GameResource {
 	}
 
 	@Override
-	public void deleteGame(Integer gameId) {
+	public void deleteGame(Long gameId) {
 		
 		Game game = gameDao.getGame(gameId);
 		
@@ -153,11 +154,11 @@ public class GameBean implements GameResource {
 	}
 
 	@Override
-	public Game chooseRole(Integer gameId, Integer roundIndex,
-			Integer phaseIndex, RoleChoice choice) {
+	public Game chooseRole(Long gameId, Integer roundNumber,
+			Integer phaseNumber, RoleChoice choice) {
 		
 		Game game = getGame(gameId);
-		Phase phase = game.getRounds().get(roundIndex-1).getPhases().get(phaseIndex-1);
+		Phase phase = game.getRounds().get(roundNumber-1).getPhases().get(phaseNumber-1);
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
@@ -165,34 +166,62 @@ public class GameBean implements GameResource {
 		}
 
 		phase.selectRole(choice.getRole());
-		gameDao.updatePhase(gameId, roundIndex-1, phaseIndex-1, phase);
+		gameDao.updatePhase(gameId, roundNumber-1, phaseNumber-1, phase);
 		return game;
 	}
 
 	@Override
-	public Game makePlay(Integer gameId, Integer roundIndex,
-			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+	public Game makePlay(Long gameId, Integer roundNumber,
+			Integer phaseNumber, Integer playNumber, PlayChoice playChoice) {
 		
-		if (playChoice.getSkip()) {
-			return playSkip(gameId, roundIndex, phaseIndex, playIndex, playChoice);
+		if (playChoice.getSkip() != null && playChoice.getSkip()) {
+			return playSkip(gameId, roundNumber, phaseNumber, playNumber, playChoice);
 		}
-		if (playChoice.getBuild() != null) {
-			return playBuild(gameId, roundIndex, phaseIndex, playIndex, playChoice);
+		
+		Game game = getGame(gameId);
+		Role role = game.getCurrentRound().getCurrentPhase().getRole();
+		if (Role.BUILDER.equals(role)) {
+			return playBuild(game, roundNumber, phaseNumber, playNumber, playChoice);
+		} else if (Role.PROSPECTOR.equals(role)) {
+			return doProspector(game, roundNumber, phaseNumber, playNumber, playChoice);
 		} else {
 			return null;
 		}
 	}
 	
-	private Game playSkip(Integer gameId, Integer roundIndex,
-			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+	private Game doProspector(Game game, Integer roundNumber,
+			Integer phaseNumber, Integer playNumber, PlayChoice playChoice) {
+		GameUpdater gameUpdater = new GameUpdater(roundNumber-1, phaseNumber-1, playNumber-1);
+		Play play = gameUpdater.getCurrentPlay(game);
+		play.makePlay(playChoice);
 		
-		GameUpdater gameUpdater = new GameUpdater(roundIndex-1, phaseIndex-1, playIndex-1);
+		Player player = getCurrentPlayer(game);
+		
+		if (game.getCurrentRound().getCurrentPhase().getLeadPlayer().equals(player.getName())) {
+			int playerIndex = game.getPlayerIndex(player.getName());
+			
+			Integer prospectedCard = game.getDeck().takeOne();
+			player.addToHand(prospectedCard);
+			
+			gameUpdater.updateDeck(game.getDeck());
+			gameUpdater.updatePlayer(playerIndex, player);
+		}
+		
+		gameUpdater.completedPlay(play);
+		gameUpdater.createNextStep(game);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}
+
+	private Game playSkip(Long gameId, Integer roundNumber,
+			Integer phaseNumber, Integer playNumber, PlayChoice playChoice) {
+		
 		Game game = getGame(gameId);
+		GameUpdater gameUpdater = new GameUpdater(roundNumber-1, phaseNumber-1, playNumber-1);
 		Play play = gameUpdater.getCurrentPlay(game);
 		play.makePlay(playChoice);
 		gameUpdater.completedPlay(play);
 		gameUpdater.createNextStep(game);
-		return gameDao.gameUpdate(gameId, gameUpdater);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 
 	private Player getCurrentPlayer(Game game) {
@@ -204,14 +233,13 @@ public class GameBean implements GameResource {
 		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", userProvider.getAuthenticatedUsername()));
 	}
 
-	private Game playBuild(Integer gameId, Integer roundIndex,
-			Integer phaseIndex, Integer playIndex, PlayChoice playChoice) {
+	private Game playBuild(Game game, Integer roundNumber,
+			Integer phaseNumber, Integer playNumber, PlayChoice playChoice) {
 		
 		// verify access
 		
-		GameUpdater gameUpdater = new GameUpdater(roundIndex-1, phaseIndex-1, playIndex-1);
+		GameUpdater gameUpdater = new GameUpdater(roundNumber-1, phaseNumber-1, playNumber-1);
 		
-		Game game = getGame(gameId);
 		Play play = gameUpdater.getCurrentPlay(game);
 		play.makePlay(playChoice);
 		
@@ -228,7 +256,7 @@ public class GameBean implements GameResource {
 		
 		gameUpdater.createNextStep(game);
 		
-		return gameDao.gameUpdate(gameId, gameUpdater);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 		
 	}
 

@@ -45,11 +45,11 @@ public class GameDao {
 		return game;
 	}
 
-	public Game getGame(Integer gameId) {
+	public Game getGame(Long gameId) {
 		return getGame(gameId, EMPTY_ARRAY, EMPTY_ARRAY);
 	}
 	
-	public Game getGame(Integer gameId, String[] includes, String[] excludes) {
+	public Game getGame(Long gameId, String[] includes, String[] excludes) {
 		Query query = MongoHelper.createSimpleQuery("gameId", gameId);
 		for (String include : includes) {
 			query.fields().include(include);
@@ -99,12 +99,12 @@ public class GameDao {
 		return mongoTemplate.find(query, Game.class);
 	}
 
-	public void deleteGame(Integer gameId) {
+	public void deleteGame(Long gameId) {
 		Query query = MongoHelper.createSimpleQuery("gameId", gameId);
 		mongoTemplate.remove(query, Game.class);
 	}
 
-	public void updatePhase(Integer gameId, Integer roundIndex,
+	public void updatePhase(Long gameId, Integer roundIndex,
 			Integer phaseIndex, Phase phase) {
 		String updateElement = String.format("rounds.%d.phases.%d", roundIndex, phaseIndex);
 		Update update = new Update().set(updateElement, phase);
@@ -113,27 +113,27 @@ public class GameDao {
 		
 	}
 
-	public void updatePlayer(Integer gameId, int playerIndex, Player player) {
+	public void updatePlayer(Long gameId, int playerIndex, Player player) {
 		Update update = new Update().set(String.format("players.%d", playerIndex), player);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 	}
 
-	public void updatePlay(Integer gameId, int roundIndex, int phaseIndex, Integer playIndex, Play play) {
+	public void updatePlay(Long gameId, int roundIndex, int phaseIndex, Integer playIndex, Play play) {
 		Update update = new Update().set(String.format("rounds.%d.phases.%d.plays.%d", roundIndex, phaseIndex, playIndex), play);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 	}
 	
-	public void updateVersion(Integer gameId, long version) {
+	public void updateVersion(Long gameId, long version) {
 		Update update = new Update().set("version", version);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 	}
 
-	public void updateDeck(Integer gameId, Deck deck) {
+	public void updateDeck(Long gameId, Deck deck) {
 		Update update = new Update().set("deck", deck);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
 	}
 
-	public Game gameUpdate(Integer gameId, GameUpdater gameUpdater) {
+	public Game gameUpdate(Long gameId, GameUpdater gameUpdater) {
 		Update update = gameUpdater.createMongoUpdate();
 		update.inc("version", 1);
 		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);

@@ -1,6 +1,6 @@
 package com.github.dansmithy.sanjuan.model;
 
-public enum PhaseType {
+public enum Role {
 
 	GOVERNOR, BUILDER, TRADER, PRODUCER, COUNCILLOR, PROSPECTOR
 }

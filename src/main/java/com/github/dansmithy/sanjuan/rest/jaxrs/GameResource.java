@@ -38,23 +38,23 @@ public interface GameResource {
 	@Path("{gameId}/players")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Player joinGame(@PathParam("gameId") Integer gameId, String playerName);
+	Player joinGame(@PathParam("gameId") Long gameId, String playerName);
 	
 	@GET
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	Response getGame(@PathParam("gameId") Integer gameId, @Context Request request);
+	Response getGame(@PathParam("gameId") Long gameId, @Context Request request);
 	
 	@DELETE
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	void deleteGame(@PathParam("gameId") Integer gameId);
+	void deleteGame(@PathParam("gameId") Long gameId);
 	
 	@PUT
 	@Path("{gameId}/state")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Game changeGameState(@PathParam("gameId") Integer gameId, String state);
+	Game changeGameState(@PathParam("gameId") Long gameId, String state);
 	
 	@GET
 	@Path("/")
@@ -65,12 +65,12 @@ public interface GameResource {
 	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/role")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Game chooseRole(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, RoleChoice choice);
+	Game chooseRole(@PathParam("gameId") Long gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, RoleChoice choice);
 
 	@PUT
 	@Path("{gameId}/rounds/{roundIndex}/phases/{phaseIndex}/plays/{playIndex}/decision")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Game makePlay(@PathParam("gameId") Integer gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, @PathParam("playIndex") Integer playIndex, PlayChoice playChoice);
+	Game makePlay(@PathParam("gameId") Long gameId, @PathParam("roundIndex") Integer roundIndex, @PathParam("phaseIndex") Integer phaseIndex, @PathParam("playIndex") Integer playIndex, PlayChoice playChoice);
 
 }

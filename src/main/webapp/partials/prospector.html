@@ -1,0 +1,13 @@
+        <div class="row" ng:show="responder.game.$round.$phase.$play.hasPrivilige">
+            <div class="span6"><h3>You got a card!</h3></div>
+            <div class="span4">
+                <button class="btn success" ng:click="responder.commitResponse()">Pick up card</button>
+            </div>
+        </div>
+        <div class="row" ng:hide="responder.game.$round.$phase.$play.hasPrivilige">
+            <div class="span6"><h3>No privilege, so no card for Prospector</h3></div>
+            <div class="span4">
+                <button class="btn" ng:click="responder.commitResponse()">Continue</button>
+            </div>
+        </div>
+        

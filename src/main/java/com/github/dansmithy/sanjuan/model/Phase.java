@@ -9,7 +9,7 @@ import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 
 public class Phase {
 
-	private PhaseType type;
+	private Role role;
 	private List<Play> plays = new ArrayList<Play>();
 	private String leadPlayer;
 	private int playerCount;
@@ -24,8 +24,8 @@ public class Phase {
 		this.playerCount = playerCount;
 	}
 
-	public PhaseType getType() {
-		return type;
+	public Role getRole() {
+		return role;
 	}
 	public List<Play> getPlays() {
 		return plays;
@@ -78,7 +78,7 @@ public class Phase {
 	}
 	
 	public void selectRole(String role) {
-		this.type = PhaseType.valueOf(role.toUpperCase());
+		this.role = Role.valueOf(role.toUpperCase());
 		plays.add(new Play(this.leadPlayer, true));
 	}
 	

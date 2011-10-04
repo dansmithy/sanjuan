@@ -179,8 +179,10 @@ GameController.prototype = {
 		},
 		
 		determineActivePlayerResponder : function(game) {
-			if (game.$round.$phase.type === "BUILDER") {
+			if (game.$round.$phase.role === "BUILDER") {
 				return new BuilderResponder(this.$xhr, game, this.gameCallback);
+			} else if (game.$round.$phase.role === "PROSPECTOR") {
+				return new ProspectorResponder(this.$xhr, game, this.gameCallback);
 			} else {
 				return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
 			}
@@ -234,6 +236,22 @@ DoSomethingResponder.prototype = {
 	
 	commitSkipResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.emptyResponse, this.gameCallback);
+	}
+};
+
+function ProspectorResponder($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.response = { };
+	this.template = "partials/prospector.html";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+ProspectorResponder.prototype = {
+	
+	commitResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
 	}
 };
 
