@@ -42,5 +42,13 @@ public class Deck {
 		Integer cardId = supply.remove(0);
 		return cardId;
 	}
+	
+	public List<Integer> take(int count) {
+		List<Integer> cards = new ArrayList<Integer>();
+		for (int num = 0; num < count; num++) {
+			cards.add(takeOne());
+		}
+		return cards;
+	}	
 
 }

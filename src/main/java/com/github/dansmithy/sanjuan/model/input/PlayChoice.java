@@ -11,6 +11,7 @@ public class PlayChoice {
 	//Spring Mongo integration can't cope with arrays here if the array is empty (which it may be)
 	private List<Integer> payment = new ArrayList<Integer>();
 	private Boolean skip = null;
+	private List<Integer> councilDiscarded;
 	
 	public Integer getBuild() {
 		return build;
@@ -25,6 +26,14 @@ public class PlayChoice {
 		this.payment = payment;
 	}
 	
+	@JsonIgnore
+	public List<Integer> getCouncilDiscarded() {
+		return councilDiscarded;
+	}
+	public void setCouncilDiscarded(List<Integer> councilDiscarded) {
+		this.councilDiscarded = councilDiscarded;
+	}
+
 	public void setSkip(Boolean skip) {
 		this.skip = skip;
 	}
@@ -36,5 +45,10 @@ public class PlayChoice {
 	public Integer[] getPaymentAsArray() {
 		return payment.toArray(new Integer[payment.size()]);
 	}
+	
+	@JsonIgnore
+	public Integer[] getCouncilDiscardedAsArray() {
+		return councilDiscarded.toArray(new Integer[councilDiscarded.size()]);
+	}	
 	
 }

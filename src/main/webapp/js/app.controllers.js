@@ -184,6 +184,8 @@ GameController.prototype = {
 				return new BuilderResponder(this.$xhr, game, this.gameCallback);
 			} else if (game.$round.$phase.role === "PROSPECTOR") {
 				return new ProspectorResponder(this.$xhr, game, this.gameCallback);
+			} else if (game.$round.$phase.role === "COUNCILLOR") {
+				return new CouncillorResponder(this.$xhr, game, this.gameCallback);
 			} else {
 				return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
 			}
@@ -218,7 +220,9 @@ function GovernorChoiceResponse($xhr, game, gameCallback) {
 GovernorChoiceResponse.prototype = {
 	
 	sendResponse : function() {
-		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", this.response, this.gameCallback);
+		var modifiedResponse = angular.Object.copy(this.response);
+		modifiedResponse.role = modifiedResponse.role.toUpperCase();
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", modifiedResponse, this.gameCallback);
 	}
 };
 
@@ -254,6 +258,62 @@ ProspectorResponder.prototype = {
 	commitResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
 	}
+};
+
+function CouncillorResponder($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.offered = game.$round.$phase.$play.offered;
+	this.response = { "councilDiscarded" : [] };
+	this.emptyResponse = { "skip" : true };
+	this.cardsToDiscard = 3;
+	this.template = "partials/councillor.html";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+CouncillorResponder.prototype = {
+	
+	commitResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
+	},
+	
+	choicesMade : function() {
+		return this.response.councilDiscarded.length === this.cardsToDiscard;
+	},
+	
+	councilCardSelectedType : function(councilCard) {
+		if (this.isDiscardCard(councilCard)) {
+			return "hand-to-build";
+		}
+	},
+	
+	clickCouncilCard : function(councilCard) {
+		if (this.isDiscardCard(councilCard)) {
+			this.keepCard(councilCard);
+		} else {
+			this.addCardToDiscarded(councilCard);
+		}
+	},
+	
+	isDiscardCard : function(card) {
+		return angular.Array.indexOf(this.response.councilDiscarded, card) !== -1;
+	},
+	
+	addCardToDiscarded : function(card) {
+		var cardsAlreadyAdded = this.response.councilDiscarded.length;
+		var indexToAdd = cardsAlreadyAdded === this.cardsToDiscard ? this.cardsToDiscard - 1 : cardsAlreadyAdded;
+		this.response.councilDiscarded[indexToAdd] = card;
+	},
+	
+	keepCard : function(card) {
+		angular.Array.remove(this.response.councilDiscarded, card);
+	},
+	
+	commitSkipResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.emptyResponse, this.gameCallback);
+	}
+	
 };
 
 

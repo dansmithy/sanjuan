@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
+import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
@@ -154,6 +155,15 @@ public class Game {
 		for (Player player : players) {
 			player.calculatePoints(gameService);
 		}
+	}
+
+	public Player getPlayer(String playerName) {
+		for (Player player : players) {
+			if (playerName.equals(player.getName())) {
+				return player;
+			}
+		}
+		throw new SanJuanUnexpectedException(String.format("No player with name %s in game [%d].", playerName, gameId));
 	}
 
 }

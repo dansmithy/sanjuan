@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
+import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 
 public class Play {
 
@@ -9,6 +10,7 @@ public class Play {
 	private PlayState state = PlayState.AWAITING_INPUT;
 
 	private PlayChoice playChoice;
+	private PlayOffered offered;
 
 	public Play() {
 		super();
@@ -38,6 +40,14 @@ public class Play {
 
 	public void setPlayChoice(PlayChoice playChoice) {
 		this.playChoice = playChoice;
+	}
+	
+	public PlayOffered getOffered() {
+		return offered;
+	}
+
+	public void setOffered(PlayOffered offered) {
+		this.offered = offered;
 	}
 
 	public void makePlay(PlayChoice playChoice) {

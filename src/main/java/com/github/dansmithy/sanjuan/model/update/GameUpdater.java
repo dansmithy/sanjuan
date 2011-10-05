@@ -67,7 +67,11 @@ public class GameUpdater {
 	}
 
 	public Play getCurrentPlay(Game game) {
-		return game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex()).getPlays().get(playCoords.getPlayIndex());
+		return getCurrentPhase(game).getPlays().get(playCoords.getPlayIndex());
+	}
+	
+	public Phase getCurrentPhase(Game game) {
+		return game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex());
 	}
 
 }

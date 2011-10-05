@@ -77,9 +77,9 @@ public class Phase {
 		return plays.get(getPlayNumber() - 1);
 	}
 	
-	public void selectRole(String role) {
-		this.role = Role.valueOf(role.toUpperCase());
-		plays.add(new Play(this.leadPlayer, true));
+	public void selectRole(Role role, Play firstPlay) {
+		this.role = role;
+		plays.add(firstPlay);
 	}
 	
 	public Play nextPlay(PlayerCycle playerCycle) {

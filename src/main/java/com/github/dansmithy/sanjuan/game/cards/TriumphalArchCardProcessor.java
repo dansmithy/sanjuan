@@ -22,7 +22,7 @@ public class TriumphalArchCardProcessor implements CardProcessor {
 				statueCount += 1;
 			}
 		}
-		int bonusPoints = statueCount*2 + 2;
+		int bonusPoints = statueCount == 0 ? 0 : statueCount*2 + 2;
 		player.setVictoryPoints(player.getVictoryPoints() + bonusPoints);
 	}
 

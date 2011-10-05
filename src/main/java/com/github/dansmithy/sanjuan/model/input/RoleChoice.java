@@ -1,14 +1,16 @@
 package com.github.dansmithy.sanjuan.model.input;
 
+import com.github.dansmithy.sanjuan.model.Role;
+
 public class RoleChoice {
 
-	private String role;
+	private Role role;
 
-	public String getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 	

@@ -1,0 +1,26 @@
+        <div class="row">
+            <div class="span6"><h3>Choose which cards to discard?</h3></div>
+        </div>
+        <div class="row">
+            <div class="span2"><h1><small>Choice:</small></h1></div>
+            <div class="span1 card" ng:repeat="councillorCard in responder.offered.councilOptions" ng:click="responder.clickCouncilCard(councillorCard)"><img class="{{responder.councilCardSelectedType(councillorCard)}}" ng:src="{{cardImageUrl(councillorCard)}}" width="55" height="80" /></div>
+            <div class="span1">
+                <span>&nbsp;</span>
+            </div>
+            <div class="span2">
+                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.commitResponse()">Discard</button>
+            </div>
+            <div class="span2" ng:show="!responder.offered">
+                <button class="btn" ng:click="responder.commitSkipResponse()">Skip</button>
+            </div>
+        </div>
+        <div class="row">
+            <p>&nbsp;</p>
+        </div>        
+        <div class="row">
+            <div class="span2">&nbsp;</div>
+        </div>
+        <div class="row">
+            <p>&nbsp;</p>
+        </div>        
+        
