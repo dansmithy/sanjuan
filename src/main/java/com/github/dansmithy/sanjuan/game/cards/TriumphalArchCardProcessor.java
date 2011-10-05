@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.game.CardProcessor;
-import com.github.dansmithy.sanjuan.model.BuildingCategory;
 import com.github.dansmithy.sanjuan.model.BuildingType;
 import com.github.dansmithy.sanjuan.model.Player;
 

@@ -3,7 +3,6 @@ package com.github.dansmithy.sanjuan.rest.jaxrs;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import com.github.dansmithy.sanjuan.model.User;
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
-@Named
 @RolesAllowed({ SanJuanRole.ADMIN })
 @Path("/ws/users")
 public interface UserResource {
