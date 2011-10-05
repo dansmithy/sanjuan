@@ -50,7 +50,7 @@
         </repository>       
     </repositories>
     <properties>
-    	<aspectj.version>1.5.4</aspectj.version>
+    	<aspectj.version>1.6.11</aspectj.version>
 		<commons.beanutils.version>1.8.3</commons.beanutils.version>
 		<commons.collections.version>3.2.1</commons.collections.version>
 		<commons.configuration.version>1.5</commons.configuration.version>
@@ -79,6 +79,7 @@
 
     <dependencies>
     
+    	<!--  Test  -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -197,8 +198,9 @@
             <artifactId>spring-data-mongodb</artifactId>
             <version>${spring-data.version}</version>
         </dependency>            
-                
-<!--         <dependency>
+
+		<!-- AOP -->                
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
@@ -208,7 +210,8 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
-        </dependency> -->
+        </dependency>
+      
         
         <!--  Other dependencies -->
         <dependency>

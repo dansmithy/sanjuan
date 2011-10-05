@@ -44,7 +44,6 @@ public class GameBean implements GameResource {
 		if (builder != null) {
 			return builder.build();
 		} else {
-			gameService.doCalculations(game);
 			return Response.ok(game).tag(tag).build();
 		}
 	}	
