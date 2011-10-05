@@ -259,7 +259,7 @@ public class DatastoreGameService implements GameService {
 		
 		GameUpdater gameUpdater = new GameUpdater(playCoords);
 		Play play = gameUpdater.getCurrentPlay(game);
-		game.getDeck().discard(play.getPlayChoice().getCouncilDiscardedAsArray());
+		game.getDeck().discard(playChoice.getCouncilDiscardedAsArray());
 		gameUpdater.updateDeck(game.getDeck());
 		
 		String playerName = play.getPlayer();
