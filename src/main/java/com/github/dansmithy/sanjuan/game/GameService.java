@@ -1,16 +1,27 @@
 package com.github.dansmithy.sanjuan.game;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.model.BuildingType;
+import com.github.dansmithy.sanjuan.dao.GameDao;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
+import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.GameState;
+import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
+import com.github.dansmithy.sanjuan.model.input.PlayChoice;
+import com.github.dansmithy.sanjuan.model.input.PlayCoords;
+import com.github.dansmithy.sanjuan.model.input.RoleChoice;
+import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
 @Named
 public class GameService {
@@ -18,23 +29,194 @@ public class GameService {
 	private TariffBuilder tariffBuilder;
 	private CardFactory cardFactory;
 	private final CalculationService calculationService;
+	private final GameDao gameDao;
+	private final AuthenticatedSessionProvider userProvider;
 	
 	@Inject
-	public GameService(TariffBuilder tariffBuilder, CardFactory cardFactory, CalculationService calculationService) {
+	public GameService(GameDao gameDao, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory, CalculationService calculationService) {
 		super();
+		this.gameDao = gameDao;
+		this.userProvider = userProvider;
 		this.tariffBuilder = tariffBuilder;
 		this.cardFactory = cardFactory;
 		this.calculationService = calculationService;
 	}
 
-	public Game startGame(Game game) {
+	public Game getGame(Long gameId) {
+		return gameDao.getGame(gameId);
+	}
+	
+	public List<Game> getGamesForPlayer(String playerName) {
+		return gameDao.getGamesForPlayer(playerName);
+	}	
+	
+	public List<Game> getGamesInState(GameState gameState) {
+		return gameDao.getGamesInState(gameState);
+	}	
+
+	public Game createNewGame(String ownerName) {
+		Player owner = new Player(ownerName);
+		Game game = new Game(owner);
+		gameDao.createGame(game);
+		return game;
+	}
+
+	public Player addPlayerToGame(Long gameId, String playerName) {
+		Game game = getGame(gameId);
+
+		if (game.hasPlayer(playerName)) {
+			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName));
+		}
+		// TODO check game state
+		Player player = new Player(playerName);
+		game.addPlayer(player);
+		gameDao.saveGame(game);
+		return player;
+	}
+
+	
+	public Game startGame(Long gameId) {
+		Game game = gameDao.getGame(gameId);
+		
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		if (!loggedInUser.equals(game.getOwner())) {
+			throw new NotResourceOwnerAccessException(String.format("Must be game owner to start game."));
+		}
+		
+		if (game.getState().equals(GameState.PLAYING)) {
+			return game;
+		}
+		
+		if (!game.getState().equals(GameState.RECRUITING)) {
+			throw new IllegalStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.PLAYING));
+		}
+
 		game.startPlaying(cardFactory, tariffBuilder);
+		gameDao.saveGame(game);
 		return game;
 	}
 	
+	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
+		
+		Game game = getGame(playCoords.getGameId());
+		GameUpdater gameUpdater = new GameUpdater(playCoords);
+		Phase phase = game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex());
+
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		if (!loggedInUser.equals(phase.getLeadPlayer())) {
+			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
+		}
+
+		phase.selectRole(choice.getRole());
+		gameUpdater.updatePhase(phase);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}	
+	
+	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
+		
+		Game game = getGame(coords.getGameId());
+		
+		// TODO verify coords is current
+		// TODO verify play is current one
+		
+		if (playChoice.getSkip() != null && playChoice.getSkip()) {
+			return playSkip(game, coords, playChoice);
+		}
+		
+		Role role = game.getCurrentRound().getCurrentPhase().getRole();
+		
+		if (Role.BUILDER.equals(role)) {
+			return playBuild(game, coords, playChoice);
+		} else if (Role.PROSPECTOR.equals(role)) {
+			return doProspector(game, coords, playChoice);
+		} else {
+			return null;
+		}
+	}		
+	
+	private Game playSkip(Game game, PlayCoords coords, PlayChoice playChoice) {
+		
+		GameUpdater gameUpdater = new GameUpdater(coords);
+		Play play = gameUpdater.getCurrentPlay(game);
+		play.makePlay(playChoice);
+		gameUpdater.completedPlay(play);
+		gameUpdater.createNextStep(game);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}
+	
+	
+	private Game playBuild(Game game, PlayCoords coords, PlayChoice playChoice) {
+		
+		GameUpdater gameUpdater = new GameUpdater(coords);
+		
+		Play play = gameUpdater.getCurrentPlay(game);
+		play.makePlay(playChoice);
+		
+		gameUpdater.completedPlay(play);
+		
+		Player player = getCurrentPlayer(game);
+		int playerIndex = game.getPlayerIndex(player.getName());
+		player.moveToBuildings(playChoice.getBuild());
+		player.removeHandCards(playChoice.getPaymentAsArray());
+		gameUpdater.updatePlayer(playerIndex, player);
+
+		game.getDeck().discard(playChoice.getPaymentAsArray());
+		gameUpdater.updateDeck(game.getDeck());
+		
+		gameUpdater.createNextStep(game);
+		
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+		
+	}	
+	
+	private Game doProspector(Game game, PlayCoords playCoords, PlayChoice playChoice) {
+		GameUpdater gameUpdater = new GameUpdater(playCoords);
+		Play play = gameUpdater.getCurrentPlay(game);
+		play.makePlay(playChoice);
+		
+		Player player = getCurrentPlayer(game);
+		
+		if (game.getCurrentRound().getCurrentPhase().getLeadPlayer().equals(player.getName())) {
+			int playerIndex = game.getPlayerIndex(player.getName());
+			
+			Integer prospectedCard = game.getDeck().takeOne();
+			player.addToHand(prospectedCard);
+			
+			gameUpdater.updateDeck(game.getDeck());
+			gameUpdater.updatePlayer(playerIndex, player);
+		}
+		
+		gameUpdater.completedPlay(play);
+		gameUpdater.createNextStep(game);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}
+
+
+	private Player getCurrentPlayer(Game game) {
+		for (Player player : game.getPlayers()) {
+			if (userProvider.getAuthenticatedUsername().equals(player.getName())) {
+				return player;
+			}
+		}
+		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", userProvider.getAuthenticatedUsername()));
+	}
+
 	public void doCalculations(Game game) {
 		for (Player player : game.getPlayers()) {
 			calculationService.processPlayer(player);
 		}
 	}
+	
+	public void deleteGame(Long gameId) {
+		Game game = gameDao.getGame(gameId);
+		
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		if (!loggedInUser.equals(game.getOwner())) {
+			throw new NotResourceOwnerAccessException(String.format("Must be game owner to delete game."));
+		}
+		
+		gameDao.deleteGame(gameId);
+	}
+
+
 }

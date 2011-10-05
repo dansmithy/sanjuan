@@ -19,7 +19,6 @@ public class MongoSequence {
 
 	public MongoSequence() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getType() {

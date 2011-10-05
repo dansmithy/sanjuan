@@ -20,7 +20,7 @@ public class NotResourceOwnerAccessException extends AccessException {
 	
 	@Override
 	public String getType() {
-		return "NOT_OWNER";
+		return "NOT_CORRECT_USER";
 	}
 
 }

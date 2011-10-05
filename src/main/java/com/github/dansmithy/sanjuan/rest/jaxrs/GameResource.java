@@ -54,7 +54,7 @@ public interface GameResource {
 	@Path("{gameId}/state")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Game changeGameState(@PathParam("gameId") Long gameId, String state);
+	Game startGame(@PathParam("gameId") Long gameId, String state);
 	
 	@GET
 	@Path("/")
