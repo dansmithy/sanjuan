@@ -90,8 +90,7 @@ public class GameBean implements GameResource {
 		if (builder != null) {
 			return builder.build();
 		} else {
-			
-			game.calculatePoints(gameService);
+			gameService.doCalculations(game);
 			return Response.ok(game).tag(tag).build();
 		}
 	}

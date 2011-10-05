@@ -1,9 +1,9 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+
+import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.GameService;
 
@@ -13,7 +13,9 @@ public class Player {
 	private List<Integer> hand = new ArrayList<Integer>();
 	private List<Integer> buildings = new ArrayList<Integer>();
 	private List<Integer> goods = new ArrayList<Integer>();
+	private List<Integer> chapelCards = new ArrayList<Integer>();
 
+	@Transient
 	private Integer victoryPoints;
 	
 	public Player(String name) {
@@ -72,26 +74,23 @@ public class Player {
 		this.goods = goods;
 	}
 	
+	public List<Integer> getChapelCards() {
+		return chapelCards;
+	}
+
+	public void setChapelCards(List<Integer> chapelCards) {
+		this.chapelCards = chapelCards;
+	}
+
 	public Integer getVictoryPoints() {
 		return victoryPoints;
 	}
+	
+	public void setVictoryPoints(Integer victoryPoints) {
+		this.victoryPoints = victoryPoints;
+	}
 
 	public void calculatePoints(GameService gameService) {
-		List<BuildingType> buildingList = gameService.getBuildings(buildings);
-		Collections.sort(buildingList, new Comparator<BuildingType>() {
-
-			@Override
-			public int compare(BuildingType first, BuildingType second) {
-				return first.getComputeOrder().compareTo(second.getComputeOrder());
-			}
-			
-		});
-		
-		int victoryPointsCalc = 0;
-		for (BuildingType building : buildingList) {
-			victoryPointsCalc += building.getVictoryPoints();
-		}
-		victoryPoints = victoryPointsCalc;
 	}
 
 }
