@@ -29,26 +29,6 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-			    <groupId>org.codehaus.mojo</groupId>
-			    <artifactId>exec-maven-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<configuration>
-							<executable>git</executable>
-                            <arguments>
-                                <argument>--version</argument>
-                            </arguments>
-							<outputFile>target/classes/properties/sanjuan.properties</outputFile>
-						</configuration>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>            
         </plugins>
 		<pluginManagement>
 			<plugins>
@@ -302,4 +282,35 @@
          -->
         
     </dependencies>
+    <profiles>
+        <profile>
+            <id>version</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <executable>git</executable>
+                                    <arguments>
+                                        <argument>log</argument>
+                                        <argument>--pretty=format:build.version=%H</argument>
+                                        <argument>-n1</argument>
+                                    </arguments>
+                                    <outputFile>target/classes/properties/sanjuan.properties</outputFile>
+                                </configuration>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>                   
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
