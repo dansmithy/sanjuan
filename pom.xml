@@ -37,11 +37,9 @@
 					<execution>
 						<configuration>
 							<executable>git</executable>
-							<arguments>
-								<argument>log</argument>
-								<argument>--pretty=format:build.version=%H</argument>
-								<argument>-n1</argument>
-							</arguments>
+                            <arguments>
+                                <argument>--version</argument>
+                            </arguments>
 							<outputFile>target/classes/properties/sanjuan.properties</outputFile>
 						</configuration>
 						<phase>compile</phase>
