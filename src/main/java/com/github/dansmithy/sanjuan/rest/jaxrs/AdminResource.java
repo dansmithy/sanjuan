@@ -10,12 +10,23 @@ import javax.ws.rs.core.MediaType;
 
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
-@RolesAllowed({ SanJuanRole.ADMIN })
+
 @Path("/ws/admin")
 public interface AdminResource {
 
 	@GET
 	@Path("/mongo")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SanJuanRole.ADMIN })
 	Map<String, String> mongoDetails();
+	
+	@GET
+	@Path("/version")
+	@Produces(MediaType.APPLICATION_JSON)
+	String getVersion();
+	
+	@GET
+	@Path("/version.js")
+	@Produces("application/x-javascript")
+	String getVersionInJsonFormat();	
 }

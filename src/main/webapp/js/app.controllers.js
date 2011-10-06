@@ -1,6 +1,7 @@
 
-function MainController($route, $xhr, userManager) {
+function MainController($route, $xhr, userManager, version) {
 
+	this.version = version;
 	this.userManager = userManager;
 	this.$xhr = $xhr;
 	$xhr.defaults.headers.put["Content-Type"] = "application/json";
@@ -18,7 +19,7 @@ function MainController($route, $xhr, userManager) {
 	this.checkLoggedIn();	
 }
 
-MainController.$inject = ["$route", "$xhr", "userManager" ];
+MainController.$inject = ["$route", "$xhr", "userManager", "version" ];
 
 MainController.prototype = {
 

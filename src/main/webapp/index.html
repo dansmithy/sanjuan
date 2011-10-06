@@ -10,6 +10,7 @@
     <script src="js/angular.ext.filters.js"></script>        
     <script src="js/jquery.min.1.5.1.js"></script>
     <script src="js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script src="ws/admin/version.js"></script>
     
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
     <link rel="stylesheet" href="css/sanjuan.css">
@@ -41,15 +42,23 @@
   
     <div class="container" ng:show="userManager.isUnauthenticated()">
     
-        <div class="row">
-            <h1>Welcome to San Juan</h1>
-            <h3>Please login to play!</h3>
-        </div>
+      <div class="hero-unit">
+        <h1>Welcome to San Juan!</h1>
+        <p>Please login to play</p>
+      </div>    
         
     </div>
     
     <div ng:show="userManager.isAuthenticated()">  
-    <ng:view>Loading ...</ng:view>
+    	<ng:view>Loading ...</ng:view>
     </div>
+    
+    <div class="container">
+    
+     <footer>
+       <p class="pull-right"><small>build {{version}}</small></p>
+     </footer>    
+     
+     </div>
     </body>
 </html>
