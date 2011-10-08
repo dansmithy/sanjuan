@@ -55,10 +55,14 @@ MainController.prototype = {
 		
 };
 
-function GameController($xhr, $defer, userManager) {
+function GameController($xhr, $defer, userManager, pollingService) {
 	
 	this.userManager = userManager;
 	this.$defer = $defer;
+	this.pollingService = pollingService;
+//	this.pollingService.startGamePolling(this.params.gameId, function(code, response) {
+//		console.debug("Got a response");
+//	});
 	
 	// modes = 
 	//	awaiting_other_player, role_choice, governor_discard_choice, ...
@@ -106,7 +110,7 @@ function GameController($xhr, $defer, userManager) {
 	this.$defer(this.autoRefresh, 5000);
 
 };
-GameController.$inject = [ "$xhr", "$defer", "userManager" ];
+GameController.$inject = [ "$xhr", "$defer", "userManager", "pollingService" ];
 GameController.prototype = {
 		
 		autoRefresh : function() {
@@ -510,7 +514,5 @@ AdminController.prototype = {
 		cancelAdd : function() {
 			this.adding = false;
 		}
-		
-		
 		
 };

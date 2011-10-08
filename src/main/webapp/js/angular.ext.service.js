@@ -95,3 +95,52 @@ angular.service("pipelineXhr", angular.extend(function($xhr, userManager) {
 		
 	};
 }, {$inject:["$xhr", "userManager" ]}));
+
+
+
+angular.service("pollingService", angular.extend(function($xhr, $defer) {
+	
+	
+	var $defer = $defer;
+	var pollingService = {
+		
+		gamePolling : false,
+		gameId : -1,
+		gameCallback : angular.noop,
+		
+		start : function() {
+			console.debug("Starting...");
+			$defer(pollingService.poll, 2000);
+		},
+		
+		startGamePolling : function(gameId, gameCallback) {
+			
+			console.debug("Turn on game polling...");
+			this.gamePolling = true;
+			this.gameId = gameId;
+			this.gameCallback = gameCallback;
+		},
+		
+		stopGamePolling : function() {
+			this.gamePolling = false;
+		},
+			
+		updateGame : function(gameId, gameCallback) {
+			$xhr("GET", "ws/games/" + gameId, gameCallback);
+		},
+		
+		poll : function() {
+			console.debug("polling...");
+			if (this.gamePolling) {
+				console.debug("updating...");
+				this.updateGame(this.gameId, this.gameCallback);
+			}
+			$defer(pollingService.poll, 2000);
+		}
+		
+	};
+	
+	pollingService.start();
+	return pollingService;
+}, {$inject:["$xhr", "$defer" ]}));
+
