@@ -109,13 +109,13 @@ angular.service("pollingService", angular.extend(function($xhr, $defer) {
 		gameCallback : angular.noop,
 		
 		start : function() {
-			console.debug("Starting...");
+//			console.debug("Starting...");
 			$defer(pollingService.poll, 2000);
 		},
 		
 		startGamePolling : function(gameId, gameCallback) {
 			
-			console.debug("Turn on game polling...");
+//			console.debug("Turn on game polling...");
 			this.gamePolling = true;
 			this.gameId = gameId;
 			this.gameCallback = gameCallback;
@@ -130,9 +130,9 @@ angular.service("pollingService", angular.extend(function($xhr, $defer) {
 		},
 		
 		poll : function() {
-			console.debug("polling...");
+//			console.debug("polling...");
 			if (this.gamePolling) {
-				console.debug("updating...");
+//				console.debug("updating...");
 				this.updateGame(this.gameId, this.gameCallback);
 			}
 			$defer(pollingService.poll, 2000);

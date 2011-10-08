@@ -18,6 +18,7 @@ public class GameUpdater {
 	private Map<String, PartialUpdate> updates = new HashMap<String, PartialUpdate>();
 
 	private final PlayCoords playCoords;
+	private PlayCoords nextPlayCoords;
 	
 	public GameUpdater(PlayCoords playCoords) {
 		super();
@@ -33,11 +34,11 @@ public class GameUpdater {
 	}
 	
 	public void completedPlay(Play play) {
-		updates.put("play", new PartialUpdate(String.format("rounds.%d.phases.%d.plays.%d", playCoords.getRoundIndex(), playCoords.getPhaseIndex(), playCoords.getPlayIndex()), play));
+		updates.put("play", new PartialUpdate(playCoords.getPlayLocation(), play));
 	}
 	
 	public void updatePhase(Phase phase) {
-		updates.put("phase", new PartialUpdate(String.format("rounds.%d.phases.%d", playCoords.getRoundIndex(), playCoords.getPhaseIndex()), phase));
+		updates.put("phase", new PartialUpdate(playCoords.getPhaseLocation(), phase));
 	}	
 	
 	public void createNextStep(Game game) {
@@ -45,15 +46,19 @@ public class GameUpdater {
 		Round currentRound = game.getCurrentRound();
 		if (currentRound.isComplete()) {
 			Round round = game.nextRound(cycle);
-			updates.put("newRound", new PartialUpdate(String.format("rounds.%d", playCoords.getRoundIndex()+1), round));
+			nextPlayCoords = playCoords.nextRound();		
+			updates.put("newRound", new PartialUpdate(nextPlayCoords.getRoundLocation(), round));
+
 		} else {
 			Phase currentPhase = currentRound.getCurrentPhase();
 			if (currentPhase.isComplete()) {
 				Phase phase = currentRound.nextPhase(cycle);
-				updates.put("newPhase", new PartialUpdate(String.format("rounds.%d.phases.%d", playCoords.getRoundIndex(), playCoords.getPhaseIndex()+1), phase));
+				nextPlayCoords = playCoords.nextPhase();
+				updates.put("newPhase", new PartialUpdate(nextPlayCoords.getPhaseLocation(), phase));
 			} else {
 				Play play = currentPhase.nextPlay(cycle);
-				updates.put("newPlay", new PartialUpdate(String.format("rounds.%d.phases.%d.plays.%d", playCoords.getRoundIndex(), playCoords.getPhaseIndex(), playCoords.getPlayIndex()+1), play));
+				nextPlayCoords = playCoords.nextPlay();
+				updates.put("newPlay", new PartialUpdate(nextPlayCoords.getPlayLocation(), play));
 			}
 		}
 	}
@@ -74,4 +79,11 @@ public class GameUpdater {
 		return game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex());
 	}
 
+	public boolean isPhaseChanged() {
+		return nextPlayCoords != null && nextPlayCoords.getPlayNumber() == 0;
+	}
+	
+	public Play getNewPlay() {
+		return (Play)updates.get("newPlay").getUpdateObject();
+	}
 }

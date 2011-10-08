@@ -276,6 +276,14 @@ public class DatastoreGameService implements GameService {
 		play.makePlay(playChoice);		
 		gameUpdater.completedPlay(play);
 		gameUpdater.createNextStep(game);
+		
+		if (!gameUpdater.isPhaseChanged()) {
+			Play newPlay = gameUpdater.getNewPlay();
+			PlayOffered offered = new PlayOffered();
+			offered.setCouncilOptions(game.getDeck().take(5));
+			newPlay.setOffered(offered);
+		}
+		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
 

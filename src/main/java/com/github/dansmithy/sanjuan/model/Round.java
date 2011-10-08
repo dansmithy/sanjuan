@@ -43,8 +43,7 @@ public class Round {
 	
 	public RoundState getState() {
 		// calculate based on expected plays
-		int completePhaseCount = getCompletedPhaseCount();
-		if (completePhaseCount == getRequiredPhases()) {
+		if (getCompletedPhaseCount() == getRequiredPhases()) {
 			return RoundState.COMPLETED;
 		}
 		return RoundState.PLAYING;
