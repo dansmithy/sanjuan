@@ -55,11 +55,12 @@ MainController.prototype = {
 		
 };
 
-function GameController($xhr, $defer, userManager, pollingService) {
+function GameController($xhr, $defer, userManager, pollingService, cardService) {
 	
 	this.userManager = userManager;
 	this.$defer = $defer;
 	this.pollingService = pollingService;
+	this.cardService = cardService;
 //	this.pollingService.startGamePolling(this.params.gameId, function(code, response) {
 //		console.debug("Got a response");
 //	});
@@ -86,31 +87,16 @@ function GameController($xhr, $defer, userManager, pollingService) {
 	
 	this.tariff = [ 1, 1, 2, 2, 3 ];
 	
-//	this.players = [
-//	  {   
-//		  "name" : "Danny",
-//		  "victory" : 12,
-//		  "hand" : [ 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
-//		  "buildings" : [ 20, 21, 22 ],
-//		  "governor" : true
-//	  },
-//	  {
-//		  "name" : "Dave",
-//		  "victory" : 4,
-//		  "buildings" : [ 23 ]
-//	  }
-//	                
-//	];
-	
 	this.$xhr = $xhr;
 	
 	this.isActivePlayer = true;
 	
-	this.$xhr("GET", "ws/cards", this.firstCallback);
+//	this.$xhr("GET", "ws/cards", this.firstCallback);
 	this.$defer(this.autoRefresh, 5000);
+	this.updateGame();
 
 };
-GameController.$inject = [ "$xhr", "$defer", "userManager", "pollingService" ];
+GameController.$inject = [ "$xhr", "$defer", "userManager", "pollingService", "cardService" ];
 GameController.prototype = {
 		
 		autoRefresh : function() {
@@ -118,16 +104,6 @@ GameController.prototype = {
 				this.updateGame();
 				this.$defer(this.autoRefresh, 5000);
 			}
-		},
-		
-		firstCallback : function(code, response) {
-			this.cardMap = response;
-			this.$xhr("GET", "ws/cards/types", this.secondCallback);
-		},
-		
-		secondCallback : function(code, response) {
-			this.cardTypes = response;
-			this.updateGame();
 		},
 		
 		updateGame : function() {
@@ -144,10 +120,6 @@ GameController.prototype = {
 		
 		getResponder : function(playerName) {
 			return this.isSelf(playerName) ? this.responder : angular.noop;
-		},
-		
-		cardImageUrl : function(id) {
-			return "images/PlayingCards/" + this.cardMap[id] + ".BMP";
 		},
 		
 		clickRoleCard : function(role) {
@@ -342,6 +314,7 @@ CouncillorResponder.prototype = {
 function BuilderResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = { "build" : -1, "payment" : [] };
+	this.currentBuildCost = -1;
 	this.emptyResponse = { "skip" : true };
 	this.template = "partials/builder.html";
 	this.mode = "do_something";
@@ -379,18 +352,28 @@ BuilderResponder.prototype = {
 		angular.Array.remove(this.response.payment, card);
 	},
 	
+	clearToBuild : function() {
+		this.response.build = card;
+		this.currentBuildCost = -1;
+	},
+	
+	selectToBuild : function(card) {
+		this.response.build = card;
+		//this.currentBuildCost = 
+	},
+	
 	clickHandCard : function(handCard) {
 		if (handCard === this.response.build) {
-			this.response.build = -1;
+			this.clearToBuild();
 		} else {
 			if (this.response.build === -1) {
 				if (this.isPaymentCard(handCard)) {
 					this.removePayment(handCard);
 				}
-				this.response.build = handCard;
+				this.selectToBuild(handCard);
 				// wipe out over payments
 				
-			} else { // have something to build
+			} else { // have something to build already
 				if (this.isPaymentCard(handCard)) {
 					this.removePayment(handCard);
 				} else {

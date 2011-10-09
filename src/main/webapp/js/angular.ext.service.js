@@ -58,6 +58,8 @@ angular.service("userManager", function() {
 	
 });
 
+
+
 angular.service("pipelineXhr", angular.extend(function($xhr, userManager) {
 	$xhr.defaults.headers.common["Content-Type"] = "application/json";
 	$xhr.defaults.headers.post["Content-Type"] = "application/json";
@@ -95,6 +97,44 @@ angular.service("pipelineXhr", angular.extend(function($xhr, userManager) {
 		
 	};
 }, {$inject:["$xhr", "userManager" ]}));
+
+angular.service("cardService", angular.extend(function($xhr) {
+	
+	var cardService = {
+
+		cardTypes : {},
+		cardMap : {},
+		
+		cardImageUrl : function(id) {
+			return "images/PlayingCards/" + cardService.cardMap[id] + ".BMP";
+		},
+		
+		cardType : function(id) {
+			return cardService.cardTypes[cardMap[id]];
+		},
+		
+		isReady : function() {
+			return !angular.Object.equals({}, cardService.cardMap) && !angular.Object.equals({}, cardService.cardTypes); 
+		},
+		
+		cardMapCallback : function(code, response) {
+			cardService.cardMap = response;
+		},
+		
+		cardTypesCallback : function(code, response) {
+			cardService.cardTypes = response;
+		}
+		
+
+	};
+	
+	$xhr("GET", "ws/cards", cardService.cardMapCallback);
+	$xhr("GET", "ws/cards/types", cardService.cardTypesCallback);
+
+	return cardService;
+	
+}, {$inject:["$xhr" ]}));
+
 
 
 
