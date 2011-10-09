@@ -1,7 +1,11 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -32,6 +36,7 @@ public class CouncillorProcessor implements RoleProcessor {
 		PlayOffered offered = new PlayOffered();
 		offered.setCouncilOffered(deck.take(numberOfCardsToChooseFrom));
 		offered.setCouncilRetainCount(numbers.getTotalCouncillorRetainCards(withPrivilege));
+		offered.setCouncilCanDiscardHandCards(numbers.isCouncillorCanDiscardHandCards());
 		gameUpdater.updateDeck(deck);			
 		play.setOffered(offered);		
 	}
@@ -40,17 +45,27 @@ public class CouncillorProcessor implements RoleProcessor {
 	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
 		Play play = gameUpdater.getCurrentPlay();
 		Game game = gameUpdater.getGame();
-		game.getDeck().discard(playChoice.getCouncilDiscardedAsArray());
+		Deck deck = game.getDeck();
+		deck.discard(playChoice.getCouncilDiscardedAsArray());
 		gameUpdater.updateDeck(game.getDeck());
 		
 		String playerName = play.getPlayer();
 		Player player = game.getPlayer(playerName);
 
-		for (Integer offeredCard : play.getOffered().getCouncilOffered()) {
-			if (!playChoice.getCouncilDiscarded().contains(offeredCard)) {
-				player.addToHand(offeredCard);
+		List<Integer> offered = new ArrayList<Integer>(play.getOffered().getCouncilOffered());
+		for (Integer discardedCard : playChoice.getCouncilDiscarded()) {
+			if (offered.contains(discardedCard)) {
+				offered.remove(discardedCard);
+			} else if (player.getHand().contains(discardedCard)) {
+				// TODO verify can discard hand cards
+				player.getHand().remove(discardedCard);
+				deck.discard(discardedCard);
+			} else {
+				throw new SanJuanUnexpectedException(String.format("Card %d is not a possible choice to discard", discardedCard));
 			}
 		}
+		player.addToHand(offered);
+		
 		gameUpdater.updatePlayer(player);
 		
 		play.makePlay(playChoice);		

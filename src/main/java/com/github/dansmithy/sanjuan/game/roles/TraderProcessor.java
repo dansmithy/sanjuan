@@ -12,7 +12,7 @@ public class TraderProcessor implements RoleProcessor {
 
 	@Override
 	public Role getRole() {
-		return Role.BUILDER;
+		return Role.TRADER;
 	}
 
 	@Override

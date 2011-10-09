@@ -1,21 +1,19 @@
 package com.github.dansmithy.sanjuan.game;
 
-public class PlayerNumbers extends PlayerPrivileges {
+public class PlayerNumbers {
 
-	private static final int goodsCanTrade = 1;
-	private static final int goodsCanProduce = 1;
-	private static final int builderDiscountOnProduction = 0;
-	private static final int builderDiscountOnViolet = 0;
-	private static final int cardsCanHold = 7;
-	private static final int prospectedCards = 0;
-	private static final int councillorOfferedCards = 2;
-	private static final int councillorRetainCards = 1;
+	private int goodsCanTrade = 1;
+	private int goodsCanProduce = 1;
+	private int builderDiscountOnProduction = 0;
+	private int builderDiscountOnViolet = 0;
+	private int prospectedCards = 0;
+	private int councillorOfferedCards = 2;
+	private int councillorRetainCards = 1;
+	
+	private int cardsCanHold = 7;
+	private boolean councillorCanDiscardHandCards = false;
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
-	
-	public PlayerNumbers() {
-		super(goodsCanTrade, goodsCanProduce, builderDiscountOnProduction, builderDiscountOnViolet, prospectedCards, councillorOfferedCards, councillorRetainCards);
-	}
 	
 	public PlayerPrivileges getPrivileges() {
 		return privileges;
@@ -42,10 +40,21 @@ public class PlayerNumbers extends PlayerPrivileges {
 	public int getTotalCouncillorRetainCards(boolean withPrivilege) {
 		return withPrivilege ? privileges.getCouncillorRetainCards() + councillorRetainCards : councillorRetainCards; 
 	}
+	
+	public boolean isCouncillorCanDiscardHandCards() {
+		return councillorCanDiscardHandCards;
+	}
 
-	public static int getCardscanhold() {
+	public void councillorCanDiscardHandCards() {
+		this.councillorCanDiscardHandCards = true;
+	}
+
+	public int getCardsCanHold() {
 		return cardsCanHold;
 	}	
 	
+	public void addCouncillorRetainCard() {
+		this.councillorRetainCards++;
+	}	
 	
 }

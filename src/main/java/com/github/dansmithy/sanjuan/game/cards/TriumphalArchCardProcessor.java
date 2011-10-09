@@ -37,7 +37,7 @@ public class TriumphalArchCardProcessor implements CardProcessor {
 	}
 
 	@Override
-	public void determinePrivileges(PlayerNumbers privileges) {
+	public void determinePrivileges(PlayerNumbers playerNumbers) {
 		// TODO Auto-generated method stub
 		
 	}

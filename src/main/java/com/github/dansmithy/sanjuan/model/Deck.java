@@ -26,9 +26,13 @@ public class Deck {
 		return discard;
 	}
 	
-	public void discard(Integer[] payment) {
-		discard.addAll(Arrays.asList(payment));
+	public void discard(Integer[] cardId) {
+		discard.addAll(Arrays.asList(cardId));
 	}	
+	
+	public void discard(Integer cardId) {
+		discard.add(cardId);
+	}
 	
 	public int getSupplyCount() {
 		return supply.size();

@@ -35,6 +35,10 @@ public class Player {
 	public void addToHand(Integer cardId) {
 		hand.add(cardId);
 	}	
+	
+	public void addToHand(List<Integer> cards) {
+		hand.addAll(cards);
+	}
 
 	public void removeHandCards(Integer[] cardIds) {
 		for (Integer cardId : cardIds) {

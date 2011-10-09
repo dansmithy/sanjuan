@@ -7,6 +7,7 @@ public class PlayOffered {
 	private List<Integer> prospected;
 	private List<Integer> councilOffered;
 	private int councilRetainCount;
+	private boolean councilCanDiscardHandCards;
 	
 	public List<Integer> getCouncilOffered() {
 		return councilOffered;
@@ -26,7 +27,11 @@ public class PlayOffered {
 	public void setCouncilRetainCount(int councilRetainCount) {
 		this.councilRetainCount = councilRetainCount;
 	}
-	
-	
+	public boolean isCouncilCanDiscardHandCards() {
+		return councilCanDiscardHandCards;
+	}
+	public void setCouncilCanDiscardHandCards(boolean councilCanDiscardHandCards) {
+		this.councilCanDiscardHandCards = councilCanDiscardHandCards;
+	}
 
 }

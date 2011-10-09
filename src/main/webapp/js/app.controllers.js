@@ -287,6 +287,12 @@ CouncillorResponder.prototype = {
 		return this.response.councilDiscarded.length === this.cardsToDiscard;
 	},
 	
+	handCardSelectedType : function(handCard) {
+		if (this.isDiscardCard(handCard)) {
+			return "hand-to-build";
+		}
+	},	
+	
 	councilCardSelectedType : function(councilCard) {
 		if (this.isDiscardCard(councilCard)) {
 			return "hand-to-build";
@@ -300,6 +306,17 @@ CouncillorResponder.prototype = {
 			this.addCardToDiscarded(councilCard);
 		}
 	},
+	
+	clickHandCard : function(handCard) {
+		if (!this.offered.councilCanDiscardHandCards) {
+			return;
+		}
+		if (this.isDiscardCard(handCard)) {
+			this.keepCard(handCard);
+		} else {
+			this.addCardToDiscarded(handCard);
+		}
+	},	
 	
 	isDiscardCard : function(card) {
 		return angular.Array.indexOf(this.response.councilDiscarded, card) !== -1;

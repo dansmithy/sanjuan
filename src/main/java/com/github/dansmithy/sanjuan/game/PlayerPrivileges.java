@@ -49,6 +49,5 @@ public class PlayerPrivileges {
 	public int getCouncillorRetainCards() {
 		return councillorRetainCards;
 	}
-	
-	
+
 }
