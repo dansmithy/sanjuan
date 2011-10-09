@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.document.mongodb.query.Update;
 
+import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Phase;
@@ -21,13 +22,20 @@ public class GameUpdater {
 	private final PlayCoords playCoords;
 	private PlayCoords nextPlayCoords;
 	private final Game game;
+	private final String currentUser;
 	
-	public GameUpdater(Game game) {
+	public GameUpdater(Game game, String currentUser) {
 		this.game = game;
+		this.currentUser = currentUser;
 		this.playCoords = PlayCoords.createFromGame(game);
 	}
+	
+	public Game getGame() {
+		return game;
+	}
 
-	public void updatePlayer(int playerIndex, Player player) {
+	public void updatePlayer(Player player) {
+		int playerIndex = game.getPlayerIndex(player.getName());
 		updates.put("player", new PartialUpdate(String.format("players.%d", playerIndex), player));
 	}
 	
@@ -67,6 +75,15 @@ public class GameUpdater {
 		}
 	}
 	
+	public Player getCurrentPlayer() {
+		for (Player player : game.getPlayers()) {
+			if (currentUser.equals(player.getName())) {
+				return player;
+			}
+		}
+		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", currentUser));
+	}
+	
 	public Update createMongoUpdate() {
 		Update update = new Update();
 		for (PartialUpdate partial : updates.values()) {
@@ -90,4 +107,5 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex()).getPlays().get(nextPlayCoords.getPlayIndex());
 	}
+
 }

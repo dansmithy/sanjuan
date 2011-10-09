@@ -1,6 +1,5 @@
 package com.github.dansmithy.sanjuan.game;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,9 +8,7 @@ import javax.inject.Named;
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
-import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
-import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
@@ -22,7 +19,6 @@ import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
-import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
@@ -133,9 +129,9 @@ public class DatastoreGameService implements GameService {
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
 		Game game = getGame(playCoords.getGameId());
-		GameUpdater gameUpdater = new GameUpdater(game);
-		Phase phase = gameUpdater.getCurrentPhase();
 		String loggedInUser = userProvider.getAuthenticatedUsername();
+		GameUpdater gameUpdater = new GameUpdater(game, loggedInUser);
+		Phase phase = gameUpdater.getCurrentPhase();
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
 			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
 		}
@@ -145,21 +141,8 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.updatePhase(phase);
 		gameUpdater.createNextStep();
 		
-//		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
-//		roleProcessor.initiateNewPlay(gameUpdater);
-		
-		if (Role.BUILDER.equals(role)) {
-			// do nothing
-		} else if (Role.PROSPECTOR.equals(role)) {
-			// do nothing
-		} else if (Role.COUNCILLOR.equals(role)) {
-			Deck deck = game.getDeck();
-			PlayOffered offered = new PlayOffered();
-			offered.setCouncilOptions(deck.take(5));
-			gameUpdater.updateDeck(deck);			
-			Play play = gameUpdater.getNewPlay();
-			play.setOffered(offered);
-		}
+		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
+		roleProcessor.initiateNewPlay(gameUpdater);
 		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
@@ -175,127 +158,27 @@ public class DatastoreGameService implements GameService {
 		// TODO verify coords is current
 		// TODO verify play is current one
 		
+		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
 		if (playChoice.getSkip() != null && playChoice.getSkip()) {
-			return playSkip(game, coords, playChoice);
-		}
-		
-		Role role = game.getCurrentRound().getCurrentPhase().getRole();
-		
-		if (Role.BUILDER.equals(role)) {
-			return playBuild(game, coords, playChoice);
-		} else if (Role.PROSPECTOR.equals(role)) {
-			return doProspector(game, coords, playChoice);
-		} else if (Role.COUNCILLOR.equals(role)) {
-			return doCouncillor(game, coords, playChoice);		
+			playSkip(gameUpdater, playChoice);
 		} else {
-			return null;
+			
+			Role role = game.getCurrentRound().getCurrentPhase().getRole();
+			
+			RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
+			roleProcessor.makeChoice(gameUpdater, playChoice);
 		}
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}		
 	
-	private Game playSkip(Game game, PlayCoords coords, PlayChoice playChoice) {
-		
-		GameUpdater gameUpdater = new GameUpdater(game);
-		Play play = gameUpdater.getCurrentPlay();
-		play.makePlay(playChoice);
-		gameUpdater.completedPlay(play);
-		gameUpdater.createNextStep();
-		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
-	}
-	
-	
-	private Game playBuild(Game game, PlayCoords coords, PlayChoice playChoice) {
-		
-		GameUpdater gameUpdater = new GameUpdater(game);
+	private void playSkip(GameUpdater gameUpdater, PlayChoice playChoice) {
 		
 		Play play = gameUpdater.getCurrentPlay();
 		play.makePlay(playChoice);
-		
-		gameUpdater.completedPlay(play);
-		
-		Player player = getCurrentPlayer(game);
-		int playerIndex = game.getPlayerIndex(player.getName());
-		player.moveToBuildings(playChoice.getBuild());
-		player.removeHandCards(playChoice.getPaymentAsArray());
-		gameUpdater.updatePlayer(playerIndex, player);
-
-		game.getDeck().discard(playChoice.getPaymentAsArray());
-		gameUpdater.updateDeck(game.getDeck());
-		
-		gameUpdater.createNextStep();
-		
-		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
-		
-	}	
-	
-	private Game doProspector(Game game, PlayCoords playCoords, PlayChoice playChoice) {
-		GameUpdater gameUpdater = new GameUpdater(game);
-		Play play = gameUpdater.getCurrentPlay();
-		
-		Player player = getCurrentPlayer(game);
-		
-		if (gameUpdater.getCurrentPhase().getLeadPlayer().equals(player.getName())) {
-			
-			int playerIndex = game.getPlayerIndex(player.getName());
-			
-			Integer prospectedCard = game.getDeck().takeOne();
-			player.addToHand(prospectedCard);
-			PlayOffered offered = new PlayOffered();
-			play.setOffered(offered);
-			offered.setProspected(Arrays.asList(prospectedCard));
-			gameUpdater.updateDeck(game.getDeck());
-			gameUpdater.updatePlayer(playerIndex, player);
-		}
-		
-		play.makePlay(playChoice);		
 		gameUpdater.completedPlay(play);
 		gameUpdater.createNextStep();
-		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 	
-	private Game doCouncillor(Game game, PlayCoords playCoords,
-			PlayChoice playChoice) {
-		
-		// TODO validate playChoice
-		
-		GameUpdater gameUpdater = new GameUpdater(game);
-		Play play = gameUpdater.getCurrentPlay();
-		game.getDeck().discard(playChoice.getCouncilDiscardedAsArray());
-		gameUpdater.updateDeck(game.getDeck());
-		
-		String playerName = play.getPlayer();
-		Player player = game.getPlayer(playerName);
-		int playerIndex = game.getPlayerIndex(player.getName());
-
-		for (Integer offeredCard : play.getOffered().getCouncilOptions()) {
-			if (!playChoice.getCouncilDiscarded().contains(offeredCard)) {
-				player.addToHand(offeredCard);
-			}
-		}
-		gameUpdater.updatePlayer(playerIndex, player);
-		
-		play.makePlay(playChoice);		
-		gameUpdater.completedPlay(play);
-		gameUpdater.createNextStep();
-		
-		if (!gameUpdater.isPhaseChanged()) {
-			Play newPlay = gameUpdater.getNewPlay();
-			PlayOffered offered = new PlayOffered();
-			offered.setCouncilOptions(game.getDeck().take(5));
-			newPlay.setOffered(offered);
-		}
-		
-		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
-	}	
-
-	private Player getCurrentPlayer(Game game) {
-		for (Player player : game.getPlayers()) {
-			if (userProvider.getAuthenticatedUsername().equals(player.getName())) {
-				return player;
-			}
-		}
-		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", userProvider.getAuthenticatedUsername()));
-	}
-
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#deleteGame(java.lang.Long)
 	 */
