@@ -132,7 +132,7 @@ public class Game {
 
 	@JsonIgnore
 	public Round getCurrentRound() {
-		return rounds.get(getRoundNumber()-1);
+		return rounds.isEmpty() ? null : rounds.get(getRoundNumber()-1);
 	}
 
 	public PlayerCycle createPlayerCycle() {

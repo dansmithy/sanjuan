@@ -12,6 +12,7 @@ import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Round;
+import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 
 public class GameUpdater {
@@ -43,7 +44,8 @@ public class GameUpdater {
 		updates.put("deck", new PartialUpdate("deck", deck));
 	}
 	
-	public void completedPlay(Play play) {
+	public void completedPlay(Play play, PlayChoice playChoice) {
+		play.completePlay(playChoice);
 		updates.put("play", new PartialUpdate(playCoords.getPlayLocation(), play));
 	}
 	

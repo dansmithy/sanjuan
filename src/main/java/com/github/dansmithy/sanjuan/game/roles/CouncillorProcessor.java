@@ -1,6 +1,5 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -29,30 +28,36 @@ public class CouncillorProcessor implements RoleProcessor {
 	public void initiateNewPlay(GameUpdater gameUpdater) {
 		
 		Play play = gameUpdater.getNewPlay();
-		boolean withPrivilege = play.isHasPrivilige();
-		PlayerNumbers numbers = gameUpdater.getNewPlayer().getPlayerNumbers();
-		int numberOfCardsToChooseFrom = numbers.getTotalCouncillorOfferedCards(withPrivilege);
 		Deck deck = gameUpdater.getGame().getDeck();
-		PlayOffered offered = new PlayOffered();
-		offered.setCouncilOffered(deck.take(numberOfCardsToChooseFrom));
+		PlayerNumbers numbers = gameUpdater.getNewPlayer().getPlayerNumbers();
+		
+		boolean withPrivilege = play.isHasPrivilige();
+		int numberOfCardsToChooseFrom = numbers.getTotalCouncillorOfferedCards(withPrivilege);
+		
+		List<Integer> cardsOnOffer = deck.take(numberOfCardsToChooseFrom);
+		
+		PlayOffered offered = play.createOffered();
+		offered.setCouncilOffered(cardsOnOffer);
 		offered.setCouncilRetainCount(numbers.getTotalCouncillorRetainCards(withPrivilege));
 		offered.setCouncilCanDiscardHandCards(numbers.isCouncillorCanDiscardHandCards());
-		gameUpdater.updateDeck(deck);			
-		play.setOffered(offered);		
+		
+		gameUpdater.updateDeck(deck);				
 	}
 
 	@Override
 	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
+		
 		Play play = gameUpdater.getCurrentPlay();
 		Game game = gameUpdater.getGame();
 		Deck deck = game.getDeck();
+		
 		deck.discard(playChoice.getCouncilDiscardedAsArray());
 		gameUpdater.updateDeck(game.getDeck());
 		
 		String playerName = play.getPlayer();
 		Player player = game.getPlayer(playerName);
 
-		List<Integer> offered = new ArrayList<Integer>(play.getOffered().getCouncilOffered());
+		List<Integer> offered = play.getOffered().getCouncilOffered();
 		for (Integer discardedCard : playChoice.getCouncilDiscarded()) {
 			if (offered.contains(discardedCard)) {
 				offered.remove(discardedCard);
@@ -67,9 +72,7 @@ public class CouncillorProcessor implements RoleProcessor {
 		player.addToHand(offered);
 		
 		gameUpdater.updatePlayer(player);
-		
-		play.makePlay(playChoice);		
-		gameUpdater.completedPlay(play);
+		gameUpdater.completedPlay(play, playChoice);
 		gameUpdater.createNextStep();
 		
 		if (!gameUpdater.isPhaseChanged()) {

@@ -46,11 +46,12 @@ public class Play {
 		return offered;
 	}
 
-	public void setOffered(PlayOffered offered) {
-		this.offered = offered;
+	public PlayOffered createOffered() {
+		this.offered = new PlayOffered();
+		return this.offered;
 	}
 
-	public void makePlay(PlayChoice playChoice) {
+	public void completePlay(PlayChoice playChoice) {
 		this.playChoice = playChoice;
 		state = PlayState.COMPLETED;
 	}

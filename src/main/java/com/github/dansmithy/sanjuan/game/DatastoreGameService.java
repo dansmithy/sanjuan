@@ -175,8 +175,7 @@ public class DatastoreGameService implements GameService {
 	private void playSkip(GameUpdater gameUpdater, PlayChoice playChoice) {
 		
 		Play play = gameUpdater.getCurrentPlay();
-		play.makePlay(playChoice);
-		gameUpdater.completedPlay(play);
+		gameUpdater.completedPlay(play, playChoice);
 		gameUpdater.createNextStep();
 	}
 	

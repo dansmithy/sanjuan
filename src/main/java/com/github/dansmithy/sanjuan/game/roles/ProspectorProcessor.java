@@ -32,19 +32,19 @@ public class ProspectorProcessor implements RoleProcessor {
 		Play play = gameUpdater.getCurrentPlay();
 		Player player = gameUpdater.getCurrentPlayer();
 		Game game = gameUpdater.getGame();
+		
+		// TODO change to based on privilege system
 		if (gameUpdater.getCurrentPhase().getLeadPlayer().equals(player.getName())) {
 			
 			Integer prospectedCard = game.getDeck().takeOne();
 			player.addToHand(prospectedCard);
-			PlayOffered offered = new PlayOffered();
-			play.setOffered(offered);
+			PlayOffered offered = play.createOffered();
 			offered.setProspected(Arrays.asList(prospectedCard));
 			gameUpdater.updateDeck(game.getDeck());
 			gameUpdater.updatePlayer(player);
 		}
 		
-		play.makePlay(playChoice);		
-		gameUpdater.completedPlay(play);
+		gameUpdater.completedPlay(play, playChoice);
 		gameUpdater.createNextStep();
 	}
 
