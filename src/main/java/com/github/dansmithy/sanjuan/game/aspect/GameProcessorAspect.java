@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import com.github.dansmithy.sanjuan.game.CalculationService;
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 
 @Named
@@ -29,9 +30,21 @@ public class GameProcessorAspect {
 	public void doGameAug(Object gameObject) {
 
 		Game game = (Game) gameObject;
+		Play play = game.getCurrentRound().getCurrentPhase().getCurrentPlay();
+		String playerWithPrivilege = getPlayerWithPrivilege(play);
 		for (Player player : game.getPlayers()) {
 			calculationService.processPlayer(player);
 		}
+	}
+
+	private String getPlayerWithPrivilege(Play play) {
+		if (play == null) {
+			return "none";
+		}
+		if (play.isHasPrivilige()) {
+			return play.getPlayer();
+		}
+		return "other";
 	}
 
 }

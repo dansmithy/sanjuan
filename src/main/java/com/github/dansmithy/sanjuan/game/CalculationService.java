@@ -36,9 +36,12 @@ public class CalculationService {
 		});
 		
 		player.setVictoryPoints(0);
+		PlayerNumbers privileges = new PlayerNumbers();
+		player.setPlayerNumbers(privileges);
 		for (BuildingType building : buildingList) {
 			CardProcessor processor = cardProcessorProvider.getProcessor(building.getProcessorType());
 			processor.doVictoryPoints(building, buildingList, player);
+			processor.determinePrivileges(privileges);
 		}
 	}
 }

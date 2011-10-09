@@ -10,4 +10,6 @@ public interface CardProcessor {
 	void doVictoryPoints(BuildingType building, List<BuildingType> buildings, Player player);
 	
 	String getProcessorType();
+
+	void determinePrivileges(PlayerNumbers privileges);
 }

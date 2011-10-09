@@ -9,7 +9,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
-import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
@@ -149,12 +148,6 @@ public class Game {
 		Round nextRound = new Round(nextGovernor, players.size());
 		rounds.add(nextRound);
 		return nextRound;
-	}
-
-	public void calculatePoints(GameService gameService) {
-		for (Player player : players) {
-			player.calculatePoints(gameService);
-		}
 	}
 
 	public Player getPlayer(String playerName) {

@@ -73,7 +73,8 @@ public class Phase {
 		return plays.size();
 	}
 	
-	private Play getCurrentPlay() {
+	@JsonIgnore
+	public Play getCurrentPlay() {
 		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}
 	

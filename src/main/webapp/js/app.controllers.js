@@ -270,7 +270,7 @@ function CouncillorResponder($xhr, game, gameCallback) {
 	this.offered = game.$round.$phase.$play.offered;
 	this.response = { "councilDiscarded" : [] };
 	this.emptyResponse = { "skip" : true };
-	this.cardsToDiscard = 3;
+	this.cardsToDiscard = this.offered.councilOffered.length - this.offered.councilRetainCount;
 	this.template = "partials/councillor.html";
 	this.mode = "do_something";
 	this.game = game;

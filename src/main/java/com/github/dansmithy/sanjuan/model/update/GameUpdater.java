@@ -76,13 +76,22 @@ public class GameUpdater {
 	}
 	
 	public Player getCurrentPlayer() {
+		return getPlayer(currentUser);
+	}
+	
+	private Player getPlayer(String playerName) {
 		for (Player player : game.getPlayers()) {
-			if (currentUser.equals(player.getName())) {
+			if (playerName.equals(player.getName())) {
 				return player;
 			}
 		}
-		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", currentUser));
+		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", playerName));
+		
 	}
+	
+	public Player getNewPlayer() {
+		return getPlayer(getNewPlay().getPlayer());
+	}	
 	
 	public Update createMongoUpdate() {
 		Update update = new Update();

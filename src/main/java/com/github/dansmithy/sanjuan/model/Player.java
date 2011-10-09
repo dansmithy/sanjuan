@@ -3,9 +3,11 @@ package com.github.dansmithy.sanjuan.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.GameService;
+import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 
 public class Player {
 
@@ -17,6 +19,8 @@ public class Player {
 
 	@Transient
 	private Integer victoryPoints;
+	@Transient
+	private PlayerNumbers playerNumbers;
 	
 	public Player(String name) {
 		super();
@@ -90,7 +94,13 @@ public class Player {
 		this.victoryPoints = victoryPoints;
 	}
 
-	public void calculatePoints(GameService gameService) {
+	public void setPlayerNumbers(PlayerNumbers privileges) {
+		this.playerNumbers = privileges;
+	}
+
+	@JsonIgnore
+	public PlayerNumbers getPlayerNumbers() {
+		return playerNumbers;
 	}
 
 }

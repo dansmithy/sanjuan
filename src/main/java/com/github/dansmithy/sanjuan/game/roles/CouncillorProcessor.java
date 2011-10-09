@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.game.roles;
 
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -23,12 +24,15 @@ public class CouncillorProcessor implements RoleProcessor {
 	@Override
 	public void initiateNewPlay(GameUpdater gameUpdater) {
 		
-		int numberOfCardsToChooseFrom = 5;
+		Play play = gameUpdater.getNewPlay();
+		boolean withPrivilege = play.isHasPrivilige();
+		PlayerNumbers numbers = gameUpdater.getNewPlayer().getPlayerNumbers();
+		int numberOfCardsToChooseFrom = numbers.getTotalCouncillorOfferedCards(withPrivilege);
 		Deck deck = gameUpdater.getGame().getDeck();
 		PlayOffered offered = new PlayOffered();
-		offered.setCouncilOptions(deck.take(numberOfCardsToChooseFrom));
+		offered.setCouncilOffered(deck.take(numberOfCardsToChooseFrom));
+		offered.setCouncilRetainCount(numbers.getTotalCouncillorRetainCards(withPrivilege));
 		gameUpdater.updateDeck(deck);			
-		Play play = gameUpdater.getNewPlay();
 		play.setOffered(offered);		
 	}
 
@@ -42,7 +46,7 @@ public class CouncillorProcessor implements RoleProcessor {
 		String playerName = play.getPlayer();
 		Player player = game.getPlayer(playerName);
 
-		for (Integer offeredCard : play.getOffered().getCouncilOptions()) {
+		for (Integer offeredCard : play.getOffered().getCouncilOffered()) {
 			if (!playChoice.getCouncilDiscarded().contains(offeredCard)) {
 				player.addToHand(offeredCard);
 			}

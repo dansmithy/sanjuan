@@ -31,13 +31,15 @@ public class DatastoreGameService implements GameService {
 	private final GameDao gameDao;
 	private final AuthenticatedSessionProvider userProvider;
 	private final RoleProcessorProvider roleProcessorProvider;
+	private final CalculationService calculationService;
 	
 	@Inject
-	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory) {
+	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, AuthenticatedSessionProvider userProvider, CalculationService calculationService, TariffBuilder tariffBuilder, CardFactory cardFactory) {
 		super();
 		this.gameDao = gameDao;
 		this.roleProcessorProvider = roleProcessorProvider;
 		this.userProvider = userProvider;
+		this.calculationService = calculationService;
 		this.tariffBuilder = tariffBuilder;
 		this.cardFactory = cardFactory;
 	}
@@ -140,7 +142,7 @@ public class DatastoreGameService implements GameService {
 		phase.selectRole(role);
 		gameUpdater.updatePhase(phase);
 		gameUpdater.createNextStep();
-		
+		calculationService.processPlayer(gameUpdater.getNewPlayer());
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
 		
@@ -162,9 +164,8 @@ public class DatastoreGameService implements GameService {
 		if (playChoice.getSkip() != null && playChoice.getSkip()) {
 			playSkip(gameUpdater, playChoice);
 		} else {
-			
+			calculationService.processPlayer(gameUpdater.getCurrentPlayer());
 			Role role = game.getCurrentRound().getCurrentPhase().getRole();
-			
 			RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 			roleProcessor.makeChoice(gameUpdater, playChoice);
 		}
