@@ -34,11 +34,13 @@ public class DatastoreGameService implements GameService {
 	private CardFactory cardFactory;
 	private final GameDao gameDao;
 	private final AuthenticatedSessionProvider userProvider;
+	private final RoleProcessorProvider roleProcessorProvider;
 	
 	@Inject
-	public DatastoreGameService(GameDao gameDao, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory) {
+	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory) {
 		super();
 		this.gameDao = gameDao;
+		this.roleProcessorProvider = roleProcessorProvider;
 		this.userProvider = userProvider;
 		this.tariffBuilder = tariffBuilder;
 		this.cardFactory = cardFactory;
@@ -131,8 +133,8 @@ public class DatastoreGameService implements GameService {
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
 		Game game = getGame(playCoords.getGameId());
-		GameUpdater gameUpdater = new GameUpdater(playCoords);
-		Phase phase = gameUpdater.getCurrentPhase(game);
+		GameUpdater gameUpdater = new GameUpdater(game);
+		Phase phase = gameUpdater.getCurrentPhase();
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
 			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
@@ -141,7 +143,10 @@ public class DatastoreGameService implements GameService {
 		Role role = choice.getRole();
 		phase.selectRole(role);
 		gameUpdater.updatePhase(phase);
-		gameUpdater.createNextStep(game);
+		gameUpdater.createNextStep();
+		
+//		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
+//		roleProcessor.initiateNewPlay(gameUpdater);
 		
 		if (Role.BUILDER.equals(role)) {
 			// do nothing
@@ -152,7 +157,7 @@ public class DatastoreGameService implements GameService {
 			PlayOffered offered = new PlayOffered();
 			offered.setCouncilOptions(deck.take(5));
 			gameUpdater.updateDeck(deck);			
-			Play play = gameUpdater.getNewPlay(game);
+			Play play = gameUpdater.getNewPlay();
 			play.setOffered(offered);
 		}
 		
@@ -189,20 +194,20 @@ public class DatastoreGameService implements GameService {
 	
 	private Game playSkip(Game game, PlayCoords coords, PlayChoice playChoice) {
 		
-		GameUpdater gameUpdater = new GameUpdater(coords);
-		Play play = gameUpdater.getCurrentPlay(game);
+		GameUpdater gameUpdater = new GameUpdater(game);
+		Play play = gameUpdater.getCurrentPlay();
 		play.makePlay(playChoice);
 		gameUpdater.completedPlay(play);
-		gameUpdater.createNextStep(game);
+		gameUpdater.createNextStep();
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 	
 	
 	private Game playBuild(Game game, PlayCoords coords, PlayChoice playChoice) {
 		
-		GameUpdater gameUpdater = new GameUpdater(coords);
+		GameUpdater gameUpdater = new GameUpdater(game);
 		
-		Play play = gameUpdater.getCurrentPlay(game);
+		Play play = gameUpdater.getCurrentPlay();
 		play.makePlay(playChoice);
 		
 		gameUpdater.completedPlay(play);
@@ -216,19 +221,19 @@ public class DatastoreGameService implements GameService {
 		game.getDeck().discard(playChoice.getPaymentAsArray());
 		gameUpdater.updateDeck(game.getDeck());
 		
-		gameUpdater.createNextStep(game);
+		gameUpdater.createNextStep();
 		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 		
 	}	
 	
 	private Game doProspector(Game game, PlayCoords playCoords, PlayChoice playChoice) {
-		GameUpdater gameUpdater = new GameUpdater(playCoords);
-		Play play = gameUpdater.getCurrentPlay(game);
+		GameUpdater gameUpdater = new GameUpdater(game);
+		Play play = gameUpdater.getCurrentPlay();
 		
 		Player player = getCurrentPlayer(game);
 		
-		if (gameUpdater.getCurrentPhase(game).getLeadPlayer().equals(player.getName())) {
+		if (gameUpdater.getCurrentPhase().getLeadPlayer().equals(player.getName())) {
 			
 			int playerIndex = game.getPlayerIndex(player.getName());
 			
@@ -243,7 +248,7 @@ public class DatastoreGameService implements GameService {
 		
 		play.makePlay(playChoice);		
 		gameUpdater.completedPlay(play);
-		gameUpdater.createNextStep(game);
+		gameUpdater.createNextStep();
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 	
@@ -252,8 +257,8 @@ public class DatastoreGameService implements GameService {
 		
 		// TODO validate playChoice
 		
-		GameUpdater gameUpdater = new GameUpdater(playCoords);
-		Play play = gameUpdater.getCurrentPlay(game);
+		GameUpdater gameUpdater = new GameUpdater(game);
+		Play play = gameUpdater.getCurrentPlay();
 		game.getDeck().discard(playChoice.getCouncilDiscardedAsArray());
 		gameUpdater.updateDeck(game.getDeck());
 		
@@ -270,10 +275,10 @@ public class DatastoreGameService implements GameService {
 		
 		play.makePlay(playChoice);		
 		gameUpdater.completedPlay(play);
-		gameUpdater.createNextStep(game);
+		gameUpdater.createNextStep();
 		
 		if (!gameUpdater.isPhaseChanged()) {
-			Play newPlay = gameUpdater.getNewPlay(game);
+			Play newPlay = gameUpdater.getNewPlay();
 			PlayOffered offered = new PlayOffered();
 			offered.setCouncilOptions(game.getDeck().take(5));
 			newPlay.setOffered(offered);

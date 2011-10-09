@@ -1,5 +1,7 @@
 package com.github.dansmithy.sanjuan.model.input;
 
+import com.github.dansmithy.sanjuan.model.Game;
+
 
 public class PlayCoords {
 
@@ -16,6 +18,10 @@ public class PlayCoords {
 		this.phaseNumber = phaseNumber;
 		this.playNumber = playNumber;
 	}
+	
+	public static PlayCoords createFromGame(Game game) {
+		return new PlayCoords(game.getGameId(), game.getRoundNumber(), game.getCurrentRound().getPhaseNumber(), game.getCurrentRound().getCurrentPhase().getPlayNumber());
+	}	
 
 	public Long getGameId() {
 		return gameId;
@@ -68,4 +74,5 @@ public class PlayCoords {
 	public String getRoundLocation() {
 		return String.format("rounds.%d", getRoundIndex());
 	}
+
 }

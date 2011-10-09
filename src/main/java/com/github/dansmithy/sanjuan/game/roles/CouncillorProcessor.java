@@ -4,11 +4,11 @@ import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 
-public class BuilderProcessor implements RoleProcessor {
+public class CouncillorProcessor implements RoleProcessor {
 
 	@Override
 	public Role getRole() {
-		return Role.BUILDER;
+		return Role.COUNCILLOR;
 	}
 
 	@Override

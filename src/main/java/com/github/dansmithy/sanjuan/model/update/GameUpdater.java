@@ -17,12 +17,14 @@ public class GameUpdater {
 	
 	private Map<String, PartialUpdate> updates = new HashMap<String, PartialUpdate>();
 
+	
 	private final PlayCoords playCoords;
 	private PlayCoords nextPlayCoords;
+	private final Game game;
 	
-	public GameUpdater(PlayCoords playCoords) {
-		super();
-		this.playCoords = playCoords;
+	public GameUpdater(Game game) {
+		this.game = game;
+		this.playCoords = PlayCoords.createFromGame(game);
 	}
 
 	public void updatePlayer(int playerIndex, Player player) {
@@ -41,7 +43,7 @@ public class GameUpdater {
 		updates.put("phase", new PartialUpdate(playCoords.getPhaseLocation(), phase));
 	}	
 	
-	public void createNextStep(Game game) {
+	public void createNextStep() {
 		PlayerCycle cycle = game.createPlayerCycle();
 		Round currentRound = game.getCurrentRound();
 		if (currentRound.isComplete()) {
@@ -73,11 +75,11 @@ public class GameUpdater {
 		return update;
 	}
 
-	public Play getCurrentPlay(Game game) {
-		return getCurrentPhase(game).getPlays().get(playCoords.getPlayIndex());
+	public Play getCurrentPlay() {
+		return getCurrentPhase().getPlays().get(playCoords.getPlayIndex());
 	}
 	
-	public Phase getCurrentPhase(Game game) {
+	public Phase getCurrentPhase() {
 		return game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex());
 	}
 
@@ -85,7 +87,7 @@ public class GameUpdater {
 		return nextPlayCoords != null && nextPlayCoords.getPlayNumber() == 0;
 	}
 	
-	public Play getNewPlay(Game game) {
+	public Play getNewPlay() {
 		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex()).getPlays().get(nextPlayCoords.getPlayIndex());
 	}
 }
