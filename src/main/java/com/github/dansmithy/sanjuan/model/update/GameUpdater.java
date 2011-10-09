@@ -58,7 +58,9 @@ public class GameUpdater {
 			} else {
 				Play play = currentPhase.nextPlay(cycle);
 				nextPlayCoords = playCoords.nextPlay();
-				updates.put("newPlay", new PartialUpdate(nextPlayCoords.getPlayLocation(), play));
+				if (nextPlayCoords.getPlayNumber() != 1) {
+					updates.put("newPlay", new PartialUpdate(nextPlayCoords.getPlayLocation(), play));
+				}
 			}
 		}
 	}
@@ -83,7 +85,7 @@ public class GameUpdater {
 		return nextPlayCoords != null && nextPlayCoords.getPlayNumber() == 0;
 	}
 	
-	public Play getNewPlay() {
-		return (Play)updates.get("newPlay").getUpdateObject();
+	public Play getNewPlay(Game game) {
+		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex()).getPlays().get(nextPlayCoords.getPlayIndex());
 	}
 }

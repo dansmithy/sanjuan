@@ -32,25 +32,22 @@ public class DatastoreGameService implements GameService {
 
 	private TariffBuilder tariffBuilder;
 	private CardFactory cardFactory;
-	private final CalculationService calculationService;
 	private final GameDao gameDao;
 	private final AuthenticatedSessionProvider userProvider;
 	
 	@Inject
-	public DatastoreGameService(GameDao gameDao, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory, CalculationService calculationService) {
+	public DatastoreGameService(GameDao gameDao, AuthenticatedSessionProvider userProvider, TariffBuilder tariffBuilder, CardFactory cardFactory) {
 		super();
 		this.gameDao = gameDao;
 		this.userProvider = userProvider;
 		this.tariffBuilder = tariffBuilder;
 		this.cardFactory = cardFactory;
-		this.calculationService = calculationService;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#doDanny(java.lang.Long)
 	 */
 	@Override
-	@ProcessGame
 	public Game getGame(Long gameId) {
 		return gameDao.getGame(gameId);
 	}
@@ -131,20 +128,20 @@ public class DatastoreGameService implements GameService {
 	 * @see com.github.dansmithy.sanjuan.game.GameService#selectRole(com.github.dansmithy.sanjuan.model.input.PlayCoords, com.github.dansmithy.sanjuan.model.input.RoleChoice)
 	 */
 	@Override
-	@ProcessGame
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
 		Game game = getGame(playCoords.getGameId());
 		GameUpdater gameUpdater = new GameUpdater(playCoords);
 		Phase phase = gameUpdater.getCurrentPhase(game);
-
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
 			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
 		}
 
 		Role role = choice.getRole();
-		Play play = new Play(phase.getLeadPlayer(), true);
+		phase.selectRole(role);
+		gameUpdater.updatePhase(phase);
+		gameUpdater.createNextStep(game);
 		
 		if (Role.BUILDER.equals(role)) {
 			// do nothing
@@ -154,12 +151,11 @@ public class DatastoreGameService implements GameService {
 			Deck deck = game.getDeck();
 			PlayOffered offered = new PlayOffered();
 			offered.setCouncilOptions(deck.take(5));
-			play.setOffered(offered);
 			gameUpdater.updateDeck(deck);			
+			Play play = gameUpdater.getNewPlay(game);
+			play.setOffered(offered);
 		}
-
-		phase.selectRole(choice.getRole(), play);
-		gameUpdater.updatePhase(phase);
+		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
 	
@@ -167,7 +163,6 @@ public class DatastoreGameService implements GameService {
 	 * @see com.github.dansmithy.sanjuan.game.GameService#makePlay(com.github.dansmithy.sanjuan.model.input.PlayCoords, com.github.dansmithy.sanjuan.model.input.PlayChoice)
 	 */
 	@Override
-	@ProcessGame
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
 		
 		Game game = getGame(coords.getGameId());
@@ -278,7 +273,7 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.createNextStep(game);
 		
 		if (!gameUpdater.isPhaseChanged()) {
-			Play newPlay = gameUpdater.getNewPlay();
+			Play newPlay = gameUpdater.getNewPlay(game);
 			PlayOffered offered = new PlayOffered();
 			offered.setCouncilOptions(game.getDeck().take(5));
 			newPlay.setOffered(offered);
@@ -296,16 +291,6 @@ public class DatastoreGameService implements GameService {
 		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", userProvider.getAuthenticatedUsername()));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.game.GameService#doCalculations(com.github.dansmithy.sanjuan.model.Game)
-	 */
-	@Override
-	public void doCalculations(Game game) {
-		for (Player player : game.getPlayers()) {
-			calculationService.processPlayer(player);
-		}
-	}
-	
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#deleteGame(java.lang.Long)
 	 */

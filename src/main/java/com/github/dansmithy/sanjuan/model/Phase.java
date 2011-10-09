@@ -74,16 +74,19 @@ public class Phase {
 	}
 	
 	private Play getCurrentPlay() {
-		return plays.get(getPlayNumber() - 1);
+		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}
 	
-	public void selectRole(Role role, Play firstPlay) {
+	public void selectRole(Role role) {
 		this.role = role;
-		plays.add(firstPlay);
 	}
 	
 	public Play nextPlay(PlayerCycle playerCycle) {
-		String nextPlayer = playerCycle.next(getCurrentPlay().getPlayer());
+		
+		String nextPlayer = leadPlayer;
+		if (getCurrentPlay() != null) {
+			nextPlayer = playerCycle.next(getCurrentPlay().getPlayer());
+		}
 		Play nextPlay = new Play(nextPlayer, nextPlayer.equals(leadPlayer)); 
 		plays.add(nextPlay);
 		return nextPlay;

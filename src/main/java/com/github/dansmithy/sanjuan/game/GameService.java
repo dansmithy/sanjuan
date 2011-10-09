@@ -27,8 +27,6 @@ public interface GameService {
 
 	Game makePlay(PlayCoords coords, PlayChoice playChoice);
 
-	void doCalculations(Game game);
-
 	void deleteGame(Long gameId);
 
 }

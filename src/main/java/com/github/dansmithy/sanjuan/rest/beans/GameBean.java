@@ -109,7 +109,7 @@ public class GameBean implements GameResource {
 	public Game chooseRole(Long gameId, Integer roundNumber,
 			Integer phaseNumber, RoleChoice choice) {
 		
-		PlayCoords coords = new PlayCoords(gameId, roundNumber, phaseNumber, -1);
+		PlayCoords coords = new PlayCoords(gameId, roundNumber, phaseNumber, 0);
 		return gameService.selectRole(coords, choice);
 	}
 
@@ -119,7 +119,7 @@ public class GameBean implements GameResource {
 		
 		PlayCoords coords = new PlayCoords(gameId, roundNumber, phaseNumber, playNumber);
 		return gameService.makePlay(coords, playChoice);
-		
+
 	}
 	
 	@Override
