@@ -166,7 +166,7 @@ GameController.prototype = {
 			} else if (game.$round.$phase.role === "PRODUCER") {
 				return new ProducerResponder(this.$xhr, this.cardService, game, this.gameCallback);
 			} else if (game.$round.$phase.role === "TRADER") {
-				return new TraderResponder(this.$xhr, this.userManager, game, this.gameCallback);
+				return new TraderResponder(this.$xhr, this.cardService, this.userManager, game, this.gameCallback);
 			} else {
 				return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
 			}
@@ -458,8 +458,9 @@ ProducerResponder.prototype = {
 	
 };
 
-function TraderResponder($xhr, userManager, game, gameCallback) {
+function TraderResponder($xhr, cardService, userManager, game, gameCallback) {
 	this.$xhr = $xhr;
+	this.cardService = cardService;
 	this.userManager = userManager;
 	this.goods = this.getPlayer(game, userManager.user.username).goods;
 	this.offered = game.$round.$phase.$play.offered;
@@ -528,6 +529,16 @@ TraderResponder.prototype = {
 		if (this.isChosenFactory(buildingCard)) {
 			return "hand-to-build";
 		}
+	},
+	
+	calculatePayment : function() {
+		var payment = 0;
+		angular.forEach(this.response.productionFactories, function(factory) {
+			var cardType = this.cardService.cardType(factory);
+			var price = this.prices[cardType.buildingCost - 1];
+			payment += price;
+		}, this);
+		return payment;
 	}
 	
 };

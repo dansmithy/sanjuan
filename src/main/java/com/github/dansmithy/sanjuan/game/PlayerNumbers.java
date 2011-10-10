@@ -56,5 +56,17 @@ public class PlayerNumbers {
 	public void addCouncillorRetainCard() {
 		this.councillorRetainCards++;
 	}	
+	public void addBuilderDiscountOnProduction() {
+		this.builderDiscountOnProduction++;
+	}	
+	public void addBuilderDiscountOnViolet() {
+		this.builderDiscountOnViolet++;
+	}
+	public void addGoodCanTrade() {
+		goodsCanTrade++;
+	}	
+	public void addGoodCanProduce() {
+		goodsCanProduce++;
+	}	
 	
 }

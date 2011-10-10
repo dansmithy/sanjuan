@@ -33,7 +33,7 @@ public class CardFactory {
 	}
 
 	private void addBuildingTypes() {
-		addBuildingType(new BuildingType("Aqueduct",3,3,2,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("Aqueduct",3,3,2,BuildingCategory.VIOLET, 1, "aqueduct"));
 		addBuildingType(new BuildingType("Archive",3,1,1,BuildingCategory.VIOLET, 1, "archive"));
 		addBuildingType(new BuildingType("BlackMarket",3,2,1,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("Carpenter",3,3,2,BuildingCategory.VIOLET, 1, "standard"));
@@ -50,14 +50,14 @@ public class CardFactory {
 		addBuildingType(new BuildingType("Palace",2,6,0,BuildingCategory.VIOLET, 3, "palace"));
 		addBuildingType(new BuildingType("PoorHouse",3,2,1,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("Prefecture",3,3,2,BuildingCategory.VIOLET, 1, "prefecture"));
-		addBuildingType(new BuildingType("Quarry",3,4,2,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("Quarry",3,4,2,BuildingCategory.VIOLET, 1, "quarry"));
 		addBuildingType(new BuildingType("SilverSmelter",8,5,3,BuildingCategory.PRODUCTION, 1, "standard"));
-		addBuildingType(new BuildingType("Smithy",3,1,1,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("Smithy",3,1,1,BuildingCategory.VIOLET, 1, "smithy"));
 		addBuildingType(new BuildingType("Statue",3,3,3,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("SugarMill",8,2,1,BuildingCategory.PRODUCTION, 1, "standard"));
 		addBuildingType(new BuildingType("TobaccoStorage",8,3,2,BuildingCategory.PRODUCTION, 1, "standard"));
 		addBuildingType(new BuildingType("Tower",3,3,2,BuildingCategory.VIOLET, 1, "standard"));
-		addBuildingType(new BuildingType("TradingPost",3,2,1,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("TradingPost",3,2,1,BuildingCategory.VIOLET, 1, "tradingpost"));
 		addBuildingType(new BuildingType("TriumphalArch",2,6,0,BuildingCategory.VIOLET, 2, "triumphalarch"));
 		addBuildingType(new BuildingType("VictoryColumn",3,4,4,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("Well",3,2,1,BuildingCategory.VIOLET, 1, "standard"));		
