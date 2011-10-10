@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Phase {
 
 	private Role role;
 	private List<Play> plays = new ArrayList<Play>();
 	private String leadPlayer;
 	private int playerCount;
+	private Tariff tariff;
 	
 	public Phase() {
 		super();
@@ -34,6 +37,14 @@ public class Phase {
 		return leadPlayer;
 	}
 	
+	public Tariff getTariff() {
+		return tariff;
+	}
+
+	public void setTariff(Tariff tariff) {
+		this.tariff = tariff;
+	}
+
 	public PhaseState getState() {
 		// calculate based on expected plays
 		if (plays.isEmpty()) {
@@ -91,7 +102,7 @@ public class Phase {
 		Play nextPlay = new Play(nextPlayer, nextPlayer.equals(leadPlayer)); 
 		plays.add(nextPlay);
 		return nextPlay;
-	}	
+	}
 
 
 }

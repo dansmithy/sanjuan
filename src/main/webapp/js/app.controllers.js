@@ -463,6 +463,7 @@ function TraderResponder($xhr, userManager, game, gameCallback) {
 	this.userManager = userManager;
 	this.goods = this.getPlayer(game, userManager.user.username).goods;
 	this.offered = game.$round.$phase.$play.offered;
+	this.prices = game.$round.$phase.tariff.prices;
 	this.response = { "productionFactories" : [] };
 	this.emptyResponse = { "skip" : true };
 	this.template = "partials/trader.html";

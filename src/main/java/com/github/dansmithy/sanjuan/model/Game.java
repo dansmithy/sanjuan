@@ -90,6 +90,10 @@ public class Game {
 		return currentTariff;
 	}
 
+	public void setCurrentTariff(int currentTariff) {
+		this.currentTariff = currentTariff;
+	}
+
 	@JsonIgnore
 	public List<Tariff> getTariffs() {
 		return tariffs;
@@ -158,6 +162,8 @@ public class Game {
 		}
 		throw new SanJuanUnexpectedException(String.format("No player with name %s in game [%d].", playerName, gameId));
 	}
+
+
 
 }
 	

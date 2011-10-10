@@ -53,6 +53,10 @@ public class GameUpdater {
 		updates.put("phase", new PartialUpdate(playCoords.getPhaseLocation(), phase));
 	}	
 	
+	public void updateCurrentTariff(int currentTariff) {
+		updates.put("currentTariff", new PartialUpdate("currentTariff", currentTariff));
+	}	
+	
 	public void createNextStep() {
 		PlayerCycle cycle = game.createPlayerCycle();
 		Round currentRound = game.getCurrentRound();
@@ -115,8 +119,18 @@ public class GameUpdater {
 		return nextPlayCoords != null && nextPlayCoords.getPlayNumber() == 0;
 	}
 	
-	public Play getNewPlay() {
-		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex()).getPlays().get(nextPlayCoords.getPlayIndex());
+	public boolean isCreatingFirstPlay() {
+		return nextPlayCoords.getPlayNumber() == 1;
 	}
+	
+	public Phase getNewPhase() {
+		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex());
+	}
+	
+	public Play getNewPlay() {
+		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
+	}
+
+
 
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.github.dansmithy.sanjuan.model.Tariff;
+
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PlayOffered {
 
