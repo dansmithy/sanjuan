@@ -158,7 +158,7 @@ GameController.prototype = {
 		
 		determineActivePlayerResponder : function(game) {
 			if (game.$round.$phase.role === "BUILDER") {
-				return new BuilderResponder(this.$xhr, game, this.gameCallback);
+				return new BuilderResponder(this.$xhr, this.cardService, game, this.gameCallback);
 			} else if (game.$round.$phase.role === "PROSPECTOR") {
 				return new ProspectorResponder(this.$xhr, game, this.gameCallback);
 			} else if (game.$round.$phase.role === "COUNCILLOR") {
@@ -311,8 +311,10 @@ CouncillorResponder.prototype = {
 };
 
 
-function BuilderResponder($xhr, game, gameCallback) {
+function BuilderResponder($xhr, cardService, game, gameCallback) {
 	this.$xhr = $xhr;
+	this.cardService = cardService;
+	this.offered = game.$round.$phase.$play.offered;
 	this.response = { "build" : -1, "payment" : [] };
 	this.currentBuildCost = -1;
 	this.emptyResponse = { "skip" : true };
@@ -333,7 +335,7 @@ BuilderResponder.prototype = {
 	},
 	
 	choicesMade : function() {
-		return this.response.build != -1;
+		return this.response.build != -1 && this.response.payment.length === this.currentBuildCost;
 	},
 	
 	handCardSelectedType : function(handCard) {
@@ -353,13 +355,18 @@ BuilderResponder.prototype = {
 	},
 	
 	clearToBuild : function() {
-		this.response.build = card;
+		this.response.build = -1;
 		this.currentBuildCost = -1;
 	},
 	
 	selectToBuild : function(card) {
 		this.response.build = card;
-		//this.currentBuildCost = 
+		var cardType = this.cardService.cardType(card);
+		this.currentBuildCost = cardType.buildingCost - (cardType.category === "VIOLET" ? this.offered.builderDiscountOnViolet : this.offered.builderDiscountOnProduction);
+		this.currentBuildCost = this.currentBuildCost < 0 ? 0 : this.currentBuildCost;
+		if (this.response.payment.length > this.currentBuildCost) {
+			this.response.payment = angular.Array.limitTo(this.response.payment, this.currentBuildCost);
+		}
 	},
 	
 	clickHandCard : function(handCard) {
@@ -371,13 +378,14 @@ BuilderResponder.prototype = {
 					this.removePayment(handCard);
 				}
 				this.selectToBuild(handCard);
-				// wipe out over payments
 				
 			} else { // have something to build already
 				if (this.isPaymentCard(handCard)) {
 					this.removePayment(handCard);
 				} else {
-					this.response.payment.push(handCard);
+					var cardsAlreadyAdded = this.response.payment.length;
+					var indexToAdd = cardsAlreadyAdded === this.currentBuildCost ? this.currentBuildCost - 1 : cardsAlreadyAdded;
+					this.response.payment[indexToAdd] = handCard;
 				}
 				
 			}

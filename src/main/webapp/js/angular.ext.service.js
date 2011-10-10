@@ -110,7 +110,7 @@ angular.service("cardService", angular.extend(function($xhr) {
 		},
 		
 		cardType : function(id) {
-			return cardService.cardTypes[cardMap[id]];
+			return cardService.cardTypes[cardService.cardMap[id]];
 		},
 		
 		isReady : function() {

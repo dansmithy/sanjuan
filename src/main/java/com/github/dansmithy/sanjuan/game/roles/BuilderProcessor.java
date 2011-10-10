@@ -52,7 +52,11 @@ public class BuilderProcessor implements RoleProcessor {
 		deck.discard(playChoice.getPaymentAsArray());
 		gameUpdater.updateDeck(deck);
 		
-		gameUpdater.createNextStep();		
+		gameUpdater.createNextStep();
+		
+		if (!gameUpdater.isPhaseChanged()) {
+			initiateNewPlay(gameUpdater);
+		}		
 		
 	}
 
