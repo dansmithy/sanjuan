@@ -1,0 +1,7 @@
+        <div class="row">
+            <div class="span8"><h3>Choose up to {{responder.offered.goodsCanTrade}} goods to trade.</h3></div>
+            <div class="span4">
+                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Trade</button>
+                <button class="btn" ng:click="responder.commitSkipResponse()">Skip trade</button>
+            </div>
+        </div>

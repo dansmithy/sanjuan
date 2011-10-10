@@ -18,6 +18,7 @@ public class PlayOffered {
 	private Integer builderDiscountOnViolet;
 	
 	private Integer goodsCanProduce;
+	private Integer goodsCanTrade;
 	private List<Integer> factoriesCanProduce;
 	
 	public List<Integer> getCouncilOffered() {
@@ -67,6 +68,12 @@ public class PlayOffered {
 	}
 	public void setFactoriesCanProduce(List<Integer> factoriesCanProduce) {
 		this.factoriesCanProduce = factoriesCanProduce;
+	}
+	public Integer getGoodsCanTrade() {
+		return goodsCanTrade;
+	}
+	public void setGoodsCanTrade(Integer goodsCanTrade) {
+		this.goodsCanTrade = goodsCanTrade;
 	}
 
 }
