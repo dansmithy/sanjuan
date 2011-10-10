@@ -56,6 +56,15 @@ public class BuildingType {
 		return processorType;
 	}
 	
+	@JsonIgnore
+	public boolean isProductionBuilding() {
+		return category.equals(BuildingCategory.PRODUCTION);
+	}
+	
+	@JsonIgnore
+	public boolean isVioletBuilding() {
+		return !isProductionBuilding();
+	}
 	
 	
 }

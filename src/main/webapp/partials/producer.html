@@ -1,0 +1,7 @@
+        <div class="row">
+            <div class="span8"><h3>Choose up to {{responder.offered.goodsCanProduce}} factories to produce.</h3></div>
+            <div class="span4">
+                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Produce</button>
+                <button class="btn" ng:click="responder.commitSkipResponse()">Skip production</button>
+            </div>
+        </div>

@@ -17,6 +17,9 @@ public class PlayOffered {
 	private Integer builderDiscountOnProduction;
 	private Integer builderDiscountOnViolet;
 	
+	private Integer goodsCanProduce;
+	private List<Integer> factoriesCanProduce;
+	
 	public List<Integer> getCouncilOffered() {
 		return councilOffered == null ? null : new ArrayList<Integer>(councilOffered);
 	}
@@ -53,7 +56,17 @@ public class PlayOffered {
 	public void setBuilderDiscountOnViolet(Integer builderDiscountOnViolet) {
 		this.builderDiscountOnViolet = builderDiscountOnViolet;
 	}
-	
-	
+	public Integer getGoodsCanProduce() {
+		return goodsCanProduce;
+	}
+	public void setGoodsCanProduce(Integer goodsCanProduce) {
+		this.goodsCanProduce = goodsCanProduce;
+	}
+	public List<Integer> getFactoriesCanProduce() {
+		return factoriesCanProduce;
+	}
+	public void setFactoriesCanProduce(List<Integer> factoriesCanProduce) {
+		this.factoriesCanProduce = factoriesCanProduce;
+	}
 
 }

@@ -48,7 +48,7 @@
                     </div>                 
                     <div class="row">
                         <div class="span2"><h1><small>Buildings</small></h1></div>
-                        <div class="span1 card" ng:repeat="building in player.buildings"><img ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
+                        <div class="span1 card" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)"><div class="{{player.goods[building] | defined:'produced':'not-produced'}}">&nbsp;</div><img class="{{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
                     </div>
                    
                 </div>

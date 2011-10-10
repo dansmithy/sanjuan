@@ -9,6 +9,10 @@ angular.filter("null", function(condition, valueIfNull, valueIfNotNull) {
 	return condition == null ? valueIfNull : valueIfNotNull;
 });
 
+angular.filter("defined", function(value, valueIfDefined, valueIfUndefined) {
+	return angular.isDefined(value) ? valueIfDefined : valueIfUndefined;
+});
+
 angular.filter("undefined", function(value, valueIfUndefined) {
 	return angular.isDefined(value) ? value : valueIfUndefined;
 });

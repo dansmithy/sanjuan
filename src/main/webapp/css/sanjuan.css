@@ -45,3 +45,18 @@ img {
 form.input-errors-true input {
 	background: red;
 }
+
+.produced {
+	background: url(../images/good.png) no-repeat;
+	position: absolute;
+	width: 57px;
+	height: 80px;
+	z-index: 0;	
+}
+
+.not-produced {
+	position: absolute;
+	width: 57px;
+	height: 80px;
+	z-index: 0;	
+}

@@ -161,12 +161,15 @@ public class DatastoreGameService implements GameService {
 		// TODO verify play is current one
 		
 		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		calculationService.processPlayer(gameUpdater.getCurrentPlayer());
+		Role role = game.getCurrentRound().getCurrentPhase().getRole();
+		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		if (playChoice.getSkip() != null && playChoice.getSkip()) {
 			playSkip(gameUpdater, playChoice);
+			if (!gameUpdater.isPhaseChanged()) {
+				roleProcessor.initiateNewPlay(gameUpdater);
+			}
 		} else {
-			calculationService.processPlayer(gameUpdater.getCurrentPlayer());
-			Role role = game.getCurrentRound().getCurrentPhase().getRole();
-			RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 			roleProcessor.makeChoice(gameUpdater, playChoice);
 		}
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);

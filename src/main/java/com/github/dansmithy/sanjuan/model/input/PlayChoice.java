@@ -1,6 +1,5 @@
 package com.github.dansmithy.sanjuan.model.input;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -8,10 +7,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class PlayChoice {
 
 	private Integer build;
-	//Spring Mongo integration can't cope with arrays here if the array is empty (which it may be)
-	private List<Integer> payment = new ArrayList<Integer>();
+	//Spring Mongo integration can't cope with arrays here if the array is empty (which it may be), so we have to use Collections
+	private List<Integer> payment;
 	private Boolean skip = null;
 	private List<Integer> councilDiscarded;
+	private List<Integer> productionFactories;
 	
 	public Integer getBuild() {
 		return build;
@@ -49,6 +49,14 @@ public class PlayChoice {
 	@JsonIgnore
 	public Integer[] getCouncilDiscardedAsArray() {
 		return councilDiscarded.toArray(new Integer[councilDiscarded.size()]);
-	}	
+	}
+	public List<Integer> getProductionFactories() {
+		return productionFactories;
+	}
+	public void setProductionFactories(List<Integer> productionFactories) {
+		this.productionFactories = productionFactories;
+	}
+
+	
 	
 }

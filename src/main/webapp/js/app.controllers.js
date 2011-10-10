@@ -163,6 +163,8 @@ GameController.prototype = {
 				return new ProspectorResponder(this.$xhr, game, this.gameCallback);
 			} else if (game.$round.$phase.role === "COUNCILLOR") {
 				return new CouncillorResponder(this.$xhr, game, this.gameCallback);
+			} else if (game.$round.$phase.role === "PRODUCER") {
+				return new ProducerResponder(this.$xhr, this.cardService, game, this.gameCallback);
 			} else {
 				return new DoSomethingResponder(this.$xhr, game, this.gameCallback);
 			}
@@ -392,6 +394,66 @@ BuilderResponder.prototype = {
 			
 		}
 	}
+};
+
+function ProducerResponder($xhr, cardService, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.cardService = cardService;
+	this.offered = game.$round.$phase.$play.offered;
+	this.response = { "productionFactories" : [] };
+	this.emptyResponse = { "skip" : true };
+	this.template = "partials/producer.html";
+	this.mode = "do_something";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+ProducerResponder.prototype = {
+	
+	commitSkipResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.emptyResponse, this.gameCallback);
+	},
+	
+	sendResponse : function() {
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
+	},
+	
+	choicesMade : function() {
+		return this.response.productionFactories.length >= 1 && this.response.productionFactories.length <= this.offered.goodsCanProduce;
+	},
+	
+	clickBuildingCard : function(buildingCard) {
+		// check is production building- or is in list of possibles!
+		if (angular.Array.indexOf(this.offered.factoriesCanProduce, buildingCard) == -1) {
+			return;
+		} 
+		if (this.isChosenFactory(buildingCard)) {
+			this.deselectFactory(buildingCard);
+		} else {
+			this.addFactory(buildingCard);
+		}
+	},	
+	
+	isChosenFactory : function(card) {
+		return angular.Array.indexOf(this.response.productionFactories, card) != -1;
+	},
+	
+	deselectFactory : function(card) {
+		angular.Array.remove(this.response.productionFactories, card);
+	},
+	
+	addFactory : function(card) {
+		var factoriesAlreadyChosen = this.response.productionFactories.length;
+		var indexToAdd = factoriesAlreadyChosen === this.offered.goodsCanProduce ? this.offered.goodsCanProduce - 1 : factoriesAlreadyChosen;
+		this.response.productionFactories[indexToAdd] = card;
+	},
+	
+	buildingCardSelectedType : function(buildingCard) {
+		if (this.isChosenFactory(buildingCard)) {
+			return "hand-to-build";
+		}
+	}
+	
 };
 
 function InactivePlayerResponder($xhr, game, gameCallback) {

@@ -1,12 +1,13 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 
-import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 
 public class Player {
@@ -14,7 +15,7 @@ public class Player {
 	private String name;
 	private List<Integer> hand = new ArrayList<Integer>();
 	private List<Integer> buildings = new ArrayList<Integer>();
-	private List<Integer> goods = new ArrayList<Integer>();
+	private Map<Integer, Integer> goods = new HashMap<Integer, Integer>();
 	private List<Integer> chapelCards = new ArrayList<Integer>();
 
 	@Transient
@@ -49,6 +50,10 @@ public class Player {
 	private void removeHandCard(Integer cardId) {
 		hand.remove(cardId);
 	}
+	
+	public void addGood(Integer factory, Integer good) {
+		goods.put(factory, good);
+	}	
 
 	public String getName() {
 		return name;
@@ -74,11 +79,11 @@ public class Player {
 		this.buildings = town;
 	}
 
-	public List<Integer> getGoods() {
+	public Map<Integer, Integer> getGoods() {
 		return goods;
 	}
 
-	public void setGoods(List<Integer> goods) {
+	public void setGoods(Map<Integer, Integer> goods) {
 		this.goods = goods;
 	}
 	
@@ -106,5 +111,7 @@ public class Player {
 	public PlayerNumbers getPlayerNumbers() {
 		return playerNumbers;
 	}
+
+
 
 }
