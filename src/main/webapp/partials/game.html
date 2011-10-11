@@ -4,8 +4,11 @@
         <div class="row">
           <div class="span2"><h1><small>Round</small> {{responder.game.roundNumber}}</h1></div>
           <div class="span2"><h1><small>Roles</small></h1></div>
-          <div class="span1 card role-{{role.name}}" ng:click="clickRoleCard(role)" ng:repeat="role in roles"><img class="selectable-card selected-{{showSelected(role)}}" ng:src="images/{{role.name | lowercase}}.gif" width="55" height="70" /></div>
-          <div class="span5"><h1><small>Cards remaining</small> {{responder.game.deck.supplyCount}}<small>/{{responder.game.deck.supplyCount + responder.game.deck.discardCount}}</small></h1></div>
+          <div class="span1 card role-{{role}}" ng:repeat="role in responder.game.$usedRoles"><div class="hide-role">&nbsp;</div><img class="selectable-card selected-false" ng:src="images/{{role | lowercase}}.gif" width="55" height="70" /></div>
+          <div ng:show="responder.game.$currentRole" class="span1 card role-{{responder.game.$currentRole}}"><img class="selectable-card selected-current" ng:src="images/{{responder.game.$currentRole | lowercase}}.gif" width="55" height="70" /></div>          
+          <div class="span1 card role-{{role}}" ng:click="clickRoleCard(role)" ng:repeat="role in responder.game.$unusedRoles"><img class="selectable-card selected-{{showSelected(role)}}" ng:src="images/{{role | lowercase}}.gif" width="55" height="70" /></div>
+          <div class="span1">&nbsp;</div>
+          <div class="span5"><h1><small>Supply</small> {{responder.game.deck.supplyCount}} <small>Discard</small> <small>{{responder.game.deck.discardCount}}</small></small></h1></div>
         </div>
 
         <div class="row">
