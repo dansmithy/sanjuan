@@ -2,9 +2,8 @@ package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class Deck {
 
@@ -14,16 +13,6 @@ public class Deck {
 	public Deck(List<Integer> supply) {
 		super();
 		this.supply = supply;
-	}
-	
-	@JsonIgnore
-	public List<Integer> getSupply() {
-		return supply;
-	}
-
-	@JsonIgnore
-	public List<Integer> getDiscard() {
-		return discard;
 	}
 	
 	public void discard(Integer[] cardId) {
@@ -43,6 +32,9 @@ public class Deck {
 	}
 
 	public Integer takeOne() {
+		if (getSupplyCount() == 0) {
+			reshuffleDeck();
+		}
 		Integer cardId = supply.remove(0);
 		return cardId;
 	}
@@ -53,6 +45,12 @@ public class Deck {
 			cards.add(takeOne());
 		}
 		return cards;
+	}
+	
+	private void reshuffleDeck() {
+		supply.addAll(discard);
+		discard.clear();
+		Collections.shuffle(supply);
 	}	
 
 }
