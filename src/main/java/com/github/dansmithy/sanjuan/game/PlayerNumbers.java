@@ -3,8 +3,6 @@ package com.github.dansmithy.sanjuan.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.dansmithy.sanjuan.model.Role;
-
 public class PlayerNumbers {
 
 	private int goodsCanTrade = 1;
@@ -19,6 +17,7 @@ public class PlayerNumbers {
 	private boolean councillorCanDiscardHandCards = false;
 	private List<BonusPair> traderBonusCounts = new ArrayList<BonusPair>();
 	private List<BonusPair> producerBonusCounts = new ArrayList<BonusPair>();
+	private int builderBonusOnViolet = 0;
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
 	
@@ -60,6 +59,10 @@ public class PlayerNumbers {
 		return cardsCanHold;
 	}	
 	
+	public int getBuilderBonusOnViolet() {
+		return builderBonusOnViolet;
+	}
+
 	public void addCouncillorRetainCard() {
 		this.councillorRetainCards++;
 	}	
@@ -69,12 +72,18 @@ public class PlayerNumbers {
 	public void addBuilderDiscountOnViolet() {
 		this.builderDiscountOnViolet++;
 	}
+	public void addBuilderBonusOnViolet() {
+		this.builderBonusOnViolet++;
+	}	
 	public void addGoodCanTrade() {
 		goodsCanTrade++;
 	}	
 	public void addGoodCanProduce() {
 		goodsCanProduce++;
 	}
+	public void addCardsCanHold(int number) {
+		cardsCanHold += number;
+	}	
 	
 	public void registerTraderBonusCard(int minValue, int bonusCards) {
 		traderBonusCounts.add(new BonusPair(minValue, bonusCards));
@@ -120,5 +129,6 @@ public class PlayerNumbers {
 		
 		
 	}
+
 	
 }
