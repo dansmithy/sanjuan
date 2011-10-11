@@ -71,12 +71,18 @@ public class ProducerProcessor implements RoleProcessor {
 		Game game = gameUpdater.getGame();
 		Deck deck = game.getDeck();
 		Player player = gameUpdater.getCurrentPlayer();
+		PlayerNumbers numbers = player.getPlayerNumbers();
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			// TODO verify factory is permitted
 			Integer good = deck.takeOne();
 			player.addGood(chosenFactory, good);
 		}
+		
+		int goodsProduced = playChoice.getProductionFactories().size();
+		int bonusCardCount = numbers.getProducerBonusCards(goodsProduced);
+		List<Integer> bonusCards = deck.take(bonusCardCount);
+		player.addToHand(bonusCards);
 		
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);

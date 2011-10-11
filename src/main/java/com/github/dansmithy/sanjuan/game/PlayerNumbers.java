@@ -1,5 +1,10 @@
 package com.github.dansmithy.sanjuan.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.dansmithy.sanjuan.model.Role;
+
 public class PlayerNumbers {
 
 	private int goodsCanTrade = 1;
@@ -12,6 +17,8 @@ public class PlayerNumbers {
 	
 	private int cardsCanHold = 7;
 	private boolean councillorCanDiscardHandCards = false;
+	private List<BonusPair> traderBonusCounts = new ArrayList<BonusPair>();
+	private List<BonusPair> producerBonusCounts = new ArrayList<BonusPair>();
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
 	
@@ -67,6 +74,51 @@ public class PlayerNumbers {
 	}	
 	public void addGoodCanProduce() {
 		goodsCanProduce++;
+	}
+	
+	public void registerTraderBonusCard(int minValue, int bonusCards) {
+		traderBonusCounts.add(new BonusPair(minValue, bonusCards));
+	}
+	
+	public void registerProducerBonusCard(int minValue, int bonusCards) {
+		producerBonusCounts.add(new BonusPair(minValue, bonusCards));
 	}	
+
+	public int getTraderBonusCards(int value) {
+		return calculateBonusCards(traderBonusCounts, value);
+	}
+	
+	public int getProducerBonusCards(int value) {
+		return calculateBonusCards(producerBonusCounts, value);
+	}
+	
+	private int calculateBonusCards(List<BonusPair> pairs,
+			int value) {
+		int bonusCards = 0;
+		for (BonusPair pair : pairs) {
+			if (value >= pair.getMinValue()) {
+				bonusCards += pair.getBonusCards();
+			}
+		}
+		return bonusCards;
+	}
+
+	private static class BonusPair {
+		private int minValue;
+		private int bonusCards;
+		public BonusPair(int minValue, int bonusCards) {
+			super();
+			this.minValue = minValue;
+			this.bonusCards = bonusCards;
+		}
+		public int getMinValue() {
+			return minValue;
+		}
+		public int getBonusCards() {
+			return bonusCards;
+		}
+		
+		
+	}
 	
 }

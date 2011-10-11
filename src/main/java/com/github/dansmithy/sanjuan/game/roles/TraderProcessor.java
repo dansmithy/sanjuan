@@ -1,5 +1,7 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -72,6 +74,7 @@ public class TraderProcessor implements RoleProcessor {
 		Game game = gameUpdater.getGame();
 		Deck deck = game.getDeck();
 		Player player = gameUpdater.getCurrentPlayer();
+		PlayerNumbers numbers = player.getPlayerNumbers();
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			if (!player.getGoods().containsKey(chosenFactory)) {
@@ -82,6 +85,11 @@ public class TraderProcessor implements RoleProcessor {
 			deck.discard(good);
 			player.addToHand(deck.take(price));
 		}
+		
+		int goodsSold = playChoice.getProductionFactories().size();
+		int bonusCardCount = numbers.getTraderBonusCards(goodsSold);
+		List<Integer> bonusCards = deck.take(bonusCardCount);
+		player.addToHand(bonusCards);
 		
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
