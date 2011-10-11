@@ -3,7 +3,10 @@ package com.github.dansmithy.sanjuan.game;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerNumbers {
+import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Role;
+
+public class PlayerNumbers implements BonusCardMatcher {
 
 	private int goodsCanTrade = 1;
 	private int goodsCanProduce = 1;
@@ -20,6 +23,8 @@ public class PlayerNumbers {
 	private int builderBonusOnViolet = 0;
 	private boolean hasLibrary = false;
 	private boolean useLibrary = true; 
+	
+	private List<BonusCardMatcher> matchers = new ArrayList<BonusCardMatcher>();
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
 	
@@ -99,6 +104,10 @@ public class PlayerNumbers {
 		producerBonusCounts.add(new BonusPair(minValue, bonusCards));
 	}	
 	
+	public void addBonusCardMatcher(BonusCardMatcher matcher) {
+		matchers.add(matcher);
+	}
+	
 	public void setUseLibrary() {
 		useLibrary = true;
 	}
@@ -112,6 +121,15 @@ public class PlayerNumbers {
 	
 	public int getProducerBonusCards(int value) {
 		return calculateBonusCards(producerBonusCounts, value);
+	}
+	
+	@Override
+	public int getBonusCardMatches(Player player, Role role) {
+		int bonusCards = 0;
+		for (BonusCardMatcher matcher : matchers) {
+			bonusCards += matcher.getBonusCardMatches(player, role);
+		}
+		return bonusCards;
 	}
 	
 	private int calculateBonusCards(List<BonusPair> pairs,
@@ -140,5 +158,7 @@ public class PlayerNumbers {
 			return bonusCards;
 		}
 	}
+
+
 	
 }

@@ -48,7 +48,7 @@ public class CardFactory {
 		addBuildingType(new BuildingType("MarketHall",3,4,2,BuildingCategory.VIOLET, 1, "markethall"));
 		addBuildingType(new BuildingType("MarketStand",3,2,1,BuildingCategory.VIOLET, 1, "marketstand"));
 		addBuildingType(new BuildingType("Palace",2,6,0,BuildingCategory.VIOLET, 3, "palace"));
-		addBuildingType(new BuildingType("PoorHouse",3,2,1,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("PoorHouse",3,2,1,BuildingCategory.VIOLET, 1, "poorhouse"));
 		addBuildingType(new BuildingType("Prefecture",3,3,2,BuildingCategory.VIOLET, 1, "prefecture"));
 		addBuildingType(new BuildingType("Quarry",3,4,2,BuildingCategory.VIOLET, 1, "quarry"));
 		addBuildingType(new BuildingType("SilverSmelter",8,5,3,BuildingCategory.PRODUCTION, 1, "standard"));

@@ -60,11 +60,12 @@ public class BuilderProcessor implements RoleProcessor {
 		player.removeHandCards(playChoice.getPaymentAsArray());
 		deck.discard(playChoice.getPaymentAsArray());
 
+		int bonusCards = numbers.getBonusCardMatches(player, Role.BUILDER);
 		BuildingType type = cardFactory.getBuildingType(playChoice.getBuild());
 		if (type.isVioletBuilding()) {
-			int bonusCards = numbers.getBuilderBonusOnViolet();
-			player.addToHand(deck.take(bonusCards));
+			bonusCards += numbers.getBuilderBonusOnViolet();
 		}
+		player.addToHand(deck.take(bonusCards));
 		
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateDeck(deck);
