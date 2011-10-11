@@ -44,7 +44,7 @@ public class CardFactory {
 		addBuildingType(new BuildingType("GoldMine",3,1,1,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("GuildHall",2,6,0,BuildingCategory.VIOLET, 2, "guildhall"));
 		addBuildingType(new BuildingType("Hero",3,5,5,BuildingCategory.VIOLET, 1, "standard"));
-		addBuildingType(new BuildingType("Library",3,5,3,BuildingCategory.VIOLET, 1, "standard"));
+		addBuildingType(new BuildingType("Library",3,5,3,BuildingCategory.VIOLET, 1, "library"));
 		addBuildingType(new BuildingType("MarketHall",3,4,2,BuildingCategory.VIOLET, 1, "markethall"));
 		addBuildingType(new BuildingType("MarketStand",3,2,1,BuildingCategory.VIOLET, 1, "marketstand"));
 		addBuildingType(new BuildingType("Palace",2,6,0,BuildingCategory.VIOLET, 3, "palace"));

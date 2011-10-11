@@ -18,6 +18,8 @@ public class PlayerNumbers {
 	private List<BonusPair> traderBonusCounts = new ArrayList<BonusPair>();
 	private List<BonusPair> producerBonusCounts = new ArrayList<BonusPair>();
 	private int builderBonusOnViolet = 0;
+	private boolean hasLibrary = false;
+	private boolean useLibrary = true; 
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
 	
@@ -26,22 +28,25 @@ public class PlayerNumbers {
 	}
 	
 	public int getTotalGoodsCanTrade(boolean withPrivilege) {
-		return withPrivilege ? privileges.getGoodsCanTrade() + goodsCanTrade : goodsCanTrade; 
+		return withPrivilege ? (privileges.getGoodsCanTrade()*getTimesCanUsePrivilege()) + goodsCanTrade : goodsCanTrade; 
 	}
 	public int getTotalGoodsCanProduce(boolean withPrivilege) {
-		return withPrivilege ? privileges.getGoodsCanProduce() + goodsCanProduce : goodsCanProduce; 
+		return withPrivilege ? (privileges.getGoodsCanProduce()*getTimesCanUsePrivilege()) + goodsCanProduce : goodsCanProduce; 
 	}
 	public int getTotalBuilderDiscountOnProduction(boolean withPrivilege) {
-		return withPrivilege ? privileges.getBuilderDiscountOnProduction() + builderDiscountOnProduction : builderDiscountOnProduction; 
+		return withPrivilege ? (privileges.getBuilderDiscountOnProduction()*getTimesCanUsePrivilege()) + builderDiscountOnProduction : builderDiscountOnProduction; 
 	}
 	public int getTotalBuilderDiscountOnViolet(boolean withPrivilege) {
-		return withPrivilege ? privileges.getBuilderDiscountOnViolet() + builderDiscountOnViolet : builderDiscountOnViolet; 
+		return withPrivilege ? (privileges.getBuilderDiscountOnViolet()*getTimesCanUsePrivilege()) + builderDiscountOnViolet : builderDiscountOnViolet; 
 	}
 	public int getTotalProspectedCards(boolean withPrivilege) {
-		return withPrivilege ? privileges.getProspectedCards() + prospectedCards : prospectedCards; 
+		return withPrivilege ? (privileges.getProspectedCards()*getTimesCanUsePrivilege()) + prospectedCards : prospectedCards; 
 	}
 	public int getTotalCouncillorOfferedCards(boolean withPrivilege) {
-		return withPrivilege ? privileges.getCouncillorOfferedCards() + councillorOfferedCards : councillorOfferedCards; 
+		return withPrivilege ? (privileges.getCouncillorOfferedCards()*getTimesCanUsePrivilege()) + councillorOfferedCards : councillorOfferedCards; 
+	}
+	private int getTimesCanUsePrivilege() {
+		return hasLibrary && useLibrary ? 2 : 1;
 	}
 	
 	public boolean isCouncillorCanDiscardHandCards() {
@@ -93,6 +98,13 @@ public class PlayerNumbers {
 	public void registerProducerBonusCard(int minValue, int bonusCards) {
 		producerBonusCounts.add(new BonusPair(minValue, bonusCards));
 	}	
+	
+	public void setUseLibrary() {
+		useLibrary = true;
+	}
+	public void setHasLibrary() {
+		hasLibrary = true;
+	}
 
 	public int getTraderBonusCards(int value) {
 		return calculateBonusCards(traderBonusCounts, value);
