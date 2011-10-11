@@ -38,7 +38,7 @@ public class CouncillorProcessor implements RoleProcessor {
 		
 		PlayOffered offered = play.createOffered();
 		offered.setCouncilOffered(cardsOnOffer);
-		offered.setCouncilRetainCount(numbers.getTotalCouncillorRetainCards(withPrivilege));
+		offered.setCouncilRetainCount(numbers.getCouncillorRetainCards());
 		offered.setCouncilCanDiscardHandCards(numbers.isCouncillorCanDiscardHandCards());
 		
 		gameUpdater.updateDeck(deck);				

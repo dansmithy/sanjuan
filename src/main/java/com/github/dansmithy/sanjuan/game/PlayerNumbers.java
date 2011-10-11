@@ -43,9 +43,6 @@ public class PlayerNumbers {
 	public int getTotalCouncillorOfferedCards(boolean withPrivilege) {
 		return withPrivilege ? privileges.getCouncillorOfferedCards() + councillorOfferedCards : councillorOfferedCards; 
 	}
-	public int getTotalCouncillorRetainCards(boolean withPrivilege) {
-		return withPrivilege ? privileges.getCouncillorRetainCards() + councillorRetainCards : councillorRetainCards; 
-	}
 	
 	public boolean isCouncillorCanDiscardHandCards() {
 		return councillorCanDiscardHandCards;
@@ -53,6 +50,10 @@ public class PlayerNumbers {
 
 	public void councillorCanDiscardHandCards() {
 		this.councillorCanDiscardHandCards = true;
+	}
+	
+	public int getCouncillorRetainCards() {
+		return councillorRetainCards;
 	}
 
 	public int getCardsCanHold() {
@@ -126,9 +127,6 @@ public class PlayerNumbers {
 		public int getBonusCards() {
 			return bonusCards;
 		}
-		
-		
 	}
-
 	
 }
