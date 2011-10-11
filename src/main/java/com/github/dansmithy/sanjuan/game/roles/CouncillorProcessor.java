@@ -51,7 +51,7 @@ public class CouncillorProcessor implements RoleProcessor {
 		Game game = gameUpdater.getGame();
 		Deck deck = game.getDeck();
 		
-		deck.discard(playChoice.getCouncilDiscardedAsArray());
+		deck.discard(playChoice.getCouncilDiscarded());
 		gameUpdater.updateDeck(game.getDeck());
 		
 		String playerName = play.getPlayer();

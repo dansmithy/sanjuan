@@ -57,8 +57,8 @@ public class BuilderProcessor implements RoleProcessor {
 		gameUpdater.completedPlay(play, playChoice);
 		
 		player.moveToBuildings(playChoice.getBuild());
-		player.removeHandCards(playChoice.getPaymentAsArray());
-		deck.discard(playChoice.getPaymentAsArray());
+		player.removeHandCards(playChoice.getPayment());
+		deck.discard(playChoice.getPayment());
 
 		BuildingType type = cardFactory.getBuildingType(playChoice.getBuild());
 		if (type.isVioletBuilding()) {

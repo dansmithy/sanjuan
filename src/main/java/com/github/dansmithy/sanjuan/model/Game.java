@@ -47,12 +47,9 @@ public class Game {
 		for (Player player : players) {
 			player.moveToBuildings(orderedDeck.remove(orderedDeck.size()-1));
 		}
-		Collections.shuffle(orderedDeck);
 		deck = new Deck(orderedDeck);
 		for (Player player : players) {
-			for (int count = 0; count < STARTING_CARDS; count++) {
-				player.addToHand(deck.takeOne());
-			}
+			player.addToHand(deck.take(STARTING_CARDS));
 		}
 		tariffs = tariffBuilder.createRandomTariff();
 		startNewRound(0);
