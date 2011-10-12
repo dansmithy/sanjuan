@@ -7,6 +7,7 @@ import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.BuildingType;
 import com.github.dansmithy.sanjuan.model.Deck;
+import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
@@ -50,7 +51,8 @@ public class BuilderProcessor implements RoleProcessor {
 	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
 
 		Play play = gameUpdater.getCurrentPlay();
-		Deck deck = gameUpdater.getGame().getDeck();
+		Game game = gameUpdater.getGame();
+		Deck deck = game.getDeck();
 		Player player = gameUpdater.getCurrentPlayer();
 		PlayerNumbers numbers = player.getPlayerNumbers();
 		
@@ -74,7 +76,12 @@ public class BuilderProcessor implements RoleProcessor {
 		
 		if (!gameUpdater.isPhaseChanged()) {
 			initiateNewPlay(gameUpdater);
-		}		
+		} else {
+			if (game.hasReachedEndCondition()) {
+				game.markCompleted();
+				gameUpdater.updateGameState();
+			}
+		}
 		
 	}
 

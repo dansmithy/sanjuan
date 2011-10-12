@@ -16,6 +16,7 @@ import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 public class Game {
 	
 	private static final int STARTING_CARDS = 5;
+	private static final int FINAL_BUILDING_COUNT = 12;
 	
 	private Long gameId;
 	private String owner;
@@ -158,6 +159,23 @@ public class Game {
 			}
 		}
 		throw new SanJuanUnexpectedException(String.format("No player with name %s in game [%d].", playerName, gameId));
+	}
+
+	public boolean hasReachedEndCondition() {
+		for (Player player : players) {
+			if (player.getBuildings().size() == FINAL_BUILDING_COUNT) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void markCompleted() {
+		state = GameState.COMPLETED;
+	}
+
+	public boolean isComplete() {
+		return state.equals(GameState.COMPLETED);
 	}
 
 

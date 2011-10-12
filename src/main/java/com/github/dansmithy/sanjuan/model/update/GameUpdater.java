@@ -19,7 +19,6 @@ public class GameUpdater {
 	
 	private Map<String, PartialUpdate> updates = new HashMap<String, PartialUpdate>();
 
-	
 	private final PlayCoords playCoords;
 	private PlayCoords nextPlayCoords;
 	private final Game game;
@@ -55,6 +54,10 @@ public class GameUpdater {
 	
 	public void updateCurrentTariff(int currentTariff) {
 		updates.put("currentTariff", new PartialUpdate("currentTariff", currentTariff));
+	}	
+	
+	public void updateGameState() {
+		updates.put("gamestate", new PartialUpdate("state", game.getState()));
 	}	
 	
 	public void createNextStep() {
@@ -130,6 +133,8 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
+
+
 
 
 
