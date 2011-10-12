@@ -75,15 +75,7 @@ function GameController($xhr, $defer, userManager, pollingService, cardService) 
 	this.cardTypes = {};
 	this.cardMap = {};
 	
-	this.roles = [ 
-	                { "name" : "Governor" },
-	                { "name" : "empty" },
-	                { "name" : "Builder", "selectable" : true },
-	                { "name" : "Trader", "selectable" : true },
-	                { "name" : "Producer", "selectable" : true },
-	                { "name" : "Councillor", "selectable" : true },
-	                { "name" : "Prospector", "selectable" : true },
-	                ];
+	this.allRoles = [ "governor", "builder", "producer", "trader", "councillor", "prospector" ];
 	
 	this.tariff = [ 1, 1, 2, 2, 3 ];
 	
@@ -91,7 +83,6 @@ function GameController($xhr, $defer, userManager, pollingService, cardService) 
 	
 	this.isActivePlayer = true;
 	
-//	this.$xhr("GET", "ws/cards", this.firstCallback);
 	this.$defer(this.autoRefresh, 5000);
 	this.updateGame();
 
@@ -123,19 +114,37 @@ GameController.prototype = {
 		},
 		
 		clickRoleCard : function(role) {
-			if (this.responder.mode == "role_choice" && role.selectable) {
-				this.responder.response.role = role.name;
+			if (this.responder.mode == "role_choice") {
+				this.responder.response.role = role;
 			}
 		},
 		
 		showSelected : function(role) {
-			return this.responder.mode == "role_choice" && role.name == this.responder.response.role;
+			return this.responder.mode == "role_choice" && role == this.responder.response.role;
 		},
 		
 		processGame : function(game) {
 			game.$round = game.rounds[game.roundNumber-1];
 			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
+			
+			var usedRoles = [ "governor" ];
+			var unusedRoles = [];
+			angular.forEach(game.$round.phases, function(phase) {
+				if (angular.isDefined(phase.role)) {
+					usedRoles.push(phase.role.toLowerCase());
+				}
+				
+			});
+			angular.forEach(this.allRoles, function(role) {
+				if (angular.Array.indexOf(usedRoles, role) == -1) {
+					unusedRoles.push(role);
+				}
+			});
+				
+			game.$usedRoles = usedRoles;
+			game.$unusedRoles = unusedRoles;			
 			if (game.$round.$phase.state === "PLAYING") {
+				game.$currentRole = game.$usedRoles.pop();
 				game.$round.$phase.$play = game.$round.$phase.plays[game.$round.$phase.playNumber-1];
 				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.$play.player);
 				if (this.isActivePlayer) {
@@ -191,7 +200,7 @@ GameController.prototype = {
 
 function GovernorChoiceResponse($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
-	this.response = { "role" : "Builder" };
+	this.response = { "role" : game.$unusedRoles[0] };
 	this.mode = "role_choice";
 	this.template = "partials/chooseRole.html";
 	this.game = game;

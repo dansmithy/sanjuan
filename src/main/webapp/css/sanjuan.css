@@ -51,6 +51,10 @@ img.cardimage {
 	border: 2px solid red;
 }
 
+.selected-current {
+	border: 2px solid green;
+}
+
 .hand-payment {
 	border: 2px solid green;
 }
@@ -82,5 +86,14 @@ form.input-errors-true input:focus, form.input-errors-true input.focused {
 	position: absolute;
 	width: 57px;
 	height: 80px;
+	z-index: 0;	
+}
+
+.hide-role {
+	background-color: white;
+	opacity:0.5;
+	position: absolute;
+	width: 57px;
+	height: 75px;
 	z-index: 0;	
 }

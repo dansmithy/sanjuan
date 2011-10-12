@@ -1,7 +1,6 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,10 +12,11 @@ public class Deck {
 	public Deck(List<Integer> supply) {
 		super();
 		this.supply = supply;
+		reshuffleDeck();
 	}
 	
-	public void discard(Integer[] cardId) {
-		discard.addAll(Arrays.asList(cardId));
+	public void discard(List<Integer> cards) {
+		discard.addAll(cards);
 	}	
 	
 	public void discard(Integer cardId) {

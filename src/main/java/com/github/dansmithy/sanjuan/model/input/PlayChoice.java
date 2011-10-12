@@ -48,10 +48,6 @@ public class PlayChoice {
 		return payment.toArray(new Integer[payment.size()]);
 	}
 	
-	@JsonIgnore
-	public Integer[] getCouncilDiscardedAsArray() {
-		return councilDiscarded.toArray(new Integer[councilDiscarded.size()]);
-	}
 	public List<Integer> getProductionFactories() {
 		return productionFactories;
 	}

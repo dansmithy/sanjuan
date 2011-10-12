@@ -41,7 +41,7 @@ public class Player {
 		hand.addAll(cards);
 	}
 
-	public void removeHandCards(Integer[] cardIds) {
+	public void removeHandCards(List<Integer> cardIds) {
 		for (Integer cardId : cardIds) {
 			removeHandCard(cardId);
 		}
