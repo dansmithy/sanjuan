@@ -28,11 +28,16 @@
       <div class="fill">
         <div class="container">
             <a class="brand" href="#/games">San Juan</a>
-          <form ng:show="userManager.isVerifiedButUnauthenticated()" ng:submit="login()" action="" class="pull-right input-errors-{{userManager.hasErrors()}}">
-            <input class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
-            <input class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
-            <button class="btn" type="submit">Sign in</button>
-          </form>     
+ 
+          
+          <form ng:submit="login()" action="" class="pull-right input-errors-{{userManager.hasErrors()}}">
+	            <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
+	            <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
+	            <button ng:show="userManager.isUnauthenticated()" class="btn" type="submit">Sign in</button>
+          		<span class="text" ng:show="userManager.isVerifying()">Checking user </span>
+            	<span class="progress" ng:show="userManager.isProcessing()"><img src="images/ajax-loader.gif" /></span>
+          </form>                         
+        
           <p ng:show="userManager.isAuthenticated()" class="pull-right" ng:click="logout()"><a href="#">Logout</a></p>
           <p ng:show="userManager.isAuthenticated()" class="pull-right">Logged in as <a href="#">{{userManager.user.username}}</a></p>
         </div>

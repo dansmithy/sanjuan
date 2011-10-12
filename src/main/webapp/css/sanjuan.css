@@ -1,3 +1,15 @@
+span.progress {
+	width: 39px;
+	height: 16px;
+	display: inline-block;
+	padding: 5px 14px 6px;
+	font-size: 13px;
+}
+
+.topbar span.text {
+	color: #BFBFBF;
+}
+
 .card { 
 	background: #CCCCCC; 
 	height: 70px; 
@@ -17,6 +29,7 @@
 	background: red;
 }
 
+
 .player-inner {
 	padding: 10px;
 }
@@ -30,7 +43,7 @@
 	border: 2px solid white;
 }
 
-img {
+img.cardimage {
 	border: 2px solid white;	
 }
 
@@ -43,7 +56,18 @@ img {
 }
 
 form.input-errors-true input {
-	background: red;
+	background: #FF0000;
+	color: white;
+}
+
+form.input-errors-true input:hover {
+	background: #FF4444;
+	color: white;
+}
+
+form.input-errors-true input:focus, form.input-errors-true input.focused {
+	background: #FFAAAA;
+	color: black;
 }
 
 .produced {

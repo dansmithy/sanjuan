@@ -1,3 +1,10 @@
+angular.service('$xhr.error', function(){
+	  return function(request, response){
+		  request.callback(response.status, response.body);
+	  };
+	}, {
+		$eager : 'true'
+	});
 
 angular.service("userManager", function() {
 	return {
