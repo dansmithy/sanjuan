@@ -57,6 +57,7 @@ MainController.prototype = {
 
 function GameController($xhr, $defer, userManager, pollingService, cardService) {
 	
+	
 	this.userManager = userManager;
 	this.$defer = $defer;
 	this.pollingService = pollingService;
@@ -84,7 +85,15 @@ function GameController($xhr, $defer, userManager, pollingService, cardService) 
 	this.isActivePlayer = true;
 	
 	this.$defer(this.autoRefresh, 5000);
+	
 	this.updateGame();
+	var self = this;
+	
+	this.$watch("userManager.user", function(username) {
+		if (username) {
+			self.updateGame();
+		}
+	});
 
 };
 GameController.$inject = [ "$xhr", "$defer", "userManager", "pollingService", "cardService" ];
@@ -102,7 +111,11 @@ GameController.prototype = {
 		},
 		
 		gameCallback : function(code, response) {
-			this.processGame(response);
+			if (code === 200) {
+				this.processGame(response);
+			} else if (code === 404) {
+				
+			}
 		},
 		
 		isSelf : function(playerName) {
@@ -111,6 +124,10 @@ GameController.prototype = {
 		
 		getResponder : function(playerName) {
 			return this.isSelf(playerName) ? this.responder : angular.noop;
+		},
+		
+		roleImageUrl : function(role) {
+			return angular.isDefined(role) ? "images/" + role + ".gif" : "";
 		},
 		
 		clickRoleCard : function(role) {

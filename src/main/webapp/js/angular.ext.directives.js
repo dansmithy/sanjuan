@@ -83,6 +83,18 @@ angular.directive("ng:readonly", function(expression, compileElement) {
 	};
 });
 
+angular.directive('ng:highlight', function(expression) {
+	  return function(element) {
+		  var currentScope = this;
+		  currentScope.$watch(expression, function(value) {
+			  if (value) {
+				  element.stop(true, true);
+				  element.effect("highlight", {}, 3000);
+			  }
+		  });
+	  };
+});
+
 angular.widget('my:button', function(compileElement) {
 	  this.descend(true);
 //	  compileElement.prepend("<test>");
