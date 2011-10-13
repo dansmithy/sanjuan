@@ -55,19 +55,13 @@ MainController.prototype = {
 		
 };
 
-function GameController($xhr, $defer, userManager, pollingService, cardService) {
+function GameController($xhr, $defer, userManager, gameService, cardService) {
 	
 	
 	this.userManager = userManager;
 	this.$defer = $defer;
-	this.pollingService = pollingService;
+	this.gameService = gameService;
 	this.cardService = cardService;
-//	this.pollingService.startGamePolling(this.params.gameId, function(code, response) {
-//		console.debug("Got a response");
-//	});
-	
-	// modes = 
-	//	awaiting_other_player, role_choice, governor_discard_choice, ...
 	
 	this.responder = { "mode" : "none", "template" : "partials/none.html" };
 	
@@ -84,19 +78,22 @@ function GameController($xhr, $defer, userManager, pollingService, cardService) 
 	
 	this.isActivePlayer = true;
 	
-	this.$defer(this.autoRefresh, 5000);
-	
-	this.updateGame();
+//	this.$defer(this.autoRefresh, 5000);
+//	this.updateGame();
+
 	var self = this;
 	
+	if (this.userManager.isAuthenticated()) {
+		this.gameService.updateGame(this.params.gameId, 0, this.gameCallback);
+	}
 	this.$watch("userManager.user", function(username) {
 		if (username) {
-			self.updateGame();
+			self.gameService.updateGame(self.params.gameId, 0, self.gameCallback);
 		}
 	});
 
 };
-GameController.$inject = [ "$xhr", "$defer", "userManager", "pollingService", "cardService" ];
+GameController.$inject = [ "$xhr", "$defer", "userManager", "gameService", "cardService" ];
 GameController.prototype = {
 		
 		autoRefresh : function() {
@@ -179,6 +176,9 @@ GameController.prototype = {
 			
 			if (!this.isActivePlayer) {
 				this.responder = new InactivePlayerResponder(this.$xhr, game, this.gameCallback);
+				this.gameService.startGameUpdates(game.gameId, game.version, this.gameCallback);
+			} else {
+				this.gameService.stopGameUpdates();
 			}
 		},
 		

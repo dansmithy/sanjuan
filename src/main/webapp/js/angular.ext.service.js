@@ -145,49 +145,54 @@ angular.service("cardService", angular.extend(function($xhr) {
 
 
 
-angular.service("pollingService", angular.extend(function($xhr, $defer) {
+angular.service("gameService", angular.extend(function($xhr, $defer, $log) {
 	
 	
 	var $defer = $defer;
-	var pollingService = {
+	var gameService = {
 		
-		gamePolling : false,
+		doGameUpdates : false,
 		gameId : -1,
+		version : -1,
 		gameCallback : angular.noop,
 		
-		start : function() {
-//			console.debug("Starting...");
-			$defer(pollingService.poll, 2000);
-		},
-		
-		startGamePolling : function(gameId, gameCallback) {
-			
-//			console.debug("Turn on game polling...");
-			this.gamePolling = true;
-			this.gameId = gameId;
-			this.gameCallback = gameCallback;
-		},
-		
-		stopGamePolling : function() {
-			this.gamePolling = false;
-		},
-			
-		updateGame : function(gameId, gameCallback) {
-			$xhr("GET", "ws/games/" + gameId, gameCallback);
-		},
-		
 		poll : function() {
-//			console.debug("polling...");
-			if (this.gamePolling) {
-//				console.debug("updating...");
-				this.updateGame(this.gameId, this.gameCallback);
+			$defer(gameService.actionPoll, 2000);
+		},
+		
+		startGameUpdates : function(gameId, version, gameCallback) {
+
+			if (angular.isDefined(gameId)) {
+				gameService.doGameUpdates = true;
+				gameService.gameId = gameId;
+				gameService.version = version;
+				gameService.gameCallback = gameCallback;
+			} else {
 			}
-			$defer(pollingService.poll, 2000);
+		},
+		
+		stopGameUpdates : function() {
+			gameService.doGameUpdates = false;
+		},
+			
+		updateGame : function(gameId, version, gameCallback) {
+			$xhr("GET", "ws/games/" + gameId, function(code, response) {
+				if (response.version !== version) {
+					gameCallback(code, response);
+				}
+			});
+		},
+		
+		actionPoll : function() {
+			if (gameService.doGameUpdates) {
+				gameService.updateGame(gameService.gameId, gameService.version, gameService.gameCallback);
+			}
+			gameService.poll();
 		}
 		
 	};
 	
-	pollingService.start();
-	return pollingService;
-}, {$inject:["$xhr", "$defer" ]}));
+	gameService.poll();
+	return gameService;
+}, {$inject:["$xhr", "$defer", "$log" ]}));
 
