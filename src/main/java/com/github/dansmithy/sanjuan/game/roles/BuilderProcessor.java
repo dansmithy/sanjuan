@@ -1,5 +1,7 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -62,12 +64,14 @@ public class BuilderProcessor implements RoleProcessor {
 		player.removeHandCards(playChoice.getPayment());
 		deck.discard(playChoice.getPayment());
 
-		int bonusCards = numbers.getBonusCardMatches(player, Role.BUILDER);
+		int bonusCardsCount = numbers.getBonusCardMatches(player, Role.BUILDER);
 		BuildingType type = cardFactory.getBuildingType(playChoice.getBuild());
 		if (type.isVioletBuilding()) {
-			bonusCards += numbers.getBuilderBonusOnViolet();
+			bonusCardsCount += numbers.getBuilderBonusOnViolet();
 		}
-		player.addToHand(deck.take(bonusCards));
+		List<Integer> bonusCards = deck.take(bonusCardsCount);
+		playChoice.setBonusCards(bonusCards);
+		player.addToHand(bonusCards);
 		
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateDeck(deck);

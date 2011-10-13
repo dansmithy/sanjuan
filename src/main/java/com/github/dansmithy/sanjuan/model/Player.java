@@ -17,8 +17,6 @@ public class Player {
 	private List<Integer> buildings = new ArrayList<Integer>();
 	private Map<Integer, Integer> goods = new HashMap<Integer, Integer>();
 	private List<Integer> chapelCards = new ArrayList<Integer>();
-
-	@Transient
 	private Integer victoryPoints;
 	@Transient
 	private PlayerNumbers playerNumbers;

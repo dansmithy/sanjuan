@@ -44,4 +44,10 @@ public class CalculationService {
 			processor.determinePrivileges(privileges);
 		}
 	}
+	
+	public void processPlayers(List<Player> players) {
+		for (Player player : players) {
+			processPlayer(player);
+		}
+	}
 }

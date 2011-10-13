@@ -14,6 +14,7 @@ public class PlayChoice {
 	private Boolean skip = null;
 	private List<Integer> councilDiscarded;
 	private List<Integer> productionFactories;
+	private List<Integer> bonusCards;
 	
 	public Integer getBuild() {
 		return build;
@@ -43,10 +44,6 @@ public class PlayChoice {
 	public Boolean getSkip() {
 		return skip;
 	}
-	@JsonIgnore
-	public Integer[] getPaymentAsArray() {
-		return payment.toArray(new Integer[payment.size()]);
-	}
 	
 	public List<Integer> getProductionFactories() {
 		return productionFactories;
@@ -54,7 +51,11 @@ public class PlayChoice {
 	public void setProductionFactories(List<Integer> productionFactories) {
 		this.productionFactories = productionFactories;
 	}
+	public List<Integer> getBonusCards() {
+		return bonusCards;
+	}
+	public void setBonusCards(List<Integer> bonusCards) {
+		this.bonusCards = bonusCards;
+	}
 
-	
-	
 }

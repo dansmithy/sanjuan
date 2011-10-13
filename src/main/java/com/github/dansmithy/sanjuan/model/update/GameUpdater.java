@@ -60,6 +60,15 @@ public class GameUpdater {
 		updates.put("gamestate", new PartialUpdate("state", game.getState()));
 	}	
 	
+	public void updatePlayers() {
+		updates.remove("player");
+		updates.put("players", new PartialUpdate("players", game.getPlayers()));
+	}
+	
+	public void updateWinner() {
+		updates.put("winner", new PartialUpdate("winner", game.getWinner()));
+	}
+	
 	public void createNextStep() {
 		PlayerCycle cycle = game.createPlayerCycle();
 		Round currentRound = game.getCurrentRound();
@@ -133,9 +142,6 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
-
-
-
 
 
 }

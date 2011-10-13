@@ -1,7 +1,6 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -27,6 +26,7 @@ public class Game {
 	private List<Tariff> tariffs;
 	private List<Round> rounds = new ArrayList<Round>();
 	private Long version;
+	private String winner;
 	@Id
 	private ObjectId id;
 	
@@ -178,7 +178,34 @@ public class Game {
 		return state.equals(GameState.COMPLETED);
 	}
 
+	public String getWinner() {
+		return winner;
+	}
 
+	public void calculateWinner() {
+		List<Player> winningPlayers = new ArrayList<Player>();
+		winningPlayers.add(players.get(0));
+		for (int count = 1; count < players.size(); count++) {
+			Player player = players.get(count);
+			if (player.getVictoryPoints() > winningPlayers.get(0).getVictoryPoints()) {
+				winningPlayers.clear();
+				winningPlayers.add(0, player);
+			} else if (player.getVictoryPoints() == winningPlayers.get(0).getVictoryPoints()) {
+				if (player.getHand().size() > winningPlayers.get(0).getHand().size()) {
+					winningPlayers.clear();
+					winningPlayers.add(0, player);
+				} else if (player.getHand().size() == winningPlayers.get(0).getHand().size()) {
+					winningPlayers.add(player);
+				}
+			}
+		}
+		winner = "";
+		String delimiter = "";
+		for (Player winningPlayer : winningPlayers) {
+			winner += delimiter + winningPlayer.getName();
+			delimiter = ", ";
+		}
+	}
 
 }
 	

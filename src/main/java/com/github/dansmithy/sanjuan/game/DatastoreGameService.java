@@ -171,6 +171,15 @@ public class DatastoreGameService implements GameService {
 			}
 		} else {
 			roleProcessor.makeChoice(gameUpdater, playChoice);
+			
+			// do winner
+			if (game.isComplete()) {
+				calculationService.processPlayers(game.getPlayers());
+				gameUpdater.updatePlayers();
+				game.calculateWinner();
+				gameUpdater.updateWinner();
+			}
+			
 		}
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}		
