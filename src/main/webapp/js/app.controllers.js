@@ -64,6 +64,7 @@ function GameController($xhr, $defer, userManager, gameService, cardService) {
 	this.cardService = cardService;
 	
 	this.responder = { "mode" : "none", "template" : "partials/none.html" };
+	this.roleStatusMap = { "builder" : "to build", "councillor" : "cards to keep", "producer" : "to produce", "trader" : "to trade", "prospector" : "to do." };
 	
 	this.role = "undecided";
 	
@@ -77,6 +78,8 @@ function GameController($xhr, $defer, userManager, gameService, cardService) {
 	this.$xhr = $xhr;
 	
 	this.isActivePlayer = true;
+	
+	this.statusText = {};
 	
 //	this.$defer(this.autoRefresh, 5000);
 //	this.updateGame();
@@ -163,11 +166,15 @@ GameController.prototype = {
 				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.$play.player);
 				if (this.isActivePlayer) {
 					this.responder = this.determineActivePlayerResponder(game);
+				} else {
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.leadPlayer + "</strong> to choose what " + this.roleStatusMap[game.$currentRole] };
 				}
 			} else if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
 				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.leadPlayer);
 				if (this.isActivePlayer) {
 					this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
+				} else {
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.leadPlayer + "</strong> to choose role." };
 				}
 			} else {
 				// completed
@@ -178,6 +185,7 @@ GameController.prototype = {
 				this.responder = new InactivePlayerResponder(this.$xhr, game, this.gameCallback);
 				this.gameService.startGameUpdates(game.gameId, game.version, this.gameCallback);
 			} else {
+				this.statusText = { "waiting" : false, "message" : "It's your turn!" };
 				this.gameService.stopGameUpdates();
 			}
 		},

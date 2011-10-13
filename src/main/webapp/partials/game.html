@@ -13,6 +13,11 @@
 
         <div class="row">
             <p>&nbsp;</p>
+            <div class="span16">
+                <div class="alert-message {{statusText.waiting | ternary:'warning':'success'}}">
+                    <p>{{statusText.message | html}}</p>
+                </div>
+            </div>
 <!--             <pre>{{responder.response}}</pre> -->
             
         </div>
