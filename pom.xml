@@ -95,6 +95,7 @@
         <jetty.servlet.version>7.4.4.v20110707</jetty.servlet.version>
 		<jodatime.version>1.6.2</jodatime.version>
 		<jpa.version>2.0-cr-1</jpa.version>
+		<json.lib.version>2.4</json.lib.version>
 		<junit.version>4.5</junit.version>
         <lambdaj.version>2.3.1</lambdaj.version>
 		<log4j.version>1.2.9</log4j.version>
@@ -129,6 +130,13 @@
             <version>1.1</version>
             <scope>test</scope>
         </dependency>         
+		<dependency>
+		    <groupId>net.sf.json-lib</groupId>
+		    <artifactId>json-lib</artifactId>
+		    <version>${json.lib.version}</version>
+		    <classifier>jdk15</classifier>
+		    <scope>test</scope>
+		</dependency>        
 
         <!--  Jetty -->        
         <dependency>
