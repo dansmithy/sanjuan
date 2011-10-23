@@ -16,7 +16,7 @@ public class TestMatchers {
 	@Test
 	public void testReplaceValue() {
 
-		TranslatedValues translatedValues = new TranslatedValues(MapBuilder.simple().add("alice", "alice-123").build());
+		TranslatedValues translatedValues = new TranslatedValues(MapBuilder.simple().add("#alice", "alice-123").build());
 		String actual = "{ 'players' : [ { 'name' : 'alice-123', victoryPoints: 30, 'ignore' : 'this' } ] }";
 		
 		String expectedGame = "{ 'players^name' : [ { 'name' : '#alice', victoryPoints: 30 } ] }";
