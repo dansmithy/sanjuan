@@ -59,6 +59,9 @@ public class GameAT {
 		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(200)));
 		Assert.assertThat(actualResponse.asText(), containsJson(expectedPlayer, whenTranslatedBy(sessionPlayer2.getTranslatedValues())));
 		
+		Response actualGameResponse = sessionPlayer1.getGame();
+		String expectedGame = "{ 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }";
+		Assert.assertThat(actualGameResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 	}
 	
 	//@Test // requires deck modify code

@@ -70,10 +70,14 @@ public class GameDriverSession {
 		return json.getString("gameId");
 		
 	}
+	
+	public Response getGame() {
+		return getGame(gameId);
+	}
 
-	public String getGame(String gameId) {
+	public Response getGame(String gameId) {
 		Response response = get(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
-		return response.asText();
+		return response;
 	}
 	
 	public Response joinGame(String gameId, String data) {
@@ -120,5 +124,7 @@ public class GameDriverSession {
 			delete(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
 		}
 	}
+
+
 
 }

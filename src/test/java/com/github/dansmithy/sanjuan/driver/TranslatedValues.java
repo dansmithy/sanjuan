@@ -5,10 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 public class TranslatedValues {
 
 	private Map<String, String> translatedValues = new HashMap<String, String>();
