@@ -64,6 +64,13 @@ public class TestJsonObject {
 		String actual = "{ 'items' : [{ 'name' : 'one', 'type' : 'food' }, { 'name' : 'two', 'type' : 'clothes'}]}";
 		String expected = "{ 'items^name' : [{ 'name' : 'two', 'type' : 'clothes' }]}";
 		jsonStringCompare.equalsNoOrphans(actual, expected);
+	}	
+	
+	@Test
+	public void testMyCompare6() {
+		String actual = "{ 'items' : [{ 'name' : 'one', 'type' : 'food' }, { 'name' : 'two', 'type' : 'clothes'}]}";
+		String expected = "{ 'items^name' : [{ 'name' : 'two', 'type' : 'clothes' }, { 'name' : 'one', 'type' : 'food' }]}";
+		jsonStringCompare.equalsNoOrphans(actual, expected);
 	}		
 	
 }

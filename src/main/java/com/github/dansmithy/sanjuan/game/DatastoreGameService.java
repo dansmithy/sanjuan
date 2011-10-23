@@ -57,6 +57,7 @@ public class DatastoreGameService implements GameService {
 	 */
 	@Override
 	public List<Game> getGamesForPlayer(String playerName) {
+		// TODO Incomplete only?
 		return gameDao.getGamesForPlayer(playerName);
 	}	
 	
@@ -87,10 +88,16 @@ public class DatastoreGameService implements GameService {
 	public Player addPlayerToGame(Long gameId, String playerName) {
 		Game game = getGame(gameId);
 
+		// Note: ideally need to use versions here so that it doesn't test and
+		// pass hasplayer/state, have another thread then also pass and add the
+		// player/change state, then try to update in this thread. Version
+		// numbers should do that ok!
+		
+		// TODO check game state is recruiting
+		
 		if (game.hasPlayer(playerName)) {
 			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName));
 		}
-		// TODO check game state
 		Player player = new Player(playerName);
 		game.addPlayer(player);
 		gameDao.saveGame(game);
@@ -112,7 +119,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (game.getState().equals(GameState.PLAYING)) {
-			return game;
+			return game; // already in desired state
 		}
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
@@ -130,6 +137,7 @@ public class DatastoreGameService implements GameService {
 	@Override
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
+		// TODO verify play coords IS current phase
 		Game game = getGame(playCoords.getGameId());
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		GameUpdater gameUpdater = new GameUpdater(game, loggedInUser);
@@ -171,16 +179,14 @@ public class DatastoreGameService implements GameService {
 			}
 		} else {
 			roleProcessor.makeChoice(gameUpdater, playChoice);
-			
-			// do winner
-			if (game.isComplete()) {
-				calculationService.processPlayers(game.getPlayers());
-				gameUpdater.updatePlayers();
-				game.calculateWinner();
-				gameUpdater.updateWinner();
-			}
-			
 		}
+		// do winner
+		if (game.isComplete()) {
+			calculationService.processPlayers(game.getPlayers());
+			gameUpdater.updatePlayers();
+			game.calculateWinner();
+			gameUpdater.updateWinner();
+		}		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}		
 	
@@ -197,6 +203,10 @@ public class DatastoreGameService implements GameService {
 	@Override
 	public void deleteGame(Long gameId) {
 		Game game = gameDao.getGame(gameId);
+		
+		// TODO restrict to recruiting games.
+		
+		// TODO introduce "abandoned" state for games: any player can abandon a game and is marked as such.
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(game.getOwner())) {

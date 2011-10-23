@@ -22,7 +22,7 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		} else if (actual instanceof JSONNull){
 			// do nothing. Are both null
 		} else {
-			Assert.assertFalse(String.format("Do not use the ^ character in the path %s unless it is an array value", expectedPath), context.isNull());
+			Assert.assertTrue(String.format("Do not use the ^ character in the path %s unless it is an array value", expectedPath), context.isNull());
 			compareObjects((JSONObject)actual, (JSONObject)expected, expectedPath);
 		}
 	}
@@ -33,8 +33,8 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 			String expectedKey = (String)expectedKeyObject;
 			ArrayContext context = ArrayContext.NULL; 
 			if (expectedKey.indexOf("^") != -1) {
-				expectedKey = expectedKey.substring(0, expectedKey.indexOf("^"));
 				context = new ArrayContext(expectedKey.substring(expectedKey.indexOf("^")+1));
+				expectedKey = expectedKey.substring(0, expectedKey.indexOf("^"));
 			}
 			String newExpectedPath = expectedPath + "." + expectedKey;
 			Assert.assertTrue(String.format("Expected %s to exist!", newExpectedPath), actual.containsKey(expectedKey));
@@ -47,7 +47,7 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		if (actual instanceof JSON) {
 			compareJSON((JSON)actual, (JSON)expected, expectedPath, context);
 		} else {
-			Assert.assertFalse(String.format("Do not use the ^ character in the path %s unless it is an array value", expectedPath), context.isNull());
+			Assert.assertTrue(String.format("Do not use the ^ character in the path %s unless it is an array value", expectedPath), context.isNull());
 			comparePrimitive(actual, expected, expectedPath);
 		}
 	}
@@ -63,11 +63,6 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		} else {
 			compareArraysContainValues(actual, expected, expectedPath, context);
 		}
-		for (int index = 0; index < expected.size(); index++) {
-			Object expectedItem = (Object)expected.get(index);
-			Object actualItem = (Object)actual.get(index);
-			compare(actualItem, expectedItem, expectedPath + "[" + index + "]", ArrayContext.NULL);
-		}
 	}
 	
 	private void compareArraysContainValues(JSONArray actual,
@@ -76,8 +71,11 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		for (int index = 0; index < expected.size(); index++) {
 			Object expectedItem = (Object)expected.get(index);
 			Assert.assertFalse("You cannot use the ^ char with an array value", expectedItem instanceof JSONArray);
+			Assert.assertFalse("You cannot use the ^ char with a null value", expectedItem instanceof JSONNull);
 			ArrayItemMatcher matcher = new ArrayItemMatcher(expectedItem, context);
-			// TODO see if item exists and matches.
+			ArrayItemMatchResult result = matcher.matchInArray(actual);
+			Assert.assertTrue(String.format("Not found item with %s['%s']=%s", expectedPath, context.getIdentifierField(), result.getFieldValue()), result.exists());
+			compare(result.getItem(), expectedItem, String.format("%s['%s'=%s]", expectedPath, context.getIdentifierField(), result.getFieldValue()), ArrayContext.NULL);
 		}
 	}
 
@@ -97,14 +95,14 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		
 		private static final ArrayContext NULL = new ArrayContext(null);
 
-		public String getIdentifierField() {
-			return identifierField;
-		}
-
 		public ArrayContext(String identifierField) {
 			super();
 			this.identifierField = identifierField;
 		}
+		public String getIdentifierField() {
+			return identifierField;
+		}
+		
 		
 		public boolean isNull() {
 			return identifierField == null;
@@ -113,17 +111,82 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		public boolean identifiesPrimitive() {
 			return !isNull() && "".equals(identifierField);
 		}
-		
+
+		public boolean identifiesObject() {
+			return !isNull() && !identifiesPrimitive();
+		}
+
 	}
 	
 	private static class ArrayItemMatcher {
 
+		private final Object expectedItem;
+		private final ArrayContext context;
+		private boolean isObject;
+
 		public ArrayItemMatcher(Object expectedItem, ArrayContext context) {
-			if (context.identifiesPrimitive()) {
-				//.expectedItem instanceof JSONObject
+			this.expectedItem = expectedItem;
+			this.context = context;
+			this.isObject = expectedItem instanceof JSONObject;
+			Assert.assertFalse("Need to have an array of objects if you want to use an identifier field", isObject && context.identifiesPrimitive());
+			Assert.assertFalse("Can only specify identifier field with array of objects", !isObject && context.identifiesObject());
+			if (isObject) {
+				Assert.assertNotNull(String.format("Specify identifier field, expected item must have field '%s'.", context.getIdentifierField()), getPrimitive(expectedItem));
 			}
+		}
+
+		public ArrayItemMatchResult matchInArray(JSONArray array) {
+			Object found = null;
+			for (int index = 0; index < array.size(); index++) {
+				Object item = (Object)array.get(index);
+				if (checkPrimitiveEquals(getPrimitive(expectedItem), getPrimitive(item))) {
+					found = item;
+					break;
+				}
+			}
+			return new ArrayItemMatchResult(found != null, found, getPrimitive(expectedItem).toString());
+		}
+
+		private <T> boolean checkPrimitiveEquals(T expected, T actual) {
+			return expected.equals(actual);
+		}
+
+		private Object getPrimitive(Object item) {
+			return isObject ? asObject(item).get(context.getIdentifierField()) : item;
+		}
+
+		private JSONObject asObject(Object object) {
+			return (JSONObject)object;
+		}
+		
+	}	
+	
+	private static class ArrayItemMatchResult {
+
+		private boolean exists;
+		private Object item;
+		private String fieldValue;
+		
+		public ArrayItemMatchResult(boolean exists, Object item,
+				String fieldValue) {
+			super();
+			this.exists = exists;
+			this.item = item;
+			this.fieldValue = fieldValue;
+		}
+
+		public boolean exists() {
+			return exists;
+		}
+
+		public Object getItem() {
+			return item;
+		}
+
+		public String getFieldValue() {
+			return fieldValue;
 		}
 		
 		
-	}	
+	}
 }
