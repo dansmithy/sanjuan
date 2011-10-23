@@ -21,6 +21,10 @@
             <div class="span8"><button ng:show="game.owner == userManager.user.username" ng:disabled="game.players.length < 2" class="btn success" ng:click="startGame(game)">Start game</button></div>
           </div>
         </div>
+        
+        <div ng:hide="games" class="row">
+            <h4><small>You are not participating in any games right now. Either create a new one, or join somebody elses.</small></h4>
+        </div>         
 
         <div class="row">
             <p>&nbsp;</p>
@@ -35,6 +39,10 @@
           <div class="span2" ng:show="game.state == 'RECRUITING'"><h3>{{game.state | lowercase}}</h3></div>
           <div class="span3"><h2><small><span ng:repeat="player in game.players">{{player.name}} </span></small></h2></div>
           <div class="span8"><button class="btn success" ng:click="joinGame(game)">Join game</button></div>
-        </div>        
+        </div>     
+        
+        <div ng:hide="openGames" class="row">
+            <h4><small>There are no games you can join at the moment. Why don't you create your own?</small></h4>
+        </div>   
         
     </div>
