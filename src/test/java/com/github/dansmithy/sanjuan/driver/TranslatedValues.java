@@ -2,13 +2,26 @@ package com.github.dansmithy.sanjuan.driver;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 public class TranslatedValues {
 
 	private Map<String, String> translatedValues = new HashMap<String, String>();
 	
+	public TranslatedValues() {
+		super();
+	}
+	
+	public TranslatedValues(Map<String, String> translatedValues) {
+		super();
+		this.translatedValues = translatedValues;
+	}
+
 	public RequestValues translateRequestValues(RequestValues oldRequestValues) {
 		RequestValues requestValues = new RequestValues();
 		for (Map.Entry<String, String> entry : oldRequestValues.entrySet()) {
@@ -36,5 +49,14 @@ public class TranslatedValues {
 	private static String generateValue(String actualKey) {
 		return String.format("%s-%s", actualKey, UUID.randomUUID().toString());
 	}
+	
+	public String get(String key) {
+		return translatedValues.get(key);
+	}
+	
+	public boolean containsKey(String key) {
+		return translatedValues.containsKey(key);
+	}
 
+	
 }

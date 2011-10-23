@@ -103,7 +103,7 @@
 		<mysql.connector.java.version>5.1.16</mysql.connector.java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<resteasy.dependency.version>2.2.1.GA</resteasy.dependency.version>
-		<rest.driver.version>1.1.2</rest.driver.version>
+		<rest-driver.version>1.1.14</rest-driver.version>
 		<servlet.version>2.5</servlet.version> 
 		<spring.version>3.0.5.RELEASE</spring.version>
         <spring-data.version>1.0.0.M3</spring-data.version>
@@ -136,6 +136,46 @@
 		    <version>${json.lib.version}</version>
 		    <classifier>jdk15</classifier>
 		    <scope>test</scope>
+		</dependency>        
+        <dependency>
+            <groupId>com.github.rest-driver</groupId>
+            <artifactId>rest-client-driver</artifactId>
+            <version>${rest-driver.version}</version>
+            <scope>test</scope>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>slf4j-nop</artifactId>
+            		<groupId>org.slf4j</groupId>
+            	</exclusion>
+                <exclusion>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+				<exclusion>
+		            <groupId>org.eclipse.jetty</groupId>
+		            <artifactId>jetty-server</artifactId>
+				</exclusion>         
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rest-driver</groupId>
+            <artifactId>rest-server-driver</artifactId>
+            <version>${rest-driver.version}</version>
+            <scope>test</scope>
+           <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-nop</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+				<exclusion>
+					<groupId>com.jayway.jsonpath</groupId>
+					<artifactId>json-path</artifactId>
+                </exclusion>             
+            </exclusions>            
 		</dependency>        
 
         <!--  Jetty -->        

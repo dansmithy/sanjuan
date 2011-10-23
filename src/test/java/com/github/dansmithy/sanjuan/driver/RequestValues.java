@@ -31,6 +31,10 @@ public class RequestValues {
 		return values.containsKey(key);
 	}
 
+	public String get(String key) {
+		return values.get(key);
+	}
+	
 	public Set<Map.Entry<String, String>> entrySet() {
 		return Collections.unmodifiableSet(values.entrySet());
 	}

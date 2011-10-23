@@ -8,12 +8,39 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
 
-public class JsonCompare implements TestCompare<JSON, JSON> {
+public class JsonObjectMatcher extends TypeSafeMatcher<JSON> {
 
-	public void equalsNoOrphans(JSON actual, JSON expected) {
-		compare(actual, expected, "", ArrayContext.NULL);
+	private final JSON expected;
+	private String descriptionText;
+
+	public JsonObjectMatcher(JSON expected) {
+		super();
+		this.expected = expected;
+	}
+
+	public JsonObjectMatcher(JSON expected, JsonTranslator translator) {
+		this.expected = translator.translate(expected);
+	}
+	
+	@Override
+	public boolean matchesSafely(JSON actual) {
+		try {
+			compare(actual, expected, "", ArrayContext.NULL);
+			return true;
+		} catch (AssertionError e) {
+			descriptionText = e.getMessage();
+			return false;
+		}
+	}	
+
+	@Override
+	public void describeTo(Description description) {
+		description.appendText(descriptionText);
+		
 	}
 	
 	private void compareJSON(JSON actual, JSON expected, String expectedPath, ArrayContext context) {
@@ -188,5 +215,6 @@ public class JsonCompare implements TestCompare<JSON, JSON> {
 		}
 		
 		
-	}
+	}	
+
 }

@@ -1,71 +1,73 @@
 package com.github.dansmithy.sanjuan;
 
+import static com.github.dansmithy.sanjuan.json.JsonMatchers.containsJson;
+import static com.github.dansmithy.sanjuan.json.JsonMatchers.whenTranslatedBy;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.dansmithy.sanjuan.driver.DefaultValues;
 import com.github.dansmithy.sanjuan.driver.GameDriver;
 import com.github.dansmithy.sanjuan.driver.GameDriverSession;
-import com.github.dansmithy.sanjuan.driver.RequestValues;
-import com.github.dansmithy.sanjuan.driver.TranslatedValues;
-import com.github.dansmithy.sanjuan.json.JsonCompare;
-import com.github.dansmithy.sanjuan.json.JsonStringCompare;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GameAT {
 
-	private GameDriver driver = new GameDriver();
-	private JsonStringCompare jsonStringCompare = new JsonStringCompare(new JsonCompare());
+	private static final String ADMIN_ACCOUNT = String.format("username : %s, password : %s", "danny", "danny");
+	
+	private GameDriver driver = new GameDriver("http://localhost:8086");
+	private GameDriverSession adminSession;
 	private GameDriverSession sessionPlayer1;
 	private GameDriverSession sessionPlayer2;
 	
 	@Before
 	public void setup() {
-		GameDriverSession adminSession = driver.login("username : testAdmin, password : testPassword");
+		adminSession = driver.login(ADMIN_ACCOUNT);
 		adminSession.createUser("username : #alice");
 		adminSession.createUser("username : #bob");
+		sessionPlayer1 = driver.login("username : #alice", adminSession.getTranslatedValues());
+		sessionPlayer2 = driver.login("username : #bob", adminSession.getTranslatedValues());
+	}
+	
+	@After
+	public void clearUp() {
+		adminSession.deleteUser("username : #alice");
+		adminSession.deleteUser("username : #bob");
 		adminSession.logout();
-		sessionPlayer1 = driver.login("username : #alice");
-		sessionPlayer2 = driver.login("username : #bob");
+		sessionPlayer1.deleteAnyGame();
 	}
 	
 	@Test
 	public void testCanCreateGame() {
 
-		String game = sessionPlayer1.createGame("name : #alice");
+		Response actualResponse = sessionPlayer1.createGame("username : #alice");
+		String expectedGame = "{ 'players' : [ { 'name' : '#alice', victoryPoints: 0 } ] }";
 		
-		String expectedGame = "{ 'players^name' : [ { 'name' : '#alice', victoryPoints: 30 } ] }";
-		jsonStringCompare.equalsNoOrphans(game, expectedGame);
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(200)));
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 	}
 	
 	@Test
 	public void testCanJoinGame() {
-		sessionPlayer1.createGame("name : #alice");
-		sessionPlayer2.joinGame(sessionPlayer1.getGameId());
-		// test game has 
+		sessionPlayer1.createGame("username : #alice");
+		Response actualResponse = sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		String expectedPlayer = "{ 'name' : '#bob' }";
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(200)));
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedPlayer, whenTranslatedBy(sessionPlayer2.getTranslatedValues())));
 		
 	}
 	
-	@Test // requires deck modify code
+	//@Test // requires deck modify code
 	public void testHandsAreDealt() {
 		
 		// needs 2 sessions;
-		String game = sessionPlayer1.createGame("name : #alice");
-		
+		Response actualResponse = sessionPlayer1.createGame("username : #alice");
 		String expectedGame = "{ 'players^name' : [ { 'name' : '#alice', victoryPoints: 30 } ] }";
-		jsonStringCompare.equalsNoOrphans(game, expectedGame);
-		
-	}
-	
-	@Test
-	public void testRequestCreate() {
-		TranslatedValues translatedValues = new TranslatedValues();
-		RequestValues values = new RequestValues().addAll(DefaultValues.USER).addReadableData("username : #danny, password : testPassword");
-		RequestValues newValues = translatedValues.translateRequestValues(values);
-		System.out.println(newValues.toJson());
-		
-		RequestValues values2 = new RequestValues().addReadableData("user : #danny");
-		RequestValues values3 = translatedValues.translateRequestValues(values2);
-		System.out.println(values3.toJson());
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 		
 	}
 	
