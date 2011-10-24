@@ -33,6 +33,8 @@ public class RestExceptionMapper implements ExceptionMapper<SanJuanException> {
 			return Status.UNAUTHORIZED;
 		} else if (e instanceof ResourceNotFoundException) {
 			return Status.NOT_FOUND;
+		} else if (e instanceof IllegalGameStateException) {
+			return Status.CONFLICT;
 		} else {
 			return Status.INTERNAL_SERVER_ERROR;
 		}

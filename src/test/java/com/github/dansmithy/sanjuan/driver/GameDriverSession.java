@@ -5,6 +5,7 @@ import static com.github.restdriver.serverdriver.RestServerDriver.delete;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static com.github.restdriver.serverdriver.RestServerDriver.header;
 import static com.github.restdriver.serverdriver.RestServerDriver.post;
+import static com.github.restdriver.serverdriver.RestServerDriver.put;
 
 import java.util.Collections;
 import java.util.Map;
@@ -60,6 +61,24 @@ public class GameDriverSession {
 		
 	}
 	
+	public Response joinGame(String gameId, String data) {
+		this.gameId = gameId;
+		RequestValues requestValues = createRequest(data);
+		return post(wsBaseUri + "/games/" + gameId + "/players", body(requestValues.get("username"), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+	
+	public Response startGame() {
+		return put(wsBaseUri + "/games/" + gameId + "/state", body("PLAYING", JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+	
+	public Response chooseRole(String urlData, String postData) {
+		RequestValues urlValues = createRequest(urlData);
+		RequestValues postValues = createRequest(postData);
+		String url = String.format("%s/games/%s/rounds/%s/phases/%s/role", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"));
+		return put(url, body(postValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+	
+	
 	private Response rememberGame(Response response) {
 		gameId = extractGameId(response);
 		return response;
@@ -80,11 +99,7 @@ public class GameDriverSession {
 		return response;
 	}
 	
-	public Response joinGame(String gameId, String data) {
-		this.gameId = gameId;
-		RequestValues requestValues = createRequest(data);
-		return post(wsBaseUri + "/games/" + gameId + "/players", body(requestValues.get("username"), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
-	}
+
 
 	public void respond(String data) {
 		RequestValues requestValues = createRequest(DefaultValues.USER, data);
@@ -124,7 +139,5 @@ public class GameDriverSession {
 			delete(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
 		}
 	}
-
-
 
 }

@@ -5,6 +5,8 @@ import static com.github.dansmithy.sanjuan.json.JsonMatchers.whenTranslatedBy;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.net.HttpURLConnection;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,9 +42,15 @@ public class GameAT {
 		sessionPlayer1.deleteAnyGame();
 	}
 	
+	/**
+	 * given(userExists("alice"))
+	 * when(gameCreatedBy("alice"))
+	 * then(checkResponseIs("..."))
+	 */
 	@Test
 	public void testCanCreateGame() {
 
+		
 		Response actualResponse = sessionPlayer1.createGame("username : #alice");
 		String expectedGame = "{ 'players' : [ { 'name' : '#alice', victoryPoints: 0 } ] }";
 		
@@ -50,6 +58,11 @@ public class GameAT {
 		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 	}
 	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice"))
+	 * when(gameJoinedBy("bob"))
+	 * then(checkResponseIs("...").and(gameIsEqualTo("...")
+	 */
 	@Test
 	public void testCanJoinGame() {
 		sessionPlayer1.createGame("username : #alice");
@@ -60,9 +73,73 @@ public class GameAT {
 		Assert.assertThat(actualResponse.asText(), containsJson(expectedPlayer, whenTranslatedBy(sessionPlayer2.getTranslatedValues())));
 		
 		Response actualGameResponse = sessionPlayer1.getGame();
-		String expectedGame = "{ 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }";
+		String expectedGame = "{ 'state' : 'RECRUITING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }";
 		Assert.assertThat(actualGameResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 	}
+	
+	/**
+	 * given(userExists("alice")).and(gameCreatedBy("alice"))
+	 * when(gameJoinedBy("alice"))
+	 * then(checkResponseIs("..."))
+	 */
+	@Test
+	public void testAttemptToJoinOwnGame() {
+		sessionPlayer1.createGame("username : #alice");
+		Response actualResponse = sessionPlayer1.joinGame(sessionPlayer1.getGameId(), "username : #alice");
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_CONFLICT)));
+	}
+	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(gameJoinedBy("bob"))
+	 * when(gameJoinedBy("bob"))
+	 * then(checkResponseIs("..."))
+	 */
+	@Test
+	public void testAttemptToJoinGameTwice() {
+		sessionPlayer1.createGame("username : #alice");
+		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		
+		Response actualResponse = sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_CONFLICT)));
+	}		
+	
+	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(gameJoinedBy("bob"))
+	 * when(gameStartedBy("alice"))
+	 * then(checkResponseIs("..."))
+	 */
+	@Test
+	public void testCanStartGame() {
+		sessionPlayer1.createGame("username : #alice");
+		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		Response actualResponse = sessionPlayer1.startGame();
+		
+		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'AWAITING_ROLE_CHOICE' } ] } ] }";
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
+	}
+	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(gameJoinedBy("bob")).and(gameStartedBy("alice"))
+	 * when(roleChosenBy("alice", "BUILDER"))
+	 * then(checkResponseIs("..."))
+	 */
+	@Test
+	public void testCanChooseRole() {
+		sessionPlayer1.createGame("username : #alice");
+		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		sessionPlayer1.startGame();
+		
+		Response actualResponse = sessionPlayer1.chooseRole("round : 1, phase : 1", "role : BUILDER");
+		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }";
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
+	}		
 	
 	//@Test // requires deck modify code
 	public void testHandsAreDealt() {
