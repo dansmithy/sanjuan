@@ -8,6 +8,7 @@ import static com.github.restdriver.serverdriver.RestServerDriver.post;
 import static com.github.restdriver.serverdriver.RestServerDriver.put;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
@@ -53,6 +54,13 @@ public class GameDriverSession {
 		Response response = delete(wsBaseUri + "/users/" + requestValues.get("username"), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
+	//** GAME ADMIN ONLY ** 
+	//
+	public void orderDeck(List<Integer> order) {
+		// TODO Auto-generated method stub
+		
+	}	
+	
 	//** GAME METHODS ** //
 	
 	public Response createGame(String data) {
@@ -78,6 +86,11 @@ public class GameDriverSession {
 		return put(url, body(postValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
+	public Response makePlayChoice(String data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 	private Response rememberGame(Response response) {
 		gameId = extractGameId(response);
@@ -97,12 +110,6 @@ public class GameDriverSession {
 	public Response getGame(String gameId) {
 		Response response = get(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
 		return response;
-	}
-	
-
-
-	public void respond(String data) {
-		RequestValues requestValues = createRequest(DefaultValues.USER, data);
 	}
 	
 	private RequestValues createRequest(String data) {
@@ -139,5 +146,13 @@ public class GameDriverSession {
 			delete(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
 		}
 	}
+	
+	public void addTranslatedValues(String data) {
+		RequestValues values = new RequestValues().addReadableData(data);
+		for (Map.Entry<String, String> entry : values) {
+			getTranslatedValues().add(entry.getKey(), entry.getValue());
+		}
+	}
+
 
 }

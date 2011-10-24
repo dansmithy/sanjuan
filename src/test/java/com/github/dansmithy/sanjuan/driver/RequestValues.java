@@ -2,12 +2,15 @@ package com.github.dansmithy.sanjuan.driver;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
-public class RequestValues {
+public class RequestValues implements Iterable<Map.Entry<String, String>> {
 
 	private Map<String, String> values = new HashMap<String, String>();
 	
@@ -23,9 +26,23 @@ public class RequestValues {
 
 	public String toJson() {
 		JSONObject obj = new JSONObject();
-		obj.putAll(values);
+		for (Map.Entry<String, String> entry : this) {
+			Object value = entry.getValue();
+			if (entry.getValue().contains(",")) {
+				value = JSONSerializer.toJSON(reformatArray(entry.getValue()));
+			}
+			obj.put(entry.getKey(), value);
+		}
 		return obj.toString();
 	}	
+
+	private String reformatArray(String value) {
+		String textQualifier = "'";
+		if (Character.isDigit(value.charAt(0))) {
+			textQualifier = "";
+		}
+		return String.format("[ %s%s%s ]", textQualifier, value.replaceAll(",", String.format("%s,%s", textQualifier, textQualifier)), textQualifier);		
+	}
 
 	public boolean containsKey(String key) {
 		return values.containsKey(key);
@@ -45,7 +62,7 @@ public class RequestValues {
 	
 	private Map<String, String> parse(String data) {
 		Map<String, String> dataMap = new HashMap<String, String>();
-		String[] pairs = data.split(", ");
+		String[] pairs = data.split("; ");
 		for (String pair : pairs) {
 			if (!pair.contains(" : ")) {
 				return dataMap;
@@ -59,6 +76,11 @@ public class RequestValues {
 	@Override
 	public String toString() {
 		return values.toString();
+	}
+
+	@Override
+	public Iterator<Entry<String, String>> iterator() {
+		return values.entrySet().iterator();
 	}
 
 

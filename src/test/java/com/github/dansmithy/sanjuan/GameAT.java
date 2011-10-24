@@ -12,13 +12,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.dansmithy.sanjuan.driver.DeckOrder;
 import com.github.dansmithy.sanjuan.driver.GameDriver;
 import com.github.dansmithy.sanjuan.driver.GameDriverSession;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GameAT {
 
-	private static final String ADMIN_ACCOUNT = String.format("username : %s, password : %s", "danny", "danny");
+	private static final String ADMIN_ACCOUNT = String.format("username : %s; password : %s", "danny", "danny");
 	
 	private GameDriver driver = new GameDriver("http://localhost:8086");
 	private GameDriverSession adminSession;
@@ -125,7 +126,7 @@ public class GameAT {
 	
 	/**
 	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(gameJoinedBy("bob")).and(gameStartedBy("alice"))
-	 * when(roleChosenBy("alice", "BUILDER"))
+	 * when(roleChosen("alice", "BUILDER"))
 	 * then(checkResponseIs("..."))
 	 */
 	@Test
@@ -134,7 +135,30 @@ public class GameAT {
 		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
 		sessionPlayer1.startGame();
 		
-		Response actualResponse = sessionPlayer1.chooseRole("round : 1, phase : 1", "role : BUILDER");
+		Response actualResponse = sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");
+		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }";
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
+		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
+	}		
+	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(deckOrderSetTo("order1").and(gameJoinedBy("bob")).and(gameStartedBy("alice")).and(roleChosen("alice", "BUILDER"))
+	 * when(doBuild("alice", "xx"))
+	 * then(checkResponseIs("..."))
+	 */
+//	@Test
+	public void testCanBuildCoffeeRoaster() {
+		// this could be always there ... or maybe set by deck order?
+		sessionPlayer1.addTranslatedValues("#coffeeroaster : xx");
+		
+		sessionPlayer1.createGame("username : #alice");
+		adminSession.orderDeck(DeckOrder.order1());
+		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		sessionPlayer1.startGame();
+		sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");
+		
+		Response actualResponse = sessionPlayer1.makePlayChoice("build : #coffeeroaster; payment : #one,#two,#three");
 		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }";
 		
 		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
