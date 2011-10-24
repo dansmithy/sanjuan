@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.BuildingType;
@@ -58,6 +59,8 @@ public class BuilderProcessor implements RoleProcessor {
 		Player player = gameUpdater.getCurrentPlayer();
 		PlayerNumbers numbers = player.getPlayerNumbers();
 		
+		verifyPlay(play, playChoice);
+		
 		gameUpdater.completedPlay(play, playChoice);
 		
 		player.moveToBuildings(playChoice.getBuild());
@@ -87,6 +90,19 @@ public class BuilderProcessor implements RoleProcessor {
 			}
 		}
 		
+	}
+
+	private void verifyPlay(Play play, PlayChoice playChoice) {
+		int cost = calculateCost(playChoice.getBuild(), play.getOffered());
+		if (playChoice.getPayment().size() != cost) {
+			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()));
+		}
+	}
+
+	private int calculateCost(Integer build, PlayOffered offered) {
+		int defaultCost = cardFactory.getBuildingType(build).getBuildingCost();
+		int discount = cardFactory.getBuildingType(build).isVioletBuilding() ? offered.getBuilderDiscountOnViolet() : offered.getBuilderDiscountOnProduction();
+		return defaultCost - discount;
 	}
 
 

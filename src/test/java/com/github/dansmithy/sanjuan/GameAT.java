@@ -148,7 +148,7 @@ public class GameAT {
 	 * then(checkResponseIs("..."))
 	 */
 	@Test
-	public void testCanBuildCoffeeRoaster() {
+	public void testCanBuildForCorrectPrice() {
 		// this could be always there ... or maybe set by deck order?
 		sessionPlayer1.addTranslatedValues(DeckOrder.deckShorthand());
 		
@@ -164,6 +164,26 @@ public class GameAT {
 		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
 		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));
 	}		
+	
+	/**
+	 * given(userExists("alice")).and(userExists("bob")).and(gameCreatedBy("alice")).and(deckOrderSetTo("order1").and(gameJoinedBy("bob")).and(gameStartedBy("alice")).and(roleChosen("alice", "BUILDER"))
+	 * when(doBuild("alice", "xx"))
+	 * then(checkResponseIs("..."))
+	 */
+	@Test
+	public void testCannotUnderpay() {
+		sessionPlayer1.addTranslatedValues(DeckOrder.deckShorthand());
+		
+		sessionPlayer1.createGame("username : #alice");
+		adminSession.orderDeck(DeckOrder.order1());
+		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
+		sessionPlayer1.startGame();
+		sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");
+		
+		Response actualResponse = sessionPlayer1.makePlayChoice("round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand");
+		
+		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_BAD_REQUEST)));
+	}
 	
 	//@Test // requires deck modify code
 	public void testHandsAreDealt() {
