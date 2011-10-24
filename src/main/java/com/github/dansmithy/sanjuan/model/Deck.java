@@ -12,7 +12,6 @@ public class Deck {
 	public Deck(List<Integer> supply) {
 		super();
 		this.supply = supply;
-		reshuffleDeck();
 	}
 	
 	public void discard(List<Integer> cards) {
@@ -47,7 +46,7 @@ public class Deck {
 		return cards;
 	}
 	
-	private void reshuffleDeck() {
+	public void reshuffleDeck() {
 		supply.addAll(discard);
 		discard.clear();
 		Collections.shuffle(supply);

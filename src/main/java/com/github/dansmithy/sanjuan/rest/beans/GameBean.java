@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.AuthenticatedUserDoesNotMatchSubmittedData;
 import com.github.dansmithy.sanjuan.game.GameService;
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Player;
@@ -125,5 +126,11 @@ public class GameBean implements GameResource {
 	@Override
 	public void deleteGame(Long gameId) {
 		gameService.deleteGame(gameId);
+	}
+
+	@Override
+	public Deck orderDeck(Long gameId, List<Integer> deckOrder) {
+		// TODO verify game state
+		return gameService.updateDeckOrder(gameId, deckOrder);
 	}
 }

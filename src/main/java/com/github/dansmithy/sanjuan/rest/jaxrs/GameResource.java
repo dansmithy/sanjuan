@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
@@ -71,4 +72,10 @@ public interface GameResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	Game makePlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber, PlayChoice playChoice);
 
+	@PUT
+	@Path("{gameId}/deck")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SanJuanRole.ADMIN })
+	Deck orderDeck(@PathParam("gameId") Long gameId, List<Integer> deckOrder);
 }

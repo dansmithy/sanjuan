@@ -9,6 +9,7 @@ import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
@@ -214,6 +215,15 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		gameDao.deleteGame(gameId);
+	}
+
+	@Override
+	public Deck updateDeckOrder(Long gameId, List<Integer> deckOrder) {
+		Game game = gameDao.getGame(gameId);	
+		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		Deck deck = new Deck(deckOrder);
+		gameUpdater.updateDeck(deck);
+		return gameDao.gameUpdate(gameId, gameUpdater).getDeck();
 	}
 
 

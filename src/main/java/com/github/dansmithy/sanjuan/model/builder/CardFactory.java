@@ -33,6 +33,7 @@ public class CardFactory {
 	}
 
 	private void addBuildingTypes() {
+		addBuildingType(new BuildingType("IndigoPlant",10,1,1,BuildingCategory.PRODUCTION, 1, "standard"));
 		addBuildingType(new BuildingType("Aqueduct",3,3,2,BuildingCategory.VIOLET, 1, "aqueduct"));
 		addBuildingType(new BuildingType("Archive",3,1,1,BuildingCategory.VIOLET, 1, "archive"));
 		addBuildingType(new BuildingType("BlackMarket",3,2,1,BuildingCategory.VIOLET, 1, "standard"));
@@ -61,7 +62,6 @@ public class CardFactory {
 		addBuildingType(new BuildingType("TriumphalArch",2,6,0,BuildingCategory.VIOLET, 2, "triumphalarch"));
 		addBuildingType(new BuildingType("VictoryColumn",3,4,4,BuildingCategory.VIOLET, 1, "standard"));
 		addBuildingType(new BuildingType("Well",3,2,1,BuildingCategory.VIOLET, 1, "well"));		
-		addBuildingType(new BuildingType("IndigoPlant",10,1,1,BuildingCategory.PRODUCTION, 1, "standard"));
 	}
 	
 	private void addBuildingType(BuildingType buildingType) {

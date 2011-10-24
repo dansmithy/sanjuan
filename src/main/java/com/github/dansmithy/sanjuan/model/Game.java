@@ -45,10 +45,12 @@ public class Game {
 		}
 		state = GameState.PLAYING;
 		List<Integer> orderedDeck = cardFactory.createOrderedDeck();
-		for (Player player : players) {
-			player.moveToBuildings(orderedDeck.remove(orderedDeck.size()-1));
-		}
 		deck = new Deck(orderedDeck);
+		for (Player player : players) {
+			player.moveToBuildings(deck.takeOne());
+		}
+		
+		deck.reshuffleDeck();
 		for (Player player : players) {
 			player.addToHand(deck.take(STARTING_CARDS));
 		}

@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.game;
 
 import java.util.List;
 
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Player;
@@ -28,5 +29,7 @@ public interface GameService {
 	Game makePlay(PlayCoords coords, PlayChoice playChoice);
 
 	void deleteGame(Long gameId);
+
+	Deck updateDeckOrder(Long gameId, List<Integer> deckOrder);
 
 }
