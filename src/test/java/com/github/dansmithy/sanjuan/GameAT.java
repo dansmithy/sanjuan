@@ -147,10 +147,10 @@ public class GameAT {
 	 * when(doBuild("alice", "xx"))
 	 * then(checkResponseIs("..."))
 	 */
-//	@Test
+	@Test
 	public void testCanBuildCoffeeRoaster() {
 		// this could be always there ... or maybe set by deck order?
-		sessionPlayer1.addTranslatedValues("#coffeeroaster : xx");
+		sessionPlayer1.addTranslatedValues(DeckOrder.deckShorthand());
 		
 		sessionPlayer1.createGame("username : #alice");
 		adminSession.orderDeck(DeckOrder.order1());
@@ -158,8 +158,8 @@ public class GameAT {
 		sessionPlayer1.startGame();
 		sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");
 		
-		Response actualResponse = sessionPlayer1.makePlayChoice("build : #coffeeroaster; payment : #one,#two,#three");
-		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }";
+		Response actualResponse = sessionPlayer1.makePlayChoice("round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost");
+		String expectedGame = "{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED' } ] } ] } ] }";
 		
 		Assert.assertThat(actualResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
 		Assert.assertThat(actualResponse.asText(), containsJson(expectedGame, whenTranslatedBy(sessionPlayer1.getTranslatedValues())));

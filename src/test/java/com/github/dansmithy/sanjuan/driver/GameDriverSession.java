@@ -86,9 +86,11 @@ public class GameDriverSession {
 		return put(url, body(postValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
-	public Response makePlayChoice(String data) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response makePlayChoice(String urlData, String postData) {
+		RequestValues urlValues = createRequest(urlData);
+		RequestValues postValues = createRequest(postData);
+		String url = String.format("%s/games/%s/rounds/%s/phases/%s/plays/%s/decision", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"), urlValues.get("play"));
+		return put(url, body(postValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
 	

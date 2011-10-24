@@ -44,18 +44,27 @@ public class Game {
 			throw new IllegalStateException("Not enough players to start a game");
 		}
 		state = GameState.PLAYING;
-		List<Integer> orderedDeck = cardFactory.createOrderedDeck();
-		deck = new Deck(orderedDeck);
-		for (Player player : players) {
-			player.moveToBuildings(deck.takeOne());
-		}
+		initiateDeck(cardFactory);
 		
-		deck.reshuffleDeck();
 		for (Player player : players) {
 			player.addToHand(deck.take(STARTING_CARDS));
 		}
 		tariffs = tariffBuilder.createRandomTariff();
 		startNewRound(0);
+	}
+
+	private void initiateDeck(CardFactory cardFactory) {
+		boolean useRandomOrder = deck == null;
+		if (useRandomOrder) {
+			List<Integer> orderedDeck = cardFactory.createOrderedDeck();
+			deck = new Deck(orderedDeck);
+		}
+		for (Player player : players) {
+			player.moveToBuildings(deck.takeOne());
+		}
+		if (useRandomOrder) {
+			deck.reshuffleDeck();
+		}
 	}
 
 	private void startNewRound(int governorPlayerIndex) {
