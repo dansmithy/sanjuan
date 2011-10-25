@@ -54,9 +54,8 @@ public class GameDriverSession {
 	
 	//** GAME ADMIN ONLY ** 
 	//
-	public void orderDeck(List<Integer> order) {
-		// TODO Auto-generated method stub
-		
+	public void orderDeck(String gameId, List<Integer> order) {
+		Response response = put(wsBaseUri + "/games/" + gameId + "/deck", body(JSONSerializer.toJSON(order).toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	
 	//** GAME METHODS ** //

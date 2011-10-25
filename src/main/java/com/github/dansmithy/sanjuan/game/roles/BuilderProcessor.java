@@ -59,7 +59,7 @@ public class BuilderProcessor implements RoleProcessor {
 		Player player = gameUpdater.getCurrentPlayer();
 		PlayerNumbers numbers = player.getPlayerNumbers();
 		
-		verifyPlay(play, playChoice);
+		verifyPlay(player, play, playChoice);
 		
 		gameUpdater.completedPlay(play, playChoice);
 		
@@ -92,7 +92,11 @@ public class BuilderProcessor implements RoleProcessor {
 		
 	}
 
-	private void verifyPlay(Play play, PlayChoice playChoice) {
+	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {
+		if (!player.getHand().contains(playChoice.getBuild())) {
+			throw new PlayChoiceInvalidException("Cannot build as build choice is not one you own.");
+		}
+		
 		int cost = calculateCost(playChoice.getBuild(), play.getOffered());
 		if (playChoice.getPayment().size() != cost) {
 			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()));

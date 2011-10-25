@@ -3,7 +3,7 @@ package com.github.dansmithy.sanjuan;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.given;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.then;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.when;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.deckOrdered;
+import static com.github.dansmithy.sanjuan.driver.BddPartProvider.orderDeckOwnedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameCreatedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByContains;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByJoinedBy;
@@ -110,7 +110,7 @@ public class GameBddAT {
 		
 		bdd.runTest(
 				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(deckOrdered(DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
+				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
 				
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost")),
 				
@@ -123,12 +123,26 @@ public class GameBddAT {
 		
 		bdd.runTest(
 				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(deckOrdered(DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
+				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
 				
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand")),
 				
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
 				);
 	}
+
+	@Test
+	public void testCanOnlyBuildOwnedCards() {
 		
+		bdd.runTest(
+				
+				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
+				
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #quarry; payment : #coffeeroaster,#aqueduct,#marketstand")),
+				
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+				);
+	}
+	
+	
 }

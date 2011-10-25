@@ -153,7 +153,7 @@ public class GameAT {
 		sessionPlayer1.addTranslatedValues(DeckOrder.deckShorthand());
 		
 		sessionPlayer1.createGame("username : #alice");
-		adminSession.orderDeck(DeckOrder.Order1);
+		adminSession.orderDeck(sessionPlayer1.getGameId(), DeckOrder.Order1);
 		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
 		sessionPlayer1.startGame();
 		sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");
@@ -175,7 +175,7 @@ public class GameAT {
 		sessionPlayer1.addTranslatedValues(DeckOrder.deckShorthand());
 		
 		sessionPlayer1.createGame("username : #alice");
-		adminSession.orderDeck(DeckOrder.Order1);
+		adminSession.orderDeck(sessionPlayer1.getGameId(), DeckOrder.Order1);
 		sessionPlayer2.joinGame(sessionPlayer1.getGameId(), "username : #bob");
 		sessionPlayer1.startGame();
 		sessionPlayer1.chooseRole("round : 1; phase : 1", "role : BUILDER");

@@ -38,7 +38,7 @@ public class BddPartProvider {
 		return new BddPart<BddContext>() {
 			@Override
 			public void execute(BddContext context) {
-				Assert.assertThat(context.getLastResponse().getStatusCode(), is(equalTo(code)));
+				Assert.assertThat("Response code is not as expected", context.getLastResponse().getStatusCode(), is(equalTo(code)));
 			}
 		};
 	}	
@@ -71,12 +71,12 @@ public class BddPartProvider {
 		};
 	}	
 	
-	public static BddPart<BddContext> deckOrdered(final List<Integer> order) {
+	public static BddPart<BddContext> orderDeckOwnedBy(final String username, final List<Integer> order) {
 		return new BddPart<BddContext>() {
 			@Override
 			public void execute(BddContext context) {
 				context.getAdminSession().addTranslatedValues(DeckOrder.deckShorthand());
-				context.getAdminSession().orderDeck(order);
+				context.getAdminSession().orderDeck(context.getSession(username).getGameId(), order);
 			}
 		};
 	}		

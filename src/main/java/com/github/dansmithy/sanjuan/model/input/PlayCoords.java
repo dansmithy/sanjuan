@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model.input;
 
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.GameState;
 
 
 public class PlayCoords {
@@ -20,7 +21,11 @@ public class PlayCoords {
 	}
 	
 	public static PlayCoords createFromGame(Game game) {
-		return new PlayCoords(game.getGameId(), game.getRoundNumber(), game.getCurrentRound().getPhaseNumber(), game.getCurrentRound().getCurrentPhase().getPlayNumber());
+		if (game.getState().equals(GameState.PLAYING)) {
+			return new PlayCoords(game.getGameId(), game.getRoundNumber(), game.getCurrentRound().getPhaseNumber(), game.getCurrentRound().getCurrentPhase().getPlayNumber());
+		} else {
+			return new PlayCoords(game.getGameId(), 0, 0, 0);
+		}
 	}	
 
 	public Long getGameId() {
