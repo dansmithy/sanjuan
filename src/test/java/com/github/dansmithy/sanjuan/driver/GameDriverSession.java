@@ -25,7 +25,6 @@ public class GameDriverSession {
 
 	private final TranslatedValues translatedValues;
 	private final String sessionId;
-	private final String baseUri;
 	private final String wsBaseUri;
 	
 	private String gameId;
@@ -35,7 +34,6 @@ public class GameDriverSession {
 	}
 	
 	public GameDriverSession(String baseUri, String sessionId, TranslatedValues translatedValues) {
-		this.baseUri = baseUri;
 		this.sessionId = sessionId;
 		this.translatedValues = translatedValues;
 		this.wsBaseUri = String.format("%s/ws", baseUri);
