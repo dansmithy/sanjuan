@@ -15,126 +15,127 @@ import com.github.restdriver.serverdriver.http.response.Response;
 
 public class BddPartProvider {
 
-	public static BddPart<BddContext> verifySuccessfulResponseContains(final String responseData) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> verifySuccessfulResponseContains(final String responseData) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Assert.assertThat("Response code is not 200", context.getLastResponse().getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
 				Assert.assertThat(context.getLastResponse().asText(), containsJson(responseData, whenTranslatedBy(context.getTranslatedValues())));
 			}
 		};
 	}	
 	
-//	public static BddPart<BddContext> verifySuccessful() {
-//		return new BddPart<BddContext>() {
+//	public static BddPart<GameDriver> verifySuccessful() {
+//		return new BddPart<GameDriver>() {
 //			@Override
-//			public void execute(BddContext context) {
+//			public void execute(GameDriver context) {
 //				Assert.assertThat(context.getLastResponse().getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
 //			}
 //		};
 //	}	
 	
-	public static BddPart<BddContext> verifyResponseCodeIs(final int code) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> verifyResponseCodeIs(final int code) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Assert.assertThat("Response code is not as expected", context.getLastResponse().getStatusCode(), is(equalTo(code)));
 			}
 		};
 	}	
 	
-	public static BddPart<BddContext> userExists(final String data) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> userExists(final String data) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				context.getAdminSession().createUser(data);
 			}
 		};
 	}
 	
-	public static BddPart<BddContext> userAuthenticated(final String username) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> userAuthenticated(final String username) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				context.loginUser(username);
 			}
 		};
 	}
 	
-	public static BddPart<BddContext> userExistsAndAuthenticated(final String username) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> userExistsAndAuthenticated(final String username) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
-				context.getAdminSession().createUser(String.format("username : %s", username));
+			public void execute(GameDriver context) {
+				context.getAdminSession().createUser(username);
 				context.loginUser(username);
 			}
 		};
 	}	
 	
-	public static BddPart<BddContext> orderDeckOwnedBy(final String username, final List<Integer> order) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> orderDeckOwnedBy(final String username, final List<Integer> order) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				context.getAdminSession().addTranslatedValues(DeckOrder.deckShorthand());
 				context.getAdminSession().orderDeck(context.getSession(username).getGameId(), order);
 			}
 		};
 	}		
 	
-	public static BddPart<BddContext> gameOwnedByContains(final String owner, final String gameJson) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> gameOwnedByContains(final String owner, final String gameJson) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Response response = context.getSession(owner).getGame();
 				Assert.assertThat(response.asText(), containsJson(gameJson, whenTranslatedBy(context.getTranslatedValues())));
 			}
 		};
 	}	
 	
-	public static BddPart<BddContext> gameCreatedBy(final String username) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> gameCreatedBy(final String username) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Response actualResponse = context.getSession(username).createGame(String.format("username : %s", username));
 				context.setLastResponse(actualResponse);
 			}
 		};
 	}
 	
-	public static BddPart<BddContext> gameOwnedByJoinedBy(final String owner, final String joiner) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> gameOwnedByJoinedBy(final String owner, final String joiner) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
-				Response actualResponse = context.getSession(joiner).joinGame(context.getSession(owner).getGameId(), String.format("username : %s", joiner));
+			public void execute(GameDriver context) {
+				String gameId = context.getSession(owner).getGameId();
+				Response actualResponse = context.getSession(joiner).joinGame(gameId, String.format("username : %s", joiner));
 				context.setLastResponse(actualResponse);
 			}
 		};
 	}
 	
-	public static BddPart<BddContext> gameStartedBy(final String username) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> gameStartedBy(final String username) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Response actualResponse = context.getSession(username).startGame();
 				context.setLastResponse(actualResponse);
 			}
 		};
 	}	
 	
-	public static BddPart<BddContext> roleChosenBy(final String username, final String urlData, final String postData) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> roleChosenBy(final String username, final String urlData, final String postData) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Response actualResponse = context.getSession(username).chooseRole(urlData, postData);
 				context.setLastResponse(actualResponse);
 			}
 		};
 	}	
 	
-	public static BddPart<BddContext> userPlays(final String username, final String urlData, final String postData) {
-		return new BddPart<BddContext>() {
+	public static BddPart<GameDriver> userPlays(final String username, final String urlData, final String postData) {
+		return new BddPart<GameDriver>() {
 			@Override
-			public void execute(BddContext context) {
+			public void execute(GameDriver context) {
 				Response actualResponse = context.getSession(username).makePlayChoice(urlData, postData);
 				context.setLastResponse(actualResponse);
 			}

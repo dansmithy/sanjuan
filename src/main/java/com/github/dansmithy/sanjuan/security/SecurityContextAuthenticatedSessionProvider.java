@@ -2,10 +2,12 @@ package com.github.dansmithy.sanjuan.security;
 
 import javax.inject.Named;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.github.dansmithy.sanjuan.model.User;
 import com.github.dansmithy.sanjuan.security.user.SanJuanUserDetails;
 
 /**
@@ -39,6 +41,12 @@ public class SecurityContextAuthenticatedSessionProvider implements Authenticate
 		} else {
 			throw new RuntimeException("Attempt to obtain username when there is no authenticated user.");
 		}
+	}
+	
+	public void addUser(User user) {
+		SanJuanUserDetails userDetails = new SanJuanUserDetails(user);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 }

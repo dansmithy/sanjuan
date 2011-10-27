@@ -3,11 +3,11 @@ package com.github.dansmithy.sanjuan;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.given;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.then;
 import static com.github.dansmithy.sanjuan.bdd.BddHelper.when;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.orderDeckOwnedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameCreatedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByContains;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByJoinedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameStartedBy;
+import static com.github.dansmithy.sanjuan.driver.BddPartProvider.orderDeckOwnedBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.userExistsAndAuthenticated;
 import static com.github.dansmithy.sanjuan.driver.BddPartProvider.userPlays;
@@ -18,13 +18,17 @@ import static java.net.HttpURLConnection.HTTP_CONFLICT;
 
 import org.junit.Test;
 
-import com.github.dansmithy.sanjuan.driver.BddTestRunner;
+import com.github.dansmithy.sanjuan.bdd.BddTestRunner;
+import com.github.dansmithy.sanjuan.driver.BddSpringTestRunner;
 import com.github.dansmithy.sanjuan.driver.DeckOrder;
+import com.github.dansmithy.sanjuan.driver.GameDriver;
 
 public class GameBddAT {
 
-	private static final String ADMIN_ACCOUNT = String.format("username : %s; password : %s", "danny", "danny");
-	private BddTestRunner bdd = new BddTestRunner("http://localhost:8086", ADMIN_ACCOUNT);
+	private static final String ADMIN_USERNAME = "danny";
+	private static final String ADMIN_PASSWORD = "danny";
+//	private BddTestRunner<GameDriver> bdd = new BddRestTestRunner("http://localhost:8086", ADMIN_USERNAME, ADMIN_PASSWORD);
+	private static BddTestRunner<GameDriver> bdd = new BddSpringTestRunner(ADMIN_USERNAME, ADMIN_PASSWORD);
 	
 	@Test
 	public void testCanCreateGame() {

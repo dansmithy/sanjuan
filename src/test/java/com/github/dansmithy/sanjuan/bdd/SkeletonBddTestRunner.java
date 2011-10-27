@@ -7,12 +7,24 @@ public abstract class SkeletonBddTestRunner<T> implements BddTestRunner<T> {
 		T context = createContext();
 		beforeTest(context);
 		try {
-			given.execute(context);
-			event.execute(context);
-			outcome.execute(context);
+			doGiven(given, context);
+			doEvent(event, context);
+			doOutcome(outcome, context);
 		} finally {
 			afterTest(context);
 		}
+	}
+
+	protected void doOutcome(BddPart<T> outcome, T context) {
+		outcome.execute(context);
+	}
+
+	protected void doEvent(BddPart<T> event, T context) {
+		event.execute(context);
+	}
+
+	protected void doGiven(BddPart<T> given, T context) {
+		given.execute(context);
 	}
 
 	protected abstract T createContext();

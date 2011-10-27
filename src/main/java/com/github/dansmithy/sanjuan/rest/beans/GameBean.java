@@ -39,7 +39,7 @@ public class GameBean implements GameResource {
 	
 	@Override
 	public Response getGame(Long gameId, Request request) {
-		Game game = gameService.getGame(gameId);
+		Game game = getGame(gameId);
 		EntityTag tag = new EntityTag(Long.toString(game.getVersion()));
 		ResponseBuilder builder = request.evaluatePreconditions(tag);
 		if (builder != null) {
@@ -48,6 +48,10 @@ public class GameBean implements GameResource {
 			return Response.ok(game).tag(tag).build();
 		}
 	}	
+	
+	public Game getGame(Long gameId) {
+		return gameService.getGame(gameId);	
+	}
 	
 	@Override
 	public List<Game> getGames(String playerName, String stateName) {

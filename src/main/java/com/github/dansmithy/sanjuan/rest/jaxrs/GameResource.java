@@ -39,6 +39,11 @@ public interface GameResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	Player joinGame(@PathParam("gameId") Long gameId, String playerName);
 	
+	/**
+	 * For testing
+	 */
+	Game getGame(Long gameId);
+	
 	@GET
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
