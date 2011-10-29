@@ -19,16 +19,13 @@ import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
+import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.DeckOrder;
 import com.github.dansmithy.driver.GameDriver;
-import com.github.dansmithy.spring.BddSpringTestRunner;
 
 public class GameBddAT {
 
-	private static final String ADMIN_USERNAME = "danny";
-	private static final String ADMIN_PASSWORD = "danny";
-//	private BddTestRunner<GameDriver> bdd = new BddRestTestRunner("http://localhost:8086", ADMIN_USERNAME, ADMIN_PASSWORD);
-	private static BddTestRunner<GameDriver> bdd = new BddSpringTestRunner(ADMIN_USERNAME, ADMIN_PASSWORD);
+	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory().createTestRunner();
 	
 	@Test
 	public void testCanCreateGame() {

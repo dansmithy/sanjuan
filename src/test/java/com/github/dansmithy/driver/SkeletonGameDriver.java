@@ -64,8 +64,10 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	@Override
 	public void cleanup() {
 		for (String user : playerSessions.keySet()) {
-			playerSessions.get(user).deleteAnyGame();
-			getAdminSession().deleteUser(String.format("username : %s", user));
+			if (!user.equals(adminUsername)) {
+				playerSessions.get(user).deleteAnyGame();
+				getAdminSession().deleteUser(String.format("username : %s", user));
+			}
 		}
 		getAdminSession().logout();
 	}

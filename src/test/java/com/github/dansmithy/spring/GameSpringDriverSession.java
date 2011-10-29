@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import com.github.dansmithy.driver.DefaultValues;
 import com.github.dansmithy.driver.GameDriverSession;
