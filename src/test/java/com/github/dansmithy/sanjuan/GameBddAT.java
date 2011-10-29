@@ -1,27 +1,27 @@
 package com.github.dansmithy.sanjuan;
 
-import static com.github.dansmithy.sanjuan.bdd.BddHelper.given;
-import static com.github.dansmithy.sanjuan.bdd.BddHelper.then;
-import static com.github.dansmithy.sanjuan.bdd.BddHelper.when;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameCreatedBy;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByContains;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameOwnedByJoinedBy;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.gameStartedBy;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.orderDeckOwnedBy;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.userExistsAndAuthenticated;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.userPlays;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.verifyResponseCodeIs;
-import static com.github.dansmithy.sanjuan.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static com.github.dansmithy.bdd.BddHelper.given;
+import static com.github.dansmithy.bdd.BddHelper.then;
+import static com.github.dansmithy.bdd.BddHelper.when;
+import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
+import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByContains;
+import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
+import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
+import static com.github.dansmithy.driver.BddPartProvider.orderDeckOwnedBy;
+import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
+import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
+import static com.github.dansmithy.driver.BddPartProvider.userPlays;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 
 import org.junit.Test;
 
-import com.github.dansmithy.sanjuan.bdd.BddTestRunner;
-import com.github.dansmithy.sanjuan.driver.BddSpringTestRunner;
-import com.github.dansmithy.sanjuan.driver.DeckOrder;
-import com.github.dansmithy.sanjuan.driver.GameDriver;
+import com.github.dansmithy.bdd.BddTestRunner;
+import com.github.dansmithy.driver.DeckOrder;
+import com.github.dansmithy.driver.GameDriver;
+import com.github.dansmithy.spring.BddSpringTestRunner;
 
 public class GameBddAT {
 
