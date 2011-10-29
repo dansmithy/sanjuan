@@ -4,12 +4,7 @@ import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
-import static com.github.dansmithy.driver.BddPartProvider.orderDeckOwnedBy;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
@@ -19,7 +14,6 @@ import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
-import com.github.dansmithy.driver.DeckOrder;
 import com.github.dansmithy.driver.GameDriver;
 
 public class BuilderAT {

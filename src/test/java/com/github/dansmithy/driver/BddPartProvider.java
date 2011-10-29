@@ -123,17 +123,6 @@ public class BddPartProvider {
 		};
 	}	
 	
-	public static BddPart<GameDriver> gameStartedByOtherUser(final String gameOwner, final String gameStarter) {
-		return new BddPart<GameDriver>() {
-			@Override
-			public void execute(GameDriver context) {
-				String gameId = context.getSession(gameOwner).getGameId();
-				Response actualResponse = context.getSession(gameStarter).startGame();
-				context.setLastResponse(actualResponse);
-			}
-		};
-	}	
-	
 	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player1, final String player2) {
 		return new SimpleBddParts<GameDriver>(userExistsAndAuthenticated(player1))
 						.and(userExistsAndAuthenticated(player2))
