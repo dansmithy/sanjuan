@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
@@ -41,7 +42,7 @@ public class Game {
 	
 	public void startPlaying(CardFactory cardFactory, TariffBuilder tariffBuilder) {
 		if (players.size() < 2) {
-			throw new IllegalStateException("Not enough players to start a game");
+			throw new IllegalGameStateException("Not enough players to start a game.");
 		}
 		state = GameState.PLAYING;
 		initiateDeck(cardFactory);
