@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan;
+package com.github.dansmithy.at;
 
 import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
@@ -16,7 +16,6 @@ import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulRespon
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
 
 import org.junit.Test;
 
