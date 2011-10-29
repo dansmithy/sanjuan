@@ -22,6 +22,19 @@ public class BuilderAT {
 			.createTestRunner();
 
 	@Test
+	public void testCorrectDiscountsOffered() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(roleChosenBy("#alice", "round : 1; phase : 1",
+						"role : BUILDER")),
+
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'builderDiscountOnProduction' : 1, 'builderDiscountOnViolet' : 1 } } ] } ] } ] }")));
+	}
+	
+	@Test
 	public void testCanBuildForCorrectPrice() {
 
 		bdd.runTest(
