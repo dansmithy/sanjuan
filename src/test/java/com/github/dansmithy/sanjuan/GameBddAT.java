@@ -136,6 +136,20 @@ public class GameBddAT {
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'AWAITING_ROLE_CHOICE' } ] } ] }")));
 	}
+	
+	@Test
+	public void testCannotStartGameIfFewerThanTwoPlayers() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice")),
+
+				when(gameStartedBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}	
 
 	@Test
 	public void testCanChooseRole() {
