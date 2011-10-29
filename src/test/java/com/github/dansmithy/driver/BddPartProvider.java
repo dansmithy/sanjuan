@@ -122,6 +122,17 @@ public class BddPartProvider {
 		};
 	}	
 	
+	public static BddPart<GameDriver> gameStartedByOtherUser(final String gameOwner, final String gameStarter) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				String gameId = context.getSession(gameOwner).getGameId();
+				Response actualResponse = context.getSession(gameStarter).startGame();
+				context.setLastResponse(actualResponse);
+			}
+		};
+	}	
+	
 	public static BddPart<GameDriver> roleChosenBy(final String username, final String urlData, final String postData) {
 		return new BddPart<GameDriver>() {
 			@Override

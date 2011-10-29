@@ -10,7 +10,9 @@ import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
 import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static com.github.dansmithy.driver.BddPartProvider.gameStartedByOtherUser;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import org.junit.Test;
@@ -116,6 +118,21 @@ public class GameCreationAT {
 				when(gameOwnedByJoinedBy("#alice", "#bob")),
 
 				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}
+
+	@Test 
+	public void testCannotStartSomeoneElsesGame() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
+				when(gameStartedByOtherUser("#alice", "#bob")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
 	}
 
 	@Test
