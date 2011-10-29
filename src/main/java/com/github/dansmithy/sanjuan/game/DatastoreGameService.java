@@ -94,8 +94,9 @@ public class DatastoreGameService implements GameService {
 		// player/change state, then try to update in this thread. Version
 		// numbers should do that ok!
 		
-		// TODO check game state is recruiting
-		
+		if (!game.getState().equals(GameState.RECRUITING)) {
+			throw new IllegalGameStateException(String.format("Cannot join a game when in a %s state.", game.getState().toString()));
+		}
 		if (game.hasPlayer(playerName)) {
 			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName));
 		}

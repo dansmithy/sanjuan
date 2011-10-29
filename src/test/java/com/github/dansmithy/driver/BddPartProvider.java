@@ -38,7 +38,7 @@ public class BddPartProvider {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				Assert.assertThat("Response code is not as expected", context.getLastResponse().getStatusCode(), is(equalTo(code)));
+				Assert.assertThat(String.format("Response code is not as expected for response with content [%s].", context.getLastResponse().asText()), context.getLastResponse().getStatusCode(), is(equalTo(code)));
 			}
 		};
 	}	

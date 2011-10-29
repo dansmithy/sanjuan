@@ -8,10 +8,10 @@ import com.github.dansmithy.spring.BddSpringTestRunner;
 public class BddEnvironmentConfigTestRunnerFactory implements
 		BddTestRunnerFactory {
 
-	private static final String HTTP_MODE_KEY = "http.mode";
-	private static final String ADMIN_USERNAME_KEY = "admin.username";
-	private static final String ADMIN_PASSWORD_KEY = "admin.password";
-	private static final String BASE_URI_KEY = "base.uri";
+	private static final String HTTP_MODE_KEY = "httpMode";
+	private static final String ADMIN_USERNAME_KEY = "adminUsername";
+	private static final String ADMIN_PASSWORD_KEY = "adminPassword";
+	private static final String BASE_URI_KEY = "baseUri";
 
 	private Boolean httpMode = Boolean.TRUE;
 	private String adminUsername = "danny";

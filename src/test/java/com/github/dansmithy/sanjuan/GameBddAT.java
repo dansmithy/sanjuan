@@ -52,7 +52,21 @@ public class GameBddAT {
 				then(verifySuccessfulResponseContains("{ 'name' : '#bob' }"))
 					.and(gameOwnedByContains("#alice", "{ 'state' : 'RECRUITING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }"))
 				);
+	}
+	
+	@Test
+	public void testCannotJoinGameOncePlaying() {
+		
+		bdd.runTest(
+				
+				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(userExistsAndAuthenticated("#charlie")).and(gameCreatedBy("#alice")).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")),
+				
+				when(gameOwnedByJoinedBy("#alice", "#charlie")),
+				
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+				);
 	}	
+	
 	
 	@Test
 	public void testAttemptToJoinOwnGame() {
