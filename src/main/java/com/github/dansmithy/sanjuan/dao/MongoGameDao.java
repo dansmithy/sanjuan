@@ -135,39 +135,6 @@ public class MongoGameDao implements GameDao {
 		mongoTemplate.remove(query, Game.class);
 	}
 
-	@Deprecated
-	public void updatePhase(Long gameId, Integer roundIndex,
-			Integer phaseIndex, Phase phase) {
-		String updateElement = String.format("rounds.%d.phases.%d", roundIndex, phaseIndex);
-		Update update = new Update().set(updateElement, phase);
-		update.inc("version", 1);
-		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
-	}
-
-	@Deprecated
-	public void updatePlayer(Long gameId, int playerIndex, Player player) {
-		Update update = new Update().set(String.format("players.%d", playerIndex), player);
-		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
-	}
-
-	@Deprecated
-	public void updatePlay(Long gameId, int roundIndex, int phaseIndex, Integer playIndex, Play play) {
-		Update update = new Update().set(String.format("rounds.%d.phases.%d.plays.%d", roundIndex, phaseIndex, playIndex), play);
-		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
-	}
-	
-	@Deprecated
-	public void updateVersion(Long gameId, long version) {
-		Update update = new Update().set("version", version);
-		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
-	}
-
-	@Deprecated
-	public void updateDeck(Long gameId, Deck deck) {
-		Update update = new Update().set("deck", deck);
-		mongoTemplate.updateFirst(MongoHelper.createSimpleQuery("gameId", gameId), update, Game.class);
-	}
-
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.dao.GameDao#gameUpdate(java.lang.Long, com.github.dansmithy.sanjuan.model.update.GameUpdater)
 	 */
