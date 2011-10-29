@@ -25,139 +25,193 @@ import com.github.dansmithy.driver.GameDriver;
 
 public class GameBddAT {
 
-	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory().createTestRunner();
-	
+	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
+			.createTestRunner();
+
 	@Test
 	public void testCanCreateGame() {
 
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")), 
-				
+
+				given(userExistsAndAuthenticated("#alice")),
+
 				when(gameCreatedBy("#alice")),
-				
-				then(verifySuccessfulResponseContains("{ 'players' : [ { 'name' : '#alice', victoryPoints: 0 } ] }"))
-				);
+
+				then(verifySuccessfulResponseContains("{ 'players' : [ { 'name' : '#alice', victoryPoints: 0 } ] }")));
 	}
-	
+
 	@Test
 	public void testCanJoinGame() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")),
-				
+
+				given(userExistsAndAuthenticated("#alice")).and(
+						userExistsAndAuthenticated("#bob")).and(
+						gameCreatedBy("#alice")),
+
 				when(gameOwnedByJoinedBy("#alice", "#bob")),
-				
+
 				then(verifySuccessfulResponseContains("{ 'name' : '#bob' }"))
-					.and(gameOwnedByContains("#alice", "{ 'state' : 'RECRUITING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }"))
-				);
+						.and(gameOwnedByContains(
+								"#alice",
+								"{ 'state' : 'RECRUITING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 0 }, { 'name' : '#bob', victoryPoints: 0 } ] }")));
 	}
-	
+
 	@Test
 	public void testCannotJoinGameOncePlaying() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(userExistsAndAuthenticated("#charlie")).and(gameCreatedBy("#alice")).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")),
-				
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(userExistsAndAuthenticated("#charlie"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice")),
+
 				when(gameOwnedByJoinedBy("#alice", "#charlie")),
-				
-				then(verifyResponseCodeIs(HTTP_CONFLICT))
-				);
-	}	
-	
-	
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}
+
+	@Test
+	public void testMaximumOf4Players() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(userExistsAndAuthenticated("#charlie"))
+						.and(userExistsAndAuthenticated("#debbie"))
+						.and(userExistsAndAuthenticated("#eric"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameOwnedByJoinedBy("#alice", "#charlie"))
+						.and(gameOwnedByJoinedBy("#alice", "#debbie")),
+
+				when(gameOwnedByJoinedBy("#alice", "#eric")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}
+
 	@Test
 	public void testAttemptToJoinOwnGame() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(gameCreatedBy("#alice")),
-				
-				when(gameOwnedByJoinedBy("#alice", "#alice")),
-				
-				then(verifyResponseCodeIs(HTTP_CONFLICT))
-				);
+
+		given(userExistsAndAuthenticated("#alice"))
+				.and(gameCreatedBy("#alice")),
+
+		when(gameOwnedByJoinedBy("#alice", "#alice")),
+
+		then(verifyResponseCodeIs(HTTP_CONFLICT)));
 	}
-	
+
 	@Test
 	public void testAttemptToJoinGameTwice() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(gameOwnedByJoinedBy("#alice", "#bob")),
-				
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
 				when(gameOwnedByJoinedBy("#alice", "#bob")),
-				
-				then(verifyResponseCodeIs(HTTP_CONFLICT))
-				);
-	}		
-	
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}
+
 	@Test
 	public void testCanStartGame() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(gameOwnedByJoinedBy("#alice", "#bob")),
-				
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
 				when(gameStartedBy("#alice")),
-				
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'AWAITING_ROLE_CHOICE' } ] } ] }"))
-				);
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'AWAITING_ROLE_CHOICE' } ] } ] }")));
 	}
-	
+
 	@Test
 	public void testCanChooseRole() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")),
-				
-				when(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
-				
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }"))
-				);
-	}	
-	
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice")),
+
+				when(roleChosenBy("#alice", "round : 1; phase : 1",
+						"role : BUILDER")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT' } ] } ] } ] }")));
+	}
+
 	@Test
 	public void testCanBuildForCorrectPrice() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
-				
-				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost")),
-				
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED' } ] } ] } ] }"))
-				);
-	}		
-	
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED' } ] } ] } ] }")));
+	}
+
 	@Test
 	public void testCannotUnderpay() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
-				
-				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #coffeeroaster; payment : #aqueduct,#marketstand")),
-				
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
-				);
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"build : #coffeeroaster; payment : #aqueduct,#marketstand")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
 
 	@Test
 	public void testCanOnlyBuildOwnedCards() {
-		
+
 		bdd.runTest(
-				
-				given(userExistsAndAuthenticated("#alice")).and(userExistsAndAuthenticated("#bob")).and(gameCreatedBy("#alice")).and(orderDeckOwnedBy("#alice", DeckOrder.Order1)).and(gameOwnedByJoinedBy("#alice", "#bob")).and(gameStartedBy("#alice")).and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER")),
-				
-				when(userPlays("#alice", "round : 1; phase : 1; play : 1", "build : #quarry; payment : #coffeeroaster,#aqueduct,#marketstand")),
-				
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
-				);
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"build : #quarry; payment : #coffeeroaster,#aqueduct,#marketstand")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
-	
-	
+
 }

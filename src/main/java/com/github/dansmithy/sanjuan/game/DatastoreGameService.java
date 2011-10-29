@@ -27,6 +27,8 @@ import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 @Named
 public class DatastoreGameService implements GameService {
 
+	private static final int MAXIMUM_PLAYER_COUNT = 4;
+	
 	private TariffBuilder tariffBuilder;
 	private CardFactory cardFactory;
 	private final GameDao gameDao;
@@ -97,6 +99,9 @@ public class DatastoreGameService implements GameService {
 		if (!game.getState().equals(GameState.RECRUITING)) {
 			throw new IllegalGameStateException(String.format("Cannot join a game when in a %s state.", game.getState().toString()));
 		}
+		if (game.getPlayers().size() == MAXIMUM_PLAYER_COUNT) {
+			throw new IllegalGameStateException(String.format("This game already has the maximum number of players (%d)", MAXIMUM_PLAYER_COUNT));
+		}		
 		if (game.hasPlayer(playerName)) {
 			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName));
 		}
