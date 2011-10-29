@@ -22,37 +22,50 @@ public class JsonHashTranslator implements JsonTranslator {
 
 	private void translateArray(JSONArray array) {
 		for (int count = 0; count < array.size(); count++) {
-			translateJsonObj(array.get(count));
+			Object replacement = translateJsonObj(array.get(count));
+			if (replacement != null) {
+				array.remove(count);
+				array.add(count, replacement);
+			}
 		}
 	}
 
-	private boolean translateJsonObj(Object object) {
+	private Object translateJsonObj(Object object) {
 		if (object instanceof JSON) {
 			JSON json = (JSON)object;
 			if (json.isArray()) {
 				translateArray((JSONArray)json);
-				return false;
+				return null;
 			} else {
 				translateJSONObject((JSONObject)json);
-				return false;
+				return null;
 			}
 		} else if (object instanceof String) {
 			if (((String)object).startsWith("#")) {
-				return true;
+				String stringValue = (String)object;
+				return createTranslatedObject(stringValue);
 			}
 		}
-		return false;
-
+		return null;
+	}
+	
+	private Object createTranslatedObject(String stringValue) {
+		if (!translatedValues.containsKey(stringValue)) {
+			throw new RuntimeException(String.format("Cannot find %s as a translated value.", stringValue));
+		}
+		stringValue = translatedValues.get(stringValue);
+		Object value = stringValue;
+		if (Character.isDigit(stringValue.charAt(0))) {
+			value = new Long(stringValue);
+		}
+		return value;
 	}
 
 	private void translateJSONObject(JSONObject json) {
 		for (Object key : json.keySet()) {
-			if (translateJsonObj(json.get(key))) {
-				String value = ((String)json.get(key));
-				if (!translatedValues.containsKey(value)) {
-					throw new RuntimeException(String.format("Cannot find %s as a translated value.", value));
-				}
-				json.put(key, translatedValues.get(value));
+			Object replacement = translateJsonObj(json.get(key));
+			if (replacement != null) {
+				json.put(key, replacement);
 			}
 		}
 	}

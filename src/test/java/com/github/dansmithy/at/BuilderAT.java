@@ -43,7 +43,7 @@ public class BuilderAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED' } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'build' : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] } } ] } ] } ] }")));
 	}
 
 	@Test
