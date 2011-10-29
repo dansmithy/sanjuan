@@ -15,6 +15,8 @@ import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
 
 import org.junit.Test;
 
@@ -136,20 +138,36 @@ public class GameBddAT {
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'AWAITING_ROLE_CHOICE' } ] } ] }")));
 	}
-	
+
 	@Test
 	public void testCannotStartGameIfFewerThanTwoPlayers() {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice")),
+				given(userExistsAndAuthenticated("#alice")).and(
+						userExistsAndAuthenticated("#bob")).and(
+						gameCreatedBy("#alice")),
 
 				when(gameStartedBy("#alice")),
 
 				then(verifyResponseCodeIs(HTTP_CONFLICT)));
-	}	
+	}
+
+	@Test
+	public void testStartGameIfAlreadyPlaying() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+						.and(userExistsAndAuthenticated("#bob"))
+						.and(gameCreatedBy("#alice"))
+						.and(gameOwnedByJoinedBy("#alice", "#bob"))
+						.and(gameStartedBy("#alice")),
+
+				when(gameStartedBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_OK)));
+	}
 
 	@Test
 	public void testCanChooseRole() {
