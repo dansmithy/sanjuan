@@ -3,11 +3,8 @@ package com.github.dansmithy.at;
 import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
-import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
+import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -28,11 +25,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER")),
@@ -45,12 +38,8 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice")),
-
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				
 				when(roleChosenBy("#bob", "round : 1; phase : 1",
 						"role : BUILDER")),
 

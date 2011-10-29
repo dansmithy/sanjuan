@@ -3,6 +3,7 @@ package com.github.dansmithy.at;
 import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
+import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
 import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
 import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
@@ -31,13 +32,8 @@ public class BuilderAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
@@ -51,17 +47,33 @@ public class BuilderAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"build : #coffeeroaster; payment : #aqueduct,#marketstand")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+	}
+
+	/**
+	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
+	 * #prefecture
+	 */
+	@Test
+	public void testCannotOverpay() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays(
+						"#alice",
+						"round : 1; phase : 1; play : 1",
+						"build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost,#prefecture")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
@@ -71,13 +83,8 @@ public class BuilderAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(orderDeckOwnedBy("#alice", DeckOrder.Order1))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",

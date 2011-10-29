@@ -3,6 +3,7 @@ package com.github.dansmithy.at;
 import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
+import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
 import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByContains;
 import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
@@ -169,12 +170,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(gameCreatedBy("#alice"))
-						.and(gameOwnedByJoinedBy("#alice", "#bob"))
-						.and(gameStartedBy("#alice")),
-
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				
 				when(gameStartedBy("#alice")),
 
 				then(verifyResponseCodeIs(HTTP_OK)));

@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.github.dansmithy.bdd.BddPart;
+import com.github.dansmithy.bdd.SimpleBddParts;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class BddPartProvider {
@@ -132,6 +133,15 @@ public class BddPartProvider {
 			}
 		};
 	}	
+	
+	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player1, final String player2) {
+		return new SimpleBddParts<GameDriver>(userExistsAndAuthenticated(player1))
+						.and(userExistsAndAuthenticated(player2))
+						.and(gameCreatedBy(player1))
+						.and(orderDeckOwnedBy(player1, DeckOrder.Order1))
+						.and(gameOwnedByJoinedBy(player1, player2))
+						.and(gameStartedBy(player1));
+	}
 	
 	public static BddPart<GameDriver> roleChosenBy(final String username, final String urlData, final String postData) {
 		return new BddPart<GameDriver>() {
