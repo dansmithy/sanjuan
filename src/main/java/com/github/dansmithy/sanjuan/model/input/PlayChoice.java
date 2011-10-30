@@ -2,7 +2,6 @@ package com.github.dansmithy.sanjuan.model.input;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -29,7 +28,6 @@ public class PlayChoice {
 		this.payment = payment;
 	}
 	
-	@JsonIgnore
 	public List<Integer> getCouncilDiscarded() {
 		return councilDiscarded;
 	}

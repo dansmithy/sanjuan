@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -18,6 +19,7 @@ import com.github.dansmithy.driver.DefaultValues;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.TranslatedValues;
+import com.github.dansmithy.exception.AcceptanceTestException;
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
@@ -138,7 +140,11 @@ public class GameRestDriverSession implements GameDriverSession {
 
 	private String extractGameId(Response response) {
 		JSONObject json = (JSONObject)JSONSerializer.toJSON(response.asText());
-		return json.getString("gameId");
+		try {
+			return json.getString("gameId");
+		} catch (JSONException e) {
+			throw new AcceptanceTestException(String.format("Unable to find gameId. Got response code [%d] and content [%s].", response.getStatusCode(), response.asText()), e);
+		}
 	}
 	
 	/* (non-Javadoc)
