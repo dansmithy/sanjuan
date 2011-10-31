@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
@@ -62,11 +63,13 @@ public class CouncillorProcessor implements RoleProcessor {
 			if (offered.contains(discardedCard)) {
 				offered.remove(discardedCard);
 			} else if (player.getHand().contains(discardedCard)) {
-				// TODO verify can discard hand cards
+				if (!gameUpdater.getCurrentPlayer().getPlayerNumbers().isCouncillorCanDiscardHandCards()) {
+					throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard));
+				}
 				player.getHand().remove(discardedCard);
 				deck.discard(discardedCard);
 			} else {
-				throw new SanJuanUnexpectedException(String.format("Card %d is not a possible choice to discard", discardedCard));
+				throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard));
 			}
 		}
 		player.addToHand(offered);

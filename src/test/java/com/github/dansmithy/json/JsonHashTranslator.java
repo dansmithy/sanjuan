@@ -2,6 +2,7 @@ package com.github.dansmithy.json;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 import com.github.dansmithy.driver.TranslatedValues;
@@ -36,6 +37,8 @@ public class JsonHashTranslator implements JsonTranslator {
 			if (json.isArray()) {
 				translateArray((JSONArray)json);
 				return null;
+			} else if (json instanceof JSONNull) {
+				// do nothing
 			} else {
 				translateJSONObject((JSONObject)json);
 				return null;
