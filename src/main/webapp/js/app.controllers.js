@@ -167,7 +167,7 @@ GameController.prototype = {
 				if (this.isActivePlayer) {
 					this.responder = this.determineActivePlayerResponder(game);
 				} else {
-					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.leadPlayer + "</strong> to choose what " + this.roleStatusMap[game.$currentRole] };
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.$play.player + "</strong> to choose what " + this.roleStatusMap[game.$currentRole] };
 				}
 			} else if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
 				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.leadPlayer);
