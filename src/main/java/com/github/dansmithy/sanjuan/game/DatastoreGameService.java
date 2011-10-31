@@ -232,5 +232,13 @@ public class DatastoreGameService implements GameService {
 		return gameDao.gameUpdate(gameId, gameUpdater).getDeck();
 	}
 
+	@Override
+	public Play getPlay(Long gameId, Integer roundNumber, Integer phaseNumber,
+			Integer playNumber) {
+		Game game = gameDao.getGame(gameId);
+		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername(), new PlayCoords(gameId, roundNumber, phaseNumber, playNumber));
+		return gameUpdater.getCurrentPlay();
+	}
+
 
 }

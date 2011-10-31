@@ -17,8 +17,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -47,6 +50,7 @@ public interface GameResource {
 	@GET
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.Full.class)
 	Response getGame(@PathParam("gameId") Long gameId, @Context Request request);
 	
 	@DELETE
@@ -77,6 +81,12 @@ public interface GameResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	Game makePlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber, PlayChoice playChoice);
 
+	@GET
+	@Path("{gameId}/rounds/{roundNumber}/phases/{phaseNumber}/plays/{playNumber}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayDetail.class)
+	Play getPlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber);
+	
 	@PUT
 	@Path("{gameId}/deck")
 	@Produces(MediaType.APPLICATION_JSON)

@@ -25,11 +25,16 @@ public class GameUpdater {
 	private final String currentUser;
 	
 	public GameUpdater(Game game, String currentUser) {
-		this.game = game;
-		this.currentUser = currentUser;
-		this.playCoords = PlayCoords.createFromGame(game);
+		this(game, currentUser, PlayCoords.createFromGame(game));
 	}
 	
+	public GameUpdater(Game game, String currentUser, PlayCoords playCoords) {
+		super();
+		this.game = game;
+		this.playCoords = playCoords;
+		this.currentUser = currentUser;
+	}
+
 	public Game getGame() {
 		return game;
 	}

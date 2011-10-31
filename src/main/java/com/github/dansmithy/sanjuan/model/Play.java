@@ -1,7 +1,10 @@
 package com.github.dansmithy.sanjuan.model;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayOffered;
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 
 public class Play {
 
@@ -34,6 +37,7 @@ public class Play {
 		return state;
 	}
 
+	@JsonView(GameViews.PlayDetail.class)
 	public PlayChoice getPlayChoice() {
 		return playChoice;
 	}

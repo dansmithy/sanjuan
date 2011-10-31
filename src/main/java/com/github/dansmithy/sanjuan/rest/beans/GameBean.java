@@ -15,6 +15,7 @@ import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
+import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
@@ -136,5 +137,11 @@ public class GameBean implements GameResource {
 	public Deck orderDeck(Long gameId, List<Integer> deckOrder) {
 		// TODO verify game state
 		return gameService.updateDeckOrder(gameId, deckOrder);
+	}
+
+	@Override
+	public Play getPlay(Long gameId, Integer roundNumber, Integer phaseNumber,
+			Integer playNumber) {
+		return gameService.getPlay(gameId, roundNumber, phaseNumber, playNumber);
 	}
 }
