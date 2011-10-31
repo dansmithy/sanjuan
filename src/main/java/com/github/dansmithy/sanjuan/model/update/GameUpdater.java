@@ -3,7 +3,7 @@ package com.github.dansmithy.sanjuan.model.update;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.data.document.mongodb.query.Update;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.Deck;

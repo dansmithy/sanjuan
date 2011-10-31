@@ -5,19 +5,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.springframework.data.document.mongodb.MongoTemplate;
-import org.springframework.data.document.mongodb.query.Query;
-import org.springframework.data.document.mongodb.query.Update;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.github.dansmithy.sanjuan.dao.util.MongoHelper;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
-import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
-import com.github.dansmithy.sanjuan.model.Phase;
-import com.github.dansmithy.sanjuan.model.Play;
-import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 
 @Named
