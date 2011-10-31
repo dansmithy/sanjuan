@@ -94,4 +94,28 @@ public class SpringResponse implements Response {
 		return null;
 	}
 
+	@Override
+	public void bigDump() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dump() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void tinyDump() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String toBigString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

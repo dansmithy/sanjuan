@@ -1,7 +1,7 @@
 package com.github.dansmithy.sanjuan.dao;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.document.mongodb.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "seq")
 public class MongoSequence {

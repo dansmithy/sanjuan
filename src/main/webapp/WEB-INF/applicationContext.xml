@@ -55,7 +55,7 @@
         <sec:custom-filter before="FORM_LOGIN_FILTER" ref="retrieveDetailsFilter" />
         <sec:access-denied-handler ref="forbiddenEntryPoint" />
         <sec:logout />
-        <sec:intercept-url pattern="/**" access="permitAll" filters="none" />
+        <sec:intercept-url pattern="/**" access="permitAll" />
     </sec:http>
         
 </beans>
