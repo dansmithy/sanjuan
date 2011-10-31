@@ -1,3 +1,3 @@
-db.user.update({"username" : "danny"}, { "$set" : { "roles" : [ "player" ] } });
+db.user.insert({"username" : "danny", "hashedPassword" : "b7bee6b36bd35b773132d4e3a74c2bb5", "roles" : [ "player", "admin" ] });
 
 db.user.update({"username" : "isabelle"}, { "$set" : { "roles" : [ "player" ] } });
