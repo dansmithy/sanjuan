@@ -54,6 +54,9 @@ public class GameRestDriverSession implements GameDriverSession {
 	public void createUser(String username) {
 		RequestValues requestValues = createTranslatedUserRequest(username, DefaultValues.PASSWORD);
 		Response response = post(wsBaseUri + "/users", body(requestValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+		if (response.getStatusCode() != 200) {
+			throw new AcceptanceTestException(String.format("Unable to create user with username %s.", username));
+		}
 	}
 	
 	protected RequestValues createTranslatedUserRequest(String username,
@@ -88,7 +91,8 @@ public class GameRestDriverSession implements GameDriverSession {
 	@Override
 	public Response createGame(String data) {
 		RequestValues requestValues = createRequest(data);
-		return rememberGame(post(wsBaseUri + "/games", body(requestValues.get("username"), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader()));
+		Response response = post(wsBaseUri + "/games", body(requestValues.get("username"), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+		return rememberGame(response);
 		
 	}
 	

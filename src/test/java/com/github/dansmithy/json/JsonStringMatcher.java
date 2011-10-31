@@ -1,10 +1,13 @@
 package com.github.dansmithy.json;
 
 import net.sf.json.JSON;
+import net.sf.json.JSONException;
 import net.sf.json.JSONSerializer;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.github.dansmithy.exception.AcceptanceTestException;
 
 public class JsonStringMatcher extends TypeSafeMatcher<String> {
 
@@ -27,7 +30,11 @@ public class JsonStringMatcher extends TypeSafeMatcher<String> {
 
 	@Override
 	public boolean matchesSafely(String actual) {
-		return jsonMatcher.matches(JSONSerializer.toJSON(actual));
+		try {
+			return jsonMatcher.matches(JSONSerializer.toJSON(actual));
+		} catch (JSONException e) {
+			throw new AcceptanceTestException(String.format("Unable to parse [%s] to json.", actual), e);
+		}
 	}
 
 }
