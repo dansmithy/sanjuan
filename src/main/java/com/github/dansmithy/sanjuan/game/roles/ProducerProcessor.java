@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.BuildingType;
@@ -75,6 +76,13 @@ public class ProducerProcessor implements RoleProcessor {
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			// TODO verify factory is permitted
+			
+			if (!player.getBuildings().contains(chosenFactory)) {
+				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory));
+			}
+			
+			// TODO verify cannot produce on same factory again
+			// TODO verify no repeats!
 			Integer good = deck.takeOne();
 			player.addGood(chosenFactory, good);
 		}

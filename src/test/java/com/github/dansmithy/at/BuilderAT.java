@@ -44,7 +44,7 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost")),
+						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }")),
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'build' : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] } } ] } ] } ] }")));
 	}
@@ -59,7 +59,7 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"build : #coffeeroaster; payment : #aqueduct,#marketstand")),
+						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
@@ -80,7 +80,7 @@ public class BuilderAT {
 				when(userPlays(
 						"#alice",
 						"round : 1; phase : 1; play : 1",
-						"build : #coffeeroaster; payment : #aqueduct,#marketstand,#tradingpost,#prefecture")),
+						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost', '#prefecture' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
@@ -95,7 +95,7 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"build : #quarry; payment : #coffeeroaster,#aqueduct,#marketstand")),
+						"{ build : '#quarry', payment : [ '#coffeeroaster', '#aqueduct', '#marketstand' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}

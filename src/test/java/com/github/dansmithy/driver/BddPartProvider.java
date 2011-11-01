@@ -142,11 +142,11 @@ public class BddPartProvider {
 		};
 	}	
 	
-	public static BddPart<GameDriver> userPlays(final String username, final String urlData, final String postData) {
+	public static BddPart<GameDriver> userPlays(final String username, final String urlData, final String postJson) {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				Response actualResponse = context.getSession(username).makePlayChoice(urlData, postData);
+				Response actualResponse = context.getSession(username).makePlayChoice(urlData, postJson);
 				context.setLastResponse(actualResponse);
 			}
 		};

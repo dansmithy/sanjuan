@@ -4,12 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import com.github.dansmithy.driver.DefaultValues;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.TranslatedValues;
+import com.github.dansmithy.json.JsonHashTranslator;
 import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -93,11 +96,10 @@ public class GameSpringDriverSession implements GameDriverSession {
 	}
 
 	@Override
-	public Response makePlayChoice(String urlData, String postData) {
+	public Response makePlayChoice(String urlData, String postJson) {
 		RequestValues urlValues = createRequest(urlData);
-		RequestValues postValues = createRequest(postData);
-		JSONObject json = JSONObject.fromObject(postValues.toJson());
-		PlayChoice choice = (PlayChoice)JSONObject.toBean(json, PlayChoice.class);
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+		PlayChoice choice = (PlayChoice)JSONObject.toBean((JSONObject)json, PlayChoice.class);
 		return new SpringResponse(gameResource.makePlay(gameId, Integer.valueOf(urlValues.get("round")), Integer.valueOf(urlValues.get("phase")), Integer.valueOf(urlValues.get("play")), choice));
 	}
 

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -20,6 +21,7 @@ import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.TranslatedValues;
 import com.github.dansmithy.exception.AcceptanceTestException;
+import com.github.dansmithy.json.JsonHashTranslator;
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
@@ -129,11 +131,11 @@ public class GameRestDriverSession implements GameDriverSession {
 	 * @see com.github.dansmithy.sanjuan.driver.GameDriverSession#makePlayChoice(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Response makePlayChoice(String urlData, String postData) {
+	public Response makePlayChoice(String urlData, String postJson) {
 		RequestValues urlValues = createRequest(urlData);
-		RequestValues postValues = createRequest(postData);
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
 		String url = String.format("%s/games/%s/rounds/%s/phases/%s/plays/%s/decision", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"), urlValues.get("play"));
-		return put(url, body(postValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
 	

@@ -44,7 +44,7 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"councilDiscarded : #archive,#carpenter,#chapel")),
+						"{ councilDiscarded : [ '#archive' , '#carpenter', '#chapel'] }")),
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#archive', '#carpenter', '#chapel' ] } } ] } ] } ] }")));
 	}
@@ -63,7 +63,7 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"councilDiscarded : #archive,#carpenter,#poorhouse")),
+						"{ councilDiscarded : [ '#archive', '#carpenter', '#poorhouse' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
@@ -82,7 +82,7 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"councilDiscarded : #archive,#carpenter,#aqueduct")),
+						"{ councilDiscarded : [ '#archive', '#carpenter', '#aqueduct' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}	
