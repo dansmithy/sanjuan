@@ -36,6 +36,10 @@ public class GameUpdater {
 		this.playCoords = playCoords;
 		this.currentUser = currentUser;
 	}
+	
+	public boolean matchesCoords(PlayCoords otherPlayCoords) {
+		return otherPlayCoords.equals(playCoords);
+	}	
 
 	public Game getGame() {
 		return game;
@@ -67,15 +71,24 @@ public class GameUpdater {
 		updates.put("currentTariff", new PartialUpdate("currentTariff", currentTariff));
 	}	
 	
+	/**
+	 * For completion only
+	 */
 	public void updateGameState() {
 		updates.put("gamestate", new PartialUpdate("state", game.getState()));
 	}	
 	
+	/**
+	 * For completion only
+	 */
 	public void updatePlayers() {
 		updates.remove("player");
 		updates.put("players", new PartialUpdate("players", game.getPlayers()));
 	}
 	
+	/**
+	 * For completion only
+	 */
 	public void updateWinner() {
 		updates.put("winner", new PartialUpdate("winner", game.getWinner()));
 	}
@@ -153,5 +166,4 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
-
 }

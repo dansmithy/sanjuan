@@ -13,7 +13,9 @@ import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.PhaseState;
 import com.github.dansmithy.sanjuan.model.Play;
+import com.github.dansmithy.sanjuan.model.PlayState;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.Tariff;
@@ -145,11 +147,19 @@ public class DatastoreGameService implements GameService {
 	@Override
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
-		// TODO verify play coords IS current phase
 		Game game = getGame(playCoords.getGameId());
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		GameUpdater gameUpdater = new GameUpdater(game, loggedInUser);
+		
+		if (!gameUpdater.matchesCoords(playCoords)) {
+			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()));
+		}
+		
 		Phase phase = gameUpdater.getCurrentPhase();
+		if (!phase.getState().equals(PhaseState.AWAITING_ROLE_CHOICE)) {
+			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."));
+		}
+		
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
 			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
 		}
@@ -172,11 +182,16 @@ public class DatastoreGameService implements GameService {
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
 		
 		Game game = getGame(coords.getGameId());
-		
-		// TODO verify coords is current
-		// TODO verify play is current one
-		
 		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		
+		if (!gameUpdater.matchesCoords(coords)) {
+			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()));
+		}
+		
+		if (!gameUpdater.getCurrentPlay().getState().equals(PlayState.AWAITING_INPUT)) {
+			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."));
+		}		
+		
 		calculationService.processPlayer(gameUpdater.getCurrentPlayer());
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);

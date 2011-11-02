@@ -7,6 +7,8 @@ import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayer
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class GovernorAT {
 	}
 
 	@Test
-	public void testCanChooseRoleWhenNotYourTurn() {
+	public void testCannotChooseRoleWhenNotYourTurn() {
 
 		bdd.runTest(
 
@@ -45,5 +47,19 @@ public class GovernorAT {
 
 				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
 	}
+	
+	@Test
+	public void testCannotChooseRoleWhenNotRoleChoiceTime() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(roleChosenBy("#alice", "round : 1; phase : 1",
+						"role : BUILDER")),
+
+				when(roleChosenBy("#alice", "round : 1; phase : 1",
+						"role : PROSPECTOR")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+	}	
 
 }

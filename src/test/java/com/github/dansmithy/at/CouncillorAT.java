@@ -31,7 +31,7 @@ public class CouncillorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : COUNCILLOR")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#archive', '#carpenter', '#chapel', '#crane', '#goldmine' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } ] } ] } ] }")));
 	}
 
 	@Test
@@ -44,14 +44,14 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#archive' , '#carpenter', '#chapel'] }")),
+						"{ councilDiscarded : [ '#goldmine' , '#poorhouse', '#archive'] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#archive', '#carpenter', '#chapel' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#goldmine', '#poorhouse', '#archive' ] } } ] } ] } ] }")));
 	}
 
 	/**
 	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture. Council options are: #archive, #carpenter, #chapel, #crane, #goldmine.
+	 * #prefecture. Council options are: '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive'.
 	 */
 	@Test
 	public void testCannotDiscardCardDoNotOwn() {
@@ -63,14 +63,14 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#archive', '#carpenter', '#poorhouse' ] }")),
+						"{ councilDiscarded : [ '#archive', '#carpenter', '#statue' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
 	
 	/**
 	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture. Council options are: #archive, #carpenter, #chapel, #crane, #goldmine.
+	 * #prefecture. Council options are: '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive'.
 	 */
 	@Test
 	public void testCannotDiscardHandCardsWithoutArchive() {

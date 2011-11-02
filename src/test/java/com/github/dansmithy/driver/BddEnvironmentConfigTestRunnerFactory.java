@@ -13,16 +13,12 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 	private static final String ADMIN_PASSWORD_KEY = "adminPassword";
 	private static final String BASE_URI_KEY = "baseUri";
 
-	private Boolean httpMode = Boolean.TRUE;
-	private String adminUsername = "danny";
-	private String adminPassword = "danny";
-	private String baseUri = "http://localhost:8086";
-
 	private JunitConfiguration configuration = new JunitConfiguration();
 
 	@Override
 	public BddTestRunner<GameDriver> createTestRunner() {
-		if (configuration.getBooleanProperty(HTTP_MODE_KEY, httpMode)) {
+		if (configuration.getBooleanProperty(HTTP_MODE_KEY,
+				DefaultValues.HTTP_MODE)) {
 			return createHttpTestRunner();
 		} else {
 			return createSpringTestRunner();
@@ -31,15 +27,17 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 
 	private BddTestRunner<GameDriver> createSpringTestRunner() {
 		return new BddSpringTestRunner(configuration.getProperty(
-				ADMIN_USERNAME_KEY, adminUsername), configuration.getProperty(
-				ADMIN_PASSWORD_KEY, adminPassword));
+				ADMIN_USERNAME_KEY, DefaultValues.ADMIN_USERNAME),
+				configuration.getProperty(ADMIN_PASSWORD_KEY,
+						DefaultValues.ADMIN_PASSWORD));
 	}
 
 	private BddTestRunner<GameDriver> createHttpTestRunner() {
 		return new BddRestTestRunner(configuration.getProperty(BASE_URI_KEY,
-				baseUri), configuration.getProperty(ADMIN_USERNAME_KEY,
-				adminUsername), configuration.getProperty(ADMIN_PASSWORD_KEY,
-				adminPassword));
+				DefaultValues.BASE_URI), configuration.getProperty(
+				ADMIN_USERNAME_KEY, DefaultValues.ADMIN_USERNAME),
+				configuration.getProperty(ADMIN_PASSWORD_KEY,
+						DefaultValues.ADMIN_PASSWORD));
 	}
 
 }

@@ -21,11 +21,6 @@ public class ProducerAT {
 	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
 			.createTestRunner();
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture. Council options are: #archive, #carpenter, #chapel, #crane,
-	 * #goldmine.
-	 */
 	@Test
 	public void testCanChooseProducerRole() {
 

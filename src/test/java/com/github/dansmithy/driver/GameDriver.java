@@ -12,6 +12,8 @@ public interface GameDriver {
 	GameDriverSession getAdminSession();
 
 	void loginUser(String username);
+	
+	void loginUser(String username, String password);
 
 	void cleanup();
 

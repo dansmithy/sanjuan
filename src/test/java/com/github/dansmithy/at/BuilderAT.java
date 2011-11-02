@@ -99,5 +99,58 @@ public class BuilderAT {
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
 	}
+	
+	@Test
+	public void testSmithyGivesProductionDiscount() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays(
+								"#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#smithy', payment : [ '#library' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ productionFactories : [ '#indigoplant2' ] }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ productionFactories : [ '#coffeeroaster' ] }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : TRADER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1",
+								"{ productionFactories : [ '#coffeeroaster' ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 3; play : 2",
+								"{ productionFactories : [ '#indigoplant2' ] }"))
+						.and(roleChosenBy("#bob", "round : 2; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays(
+								"#alice",
+								"round : 2; phase : 1; play : 1",
+								"{ build : '#prefecture', payment : [ '#crane', '#chapel' ] }"))
+						.and(userPlays(
+								"#bob",
+								"round : 2; phase : 1; play : 2",
+								"{ build : '#well', payment : [ '#markethall', '#quarry' ] }")),
+
+				when(roleChosenBy("#alice", "round : 2; phase : 2",
+						"role : PROSPECTOR")),
+								
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5 }, { 'name' : '#bob', victoryPoints: 3 } ], 'roundNumber' : 2, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
+		
+		
+	}
+
+
+		
 
 }

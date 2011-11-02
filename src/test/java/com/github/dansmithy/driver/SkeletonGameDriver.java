@@ -54,9 +54,15 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	 */
 	@Override
 	public void loginUser(String username) {
-		GameDriverSession sessionPlayer = login(username, DefaultValues.PASSWORD);
+		loginUser(username, DefaultValues.PASSWORD);
+	}
+	
+	@Override
+	public void loginUser(String username, String password) {
+		GameDriverSession sessionPlayer = login(username, password);
 		playerSessions.put(username, sessionPlayer);
 	}
+		
 
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.driver.BddContext#cleanup()
@@ -95,6 +101,5 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	public TranslatedValues getTranslatedValues() {
 		return translatedValues;
 	}
-	
 
 }
