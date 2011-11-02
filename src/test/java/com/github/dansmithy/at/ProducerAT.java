@@ -27,7 +27,7 @@ public class ProducerAT {
 	 * #goldmine.
 	 */
 	@Test
-	public void testCanProduceGoods() {
+	public void testCanChooseProducerRole() {
 
 		bdd.runTest(
 

@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model.update;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.query.Update;
@@ -12,6 +13,7 @@ import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Round;
+import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 
@@ -47,6 +49,10 @@ public class GameUpdater {
 	public void updateDeck(Deck deck) {
 		updates.put("deck", new PartialUpdate("deck", deck));
 	}
+	
+	public void updateTariffs(List<Tariff> tariffs) {
+		updates.put("tariffs", new PartialUpdate("tariffs", tariffs));
+	}	
 	
 	public void completedPlay(Play play, PlayChoice playChoice) {
 		play.completePlay(playChoice);
@@ -147,6 +153,5 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
-
 
 }

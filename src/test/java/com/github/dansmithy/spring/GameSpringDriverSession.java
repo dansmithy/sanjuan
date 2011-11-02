@@ -29,7 +29,7 @@ public class GameSpringDriverSession implements GameDriverSession {
 	private final TranslatedValues translatedValues;
 	private GameResource gameResource;
 	private UserResource userResource;
-	
+	 
 	private Long gameId;
 	
 	public GameSpringDriverSession(TranslatedValues translatedValues,
@@ -63,8 +63,12 @@ public class GameSpringDriverSession implements GameDriverSession {
 	@Override
 	public void orderDeck(String gameId, List<Integer> order) {
 		gameResource.orderDeck(Long.valueOf(gameId), order);
-
 	}
+	
+	@Override
+	public void orderTariff(String gameId, List<Integer> order) {
+		gameResource.orderTariffs(Long.valueOf(gameId), order);
+	}	
 
 	@Override
 	public Response createGame(String data) {

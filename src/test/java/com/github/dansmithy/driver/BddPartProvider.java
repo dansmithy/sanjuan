@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.net.HttpURLConnection;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -80,6 +81,15 @@ public class BddPartProvider {
 				context.getAdminSession().orderDeck(context.getSession(username).getGameId(), order);
 			}
 		};
+	}	
+	
+	public static BddPart<GameDriver> orderTariffOwnedBy(final String username, final List<Integer> order) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				context.getAdminSession().orderTariff(context.getSession(username).getGameId(), order);
+			}
+		};
 	}		
 	
 	public static BddPart<GameDriver> gameOwnedByContains(final String owner, final String gameJson) {
@@ -123,13 +133,14 @@ public class BddPartProvider {
 		};
 	}	
 	
-	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player1, final String player2) {
-		return new SimpleBddParts<GameDriver>(userExistsAndAuthenticated(player1))
+	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player, final String player2) {
+		return new SimpleBddParts<GameDriver>(userExistsAndAuthenticated(player))
 						.and(userExistsAndAuthenticated(player2))
-						.and(gameCreatedBy(player1))
-						.and(orderDeckOwnedBy(player1, DeckOrder.Order1))
-						.and(gameOwnedByJoinedBy(player1, player2))
-						.and(gameStartedBy(player1));
+						.and(gameCreatedBy(player))
+						.and(orderDeckOwnedBy(player, DeckOrder.Order1))
+						.and(orderTariffOwnedBy(player, Arrays.asList(4, 3, 2, 1, 0)))
+						.and(gameOwnedByJoinedBy(player, player2))
+						.and(gameStartedBy(player));
 	}
 	
 	public static BddPart<GameDriver> roleChosenBy(final String username, final String urlData, final String postData) {

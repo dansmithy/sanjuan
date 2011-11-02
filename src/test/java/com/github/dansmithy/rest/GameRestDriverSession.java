@@ -85,6 +85,11 @@ public class GameRestDriverSession implements GameDriverSession {
 		Response response = put(wsBaseUri + "/games/" + gameId + "/deck", body(JSONSerializer.toJSON(order).toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	
+	@Override
+	public void orderTariff(String gameId, List<Integer> order) {
+		Response response = put(wsBaseUri + "/games/" + gameId + "/tariffs", body(JSONSerializer.toJSON(order).toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+	
 	//** GAME METHODS ** //
 	
 	/* (non-Javadoc)

@@ -23,6 +23,7 @@ import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
@@ -93,4 +94,11 @@ public interface GameResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SanJuanRole.ADMIN })
 	Deck orderDeck(@PathParam("gameId") Long gameId, List<Integer> deckOrder);
+	
+	@PUT
+	@Path("{gameId}/tariffs")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SanJuanRole.ADMIN })
+	List<Tariff> orderTariffs(@PathParam("gameId") Long gameId, List<Integer> tariffOrder);	
 }

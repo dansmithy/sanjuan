@@ -41,17 +41,27 @@ public class Game {
 	}
 	
 	public void startPlaying(CardFactory cardFactory, TariffBuilder tariffBuilder) {
+		
 		if (players.size() < 2) {
 			throw new IllegalGameStateException("Not enough players to start a game.");
 		}
-		state = GameState.PLAYING;
+		
 		initiateDeck(cardFactory);
+		initiateTariffs(tariffBuilder);
 		
 		for (Player player : players) {
 			player.addToHand(deck.take(STARTING_CARDS));
 		}
-		tariffs = tariffBuilder.createRandomTariff();
+		
+		state = GameState.PLAYING;
 		startNewRound(0);
+	}
+
+	private void initiateTariffs(TariffBuilder tariffBuilder) {
+		boolean useRandomOrder = tariffs == null;
+		if (useRandomOrder) {
+			tariffs = tariffBuilder.createRandomTariff();
+		}
 	}
 
 	private void initiateDeck(CardFactory cardFactory) {

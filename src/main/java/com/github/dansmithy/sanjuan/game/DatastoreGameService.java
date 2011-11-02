@@ -16,6 +16,7 @@ import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
+import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
@@ -240,5 +241,13 @@ public class DatastoreGameService implements GameService {
 		return gameUpdater.getCurrentPlay();
 	}
 
+	@Override
+	public List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder) {
+		Game game = gameDao.getGame(gameId);	
+		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		List<Tariff> tariffs = tariffBuilder.createTariff(tariffOrder);
+		gameUpdater.updateTariffs(tariffs);
+		return gameDao.gameUpdate(gameId, gameUpdater).getTariffs();
+	}
 
 }

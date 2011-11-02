@@ -17,6 +17,7 @@ import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -143,5 +144,11 @@ public class GameBean implements GameResource {
 	public Play getPlay(Long gameId, Integer roundNumber, Integer phaseNumber,
 			Integer playNumber) {
 		return gameService.getPlay(gameId, roundNumber, phaseNumber, playNumber);
+	}
+
+	@Override
+	public List<Tariff> orderTariffs(Long gameId, List<Integer> tariffOrder) {
+		// TODO verify game state		
+		return gameService.updateTariff(gameId, tariffOrder);
 	}
 }

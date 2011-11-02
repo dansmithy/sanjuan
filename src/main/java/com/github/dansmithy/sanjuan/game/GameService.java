@@ -7,6 +7,7 @@ import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -35,5 +36,7 @@ public interface GameService {
 
 	Play getPlay(Long gameId, Integer roundNumber, Integer phaseNumber,
 			Integer playNumber);
+
+	List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder);
 
 }

@@ -13,6 +13,7 @@ public interface GameDriverSession {
 	//** GAME ADMIN ONLY ** 
 	//
 	void orderDeck(String gameId, List<Integer> order);
+	void orderTariff(String gameId, List<Integer> order);
 
 	Response createGame(String data);
 
@@ -37,5 +38,6 @@ public interface GameDriverSession {
 	void deleteAnyGame();
 
 	void addTranslatedValues(String data);
+
 
 }
