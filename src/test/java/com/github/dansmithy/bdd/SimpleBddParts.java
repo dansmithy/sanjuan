@@ -20,8 +20,12 @@ public class SimpleBddParts<T> implements BddParts<T> {
 	@Override
 	public void execute(T context) {
 		for (BddPart<T> part : this) {
-			part.execute(context);
+			executePart(part, context);
 		}
+	}
+
+	protected void executePart(BddPart<T> part, T context) {
+		part.execute(context);
 	}
 
 	@Override

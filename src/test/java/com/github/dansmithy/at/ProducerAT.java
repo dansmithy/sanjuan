@@ -1,6 +1,6 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.BddHelper.given;
+import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;

@@ -24,17 +24,15 @@ public class GameUpdater {
 	private final PlayCoords playCoords;
 	private PlayCoords nextPlayCoords;
 	private final Game game;
-	private final String currentUser;
 	
-	public GameUpdater(Game game, String currentUser) {
-		this(game, currentUser, PlayCoords.createFromGame(game));
+	public GameUpdater(Game game) {
+		this(game, PlayCoords.createFromGame(game));
 	}
 	
-	public GameUpdater(Game game, String currentUser, PlayCoords playCoords) {
+	public GameUpdater(Game game, PlayCoords playCoords) {
 		super();
 		this.game = game;
 		this.playCoords = playCoords;
-		this.currentUser = currentUser;
 	}
 	
 	public boolean matchesCoords(PlayCoords otherPlayCoords) {
@@ -118,9 +116,17 @@ public class GameUpdater {
 	}
 	
 	public Player getCurrentPlayer() {
-		return getPlayer(currentUser);
+		return getPlayer(getCurrentUsername());
 	}
 	
+	private String getCurrentUsername() {
+		if (playCoords.getPlayNumber() == 0) {
+			return getCurrentPhase().getLeadPlayer();
+		} else {
+			return getCurrentPlay().getPlayer();
+		}
+	}
+
 	private Player getPlayer(String playerName) {
 		for (Player player : game.getPlayers()) {
 			if (playerName.equals(player.getName())) {

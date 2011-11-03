@@ -1,14 +1,15 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.BddHelper.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
+import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 import org.junit.Test;
 
@@ -101,6 +102,36 @@ public class BuilderAT {
 	}
 	
 	@Test
+	public void testCannotBuildWhenIsNotTurn() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#bob", "round : 1; phase : 1; play : 1",
+						"{ build : '#smithy', payment : [ ] }")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
+	}	
+	
+	@Test
+	public void testCanOnlyPayWithOwnedCards() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#crane' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+	}	
+	
+	@Test
 	public void testSmithyGivesProductionDiscount() {
 
 		bdd.runTest(
@@ -133,14 +164,12 @@ public class BuilderAT {
 								"{ productionFactories : [ '#indigoplant2' ] }"))
 						.and(roleChosenBy("#bob", "round : 2; phase : 1",
 								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
+						.and(userPlays("#bob",
 								"round : 2; phase : 1; play : 1",
-								"{ build : '#prefecture', payment : [ '#crane', '#chapel' ] }"))
-						.and(userPlays(
-								"#bob",
+								"{ build : '#well', payment : [ '#statue' ] }"))
+						.and(userPlays("#alice",
 								"round : 2; phase : 1; play : 2",
-								"{ build : '#well', payment : [ '#markethall', '#quarry' ] }")),
+								"{ build : '#prefecture', payment : [ '#goldmine', '#poorhouse', '#archive' ] }")),
 
 				when(roleChosenBy("#alice", "round : 2; phase : 2",
 						"role : PROSPECTOR")),

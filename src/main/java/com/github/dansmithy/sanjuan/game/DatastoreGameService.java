@@ -149,7 +149,7 @@ public class DatastoreGameService implements GameService {
 		
 		Game game = getGame(playCoords.getGameId());
 		String loggedInUser = userProvider.getAuthenticatedUsername();
-		GameUpdater gameUpdater = new GameUpdater(game, loggedInUser);
+		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!gameUpdater.matchesCoords(playCoords)) {
 			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()));
@@ -182,7 +182,7 @@ public class DatastoreGameService implements GameService {
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
 		
 		Game game = getGame(coords.getGameId());
-		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!gameUpdater.matchesCoords(coords)) {
 			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()));
@@ -191,6 +191,10 @@ public class DatastoreGameService implements GameService {
 		if (!gameUpdater.getCurrentPlay().getState().equals(PlayState.AWAITING_INPUT)) {
 			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."));
 		}		
+		
+		if (!userProvider.getAuthenticatedUsername().equals(gameUpdater.getCurrentPlayer().getName())) {
+			throw new NotResourceOwnerAccessException("It is not your turn to play.");
+		}
 		
 		calculationService.processPlayer(gameUpdater.getCurrentPlayer());
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
@@ -242,7 +246,7 @@ public class DatastoreGameService implements GameService {
 	@Override
 	public Deck updateDeckOrder(Long gameId, List<Integer> deckOrder) {
 		Game game = gameDao.getGame(gameId);	
-		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		GameUpdater gameUpdater = new GameUpdater(game);
 		Deck deck = new Deck(deckOrder);
 		gameUpdater.updateDeck(deck);
 		return gameDao.gameUpdate(gameId, gameUpdater).getDeck();
@@ -252,14 +256,14 @@ public class DatastoreGameService implements GameService {
 	public Play getPlay(Long gameId, Integer roundNumber, Integer phaseNumber,
 			Integer playNumber) {
 		Game game = gameDao.getGame(gameId);
-		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername(), new PlayCoords(gameId, roundNumber, phaseNumber, playNumber));
+		GameUpdater gameUpdater = new GameUpdater(game, new PlayCoords(gameId, roundNumber, phaseNumber, playNumber));
 		return gameUpdater.getCurrentPlay();
 	}
 
 	@Override
 	public List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder) {
 		Game game = gameDao.getGame(gameId);	
-		GameUpdater gameUpdater = new GameUpdater(game, userProvider.getAuthenticatedUsername());
+		GameUpdater gameUpdater = new GameUpdater(game);
 		List<Tariff> tariffs = tariffBuilder.createTariff(tariffOrder);
 		gameUpdater.updateTariffs(tariffs);
 		return gameDao.gameUpdate(gameId, gameUpdater).getTariffs();
