@@ -171,12 +171,31 @@ public class ExtendedPlayAT {
 								"{ build : '#well', payment : [ '#statue' ] }"))
 						.and(userPlays("#alice",
 								"round : 2; phase : 1; play : 2",
-								"{ build : '#prefecture', payment : [ '#goldmine', '#poorhouse', '#archive' ] }")),
+								"{ build : '#prefecture', payment : [ '#goldmine', '#poorhouse', '#archive' ] }"))
+						.and(roleChosenBy("#alice", "round : 2; phase : 2",
+								"role : COUNCILLOR"))
+						.and(userPlays(
+								"#alice",
+								"round : 2; phase : 2; play : 1",
+								"{ councilDiscarded : [ '#tower', '#victorycolumn', '#hero' ] }"))
+						.and(userPlays("#bob",
+								"round : 2; phase : 2; play : 2",
+								"{ councilDiscarded : [ '#blackmarket' ] }"))
+						.and(roleChosenBy("#bob", "round : 2; phase : 3",
+								"role : PROSPECTOR"))
+						.and(userPlays("#bob",
+								"round : 2; phase : 3; play : 1",
+								"{ }"))
+						.and(userPlays("#alice",
+								"round : 2; phase : 3; play : 2",
+								"{ 'skip' : true }"))
+								
+								,
 
-				when(roleChosenBy("#alice", "round : 2; phase : 2",
+				when(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : PROSPECTOR")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5 }, { 'name' : '#bob', victoryPoints: 3 } ], 'roundNumber' : 2, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5 }, { 'name' : '#bob', victoryPoints: 3 } ], 'roundNumber' : 3, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
 	}	
 
 }

@@ -12,7 +12,7 @@ import com.github.dansmithy.rest.GameRestDriver;
 public class OrderDeckAndTariff {
 
 	private GameDriver driver = new GameRestDriver(DefaultValues.BASE_URI, DefaultValues.ADMIN_USERNAME, DefaultValues.ADMIN_PASSWORD);
-	private String gameId = "4652";
+	private String gameId = "5558";
 	
 	@Test
 	public void orderDeckAndTariff() {

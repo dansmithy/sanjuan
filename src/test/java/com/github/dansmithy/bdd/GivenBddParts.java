@@ -19,7 +19,7 @@ public class GivenBddParts extends SimpleBddParts<GameDriver> {
 	protected void executePart(BddPart<GameDriver> part, GameDriver context) {
 		super.executePart(part, context);
 		if (context.getLastResponse() != null && context.getLastResponse().getStatusCode() != HttpURLConnection.HTTP_OK) {
-			throw new AcceptanceTestException(String.format("Given clause got a %d response with content %s", context.getLastResponse().getStatusCode(), context.getLastResponse().asText()));
+			throw new AcceptanceTestException(String.format("Given clause got a %d response with content [%s]", context.getLastResponse().getStatusCode(), context.getLastResponse().asText()));
 		}
 	}
 
