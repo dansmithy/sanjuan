@@ -6,6 +6,7 @@ import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
@@ -45,7 +46,7 @@ public class GovernorAT {
 				when(roleChosenBy("#bob", "round : 1; phase : 1",
 						"role : BUILDER")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 	}
 	
 	@Test
@@ -59,7 +60,7 @@ public class GovernorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : PROSPECTOR")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
 	}	
 
 }

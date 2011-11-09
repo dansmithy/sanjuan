@@ -78,7 +78,7 @@ public class ProducerProcessor implements RoleProcessor {
 			// TODO verify factory is permitted
 			
 			if (!player.getBuildings().contains(chosenFactory)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory));
+				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
 			}
 			
 			// TODO verify cannot produce on same factory again

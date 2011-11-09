@@ -7,6 +7,7 @@ import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayer
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
@@ -61,6 +62,6 @@ public class ProducerAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{ productionFactories : [ '#coffeeroaster' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_FACTORY' }")));
 	}
 }

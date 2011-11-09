@@ -2,12 +2,28 @@ package com.github.dansmithy.sanjuan.exception;
 
 public class PlayChoiceInvalidException extends SanJuanException {
 
+	public static final String UNDERPAID = "UNDERPAID";
+	public static final String OVERPAID = "OVERPAID";
+	public static final String NOT_OWNED_PAYMENT = "NOT_OWNED_PAYMENT";
+	public static final String NOT_OWNED_BUILD_CHOICE = "NOT_OWNED_BUILD_CHOICE";
+	public static final String NOT_OWNED_COUNCIL_DISCARD = "NOT_OWNED_COUNCIL_DISCARD";
+	public static final String NOT_OWNED_FACTORY = "NOT_OWNED_FACTORY";
+	
+	private static final String DEFAULT_TYPE = "INVALID_CHOICE";
+	
+	private String type = DEFAULT_TYPE;
+	
 	public PlayChoiceInvalidException() {
 		super();
 	}
 
 	public PlayChoiceInvalidException(String message, Throwable cause) {
 		super(message, cause);
+	}
+	
+	public PlayChoiceInvalidException(String message, String type) {
+		super(message);
+		this.type = type;
 	}
 
 	public PlayChoiceInvalidException(String message) {
@@ -20,7 +36,7 @@ public class PlayChoiceInvalidException extends SanJuanException {
 	
 	@Override
 	public String getType() {
-		return "INVALID_CHOICE";
+		return type;
 	}
 
 }

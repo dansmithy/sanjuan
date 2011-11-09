@@ -152,12 +152,12 @@ public class DatastoreGameService implements GameService {
 		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!gameUpdater.matchesCoords(playCoords)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()));
+			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
 		}
 		
 		Phase phase = gameUpdater.getCurrentPhase();
 		if (!phase.getState().equals(PhaseState.AWAITING_ROLE_CHOICE)) {
-			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."));
+			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.NOT_AWAITING_ROLE_CHOICE);
 		}
 		
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {

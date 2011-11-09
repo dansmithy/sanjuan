@@ -8,6 +8,7 @@ import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
@@ -45,9 +46,9 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }")),
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'build' : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : {  build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] } } ] } ] } ] }")));
 	}
 
 	@Test
@@ -60,15 +61,11 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand' ] }")),
+						"{ build : '#prefecture', payment : [ '#indigoplant3' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'UNDERPAID' }")));
 	}
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture
-	 */
 	@Test
 	public void testCannotOverpay() {
 
@@ -81,9 +78,9 @@ public class BuilderAT {
 				when(userPlays(
 						"#alice",
 						"round : 1; phase : 1; play : 1",
-						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost', '#prefecture' ] }")),
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4', '#indigoplant5' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'OVERPAID' }")));
 	}
 
 	@Test
@@ -96,9 +93,9 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ build : '#quarry', payment : [ '#coffeeroaster', '#aqueduct', '#marketstand' ] }")),
+						"{ build : '#aqueduct', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_BUILD_CHOICE' }")));
 	}
 	
 	@Test
@@ -113,7 +110,7 @@ public class BuilderAT {
 				when(userPlays("#bob", "round : 1; phase : 1; play : 1",
 						"{ build : '#smithy', payment : [ ] }")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 	}	
 	
 	@Test
@@ -126,9 +123,9 @@ public class BuilderAT {
 								"role : BUILDER")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#crane' ] }")),
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#silversmelter' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_PAYMENT' }")));
 	}	
 	
 	@Test
@@ -142,39 +139,34 @@ public class BuilderAT {
 						.and(userPlays(
 								"#alice",
 								"round : 1; phase : 1; play : 1",
-								"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }"))
+								"{ skip : true }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 1; play : 2",
-								"{ build : '#smithy', payment : [ '#library' ] }"))
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
 						.and(roleChosenBy("#bob", "round : 1; phase : 2",
 								"role : PRODUCER"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 2; play : 1",
-								"{ productionFactories : [ '#indigoplant2' ] }"))
+								"{ skip : true }"))
 						.and(userPlays("#alice",
 								"round : 1; phase : 2; play : 2",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
+								"{ skip : true }"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 3",
 								"role : TRADER"))
 						.and(userPlays("#alice",
 								"round : 1; phase : 3; play : 1",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
+								"{ skip : true }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant2' ] }"))
+								"{ skip : true }"))
 						.and(roleChosenBy("#bob", "round : 2; phase : 1",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 2; phase : 1; play : 1",
-								"{ build : '#well', payment : [ '#statue' ] }"))
-						.and(userPlays("#alice",
-								"round : 2; phase : 1; play : 2",
-								"{ build : '#prefecture', payment : [ '#goldmine', '#poorhouse', '#archive' ] }")),
+								"role : BUILDER")),
 
-				when(roleChosenBy("#alice", "round : 2; phase : 2",
-						"role : PROSPECTOR")),
+				when(userPlays("#bob",
+						"round : 2; phase : 1; play : 1",
+						"{ build : '#coffeeroaster', payment : [ '#indigoplant7', '#indigoplant8' ] }")),
 								
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5 }, { 'name' : '#bob', victoryPoints: 3 } ], 'roundNumber' : 2, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 4 } ], 'roundNumber' : 2 }")));
 		
 		
 	}

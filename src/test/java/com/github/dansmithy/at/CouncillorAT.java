@@ -7,6 +7,7 @@ import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayer
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
@@ -31,7 +32,7 @@ public class CouncillorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : COUNCILLOR")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#well', '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } ] } ] } ] }")));
 	}
 
 	@Test
@@ -44,15 +45,11 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#goldmine' , '#poorhouse', '#archive'] }")),
+						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#sugarmill2' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#goldmine', '#poorhouse', '#archive' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#indigoplant10', '#sugarmill', '#sugarmill2' ] } } ] } ] } ] }")));
 	}
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture. Council options are: '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive'.
-	 */
 	@Test
 	public void testCannotDiscardCardDoNotOwn() {
 
@@ -63,15 +60,11 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#archive', '#carpenter', '#statue' ] }")),
+						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#silversmelter' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_COUNCIL_DISCARD' }")));
 	}
 	
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture. Council options are: '#carpenter', '#sugarmill', '#goldmine', '#poorhouse', '#archive'.
-	 */
 	@Test
 	public void testCannotDiscardHandCardsWithoutArchive() {
 
@@ -82,9 +75,9 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#archive', '#carpenter', '#aqueduct' ] }")),
+						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#indigoplant3' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_COUNCIL_DISCARD' }")));
 	}	
 
 }

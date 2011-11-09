@@ -27,6 +27,14 @@ public class BddPartProvider {
 		};
 	}	
 	
+	public static BddPart<GameDriver> verifyResponseContains(final String responseData) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Assert.assertThat(context.getLastResponse().asText(), containsJson(responseData, whenTranslatedBy(context.getTranslatedValues())));
+			}
+		};
+	}		
 //	public static BddPart<GameDriver> verifySuccessful() {
 //		return new BddPart<GameDriver>() {
 //			@Override

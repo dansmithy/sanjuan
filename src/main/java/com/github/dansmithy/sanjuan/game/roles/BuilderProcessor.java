@@ -94,18 +94,19 @@ public class BuilderProcessor implements RoleProcessor {
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {
 		if (!player.getHand().contains(playChoice.getBuild())) {
-			throw new PlayChoiceInvalidException("Cannot build as build choice is not one you own.");
+			throw new PlayChoiceInvalidException("Cannot build as build choice is not one you own.", PlayChoiceInvalidException.NOT_OWNED_BUILD_CHOICE);
 		}
 		
 		for (Integer paymentCard : playChoice.getPayment()) {
 			if (!player.getHand().contains(paymentCard)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot pay with card %d as is not one you own.", paymentCard));
+				throw new PlayChoiceInvalidException(String.format("Cannot pay with card %d as is not one you own.", paymentCard), PlayChoiceInvalidException.NOT_OWNED_PAYMENT);
 			}
 		}
 		
 		int cost = calculateCost(playChoice.getBuild(), play.getOffered());
 		if (playChoice.getPayment().size() != cost) {
-			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()));
+			String exceptionType = playChoice.getPayment().size() < cost ? PlayChoiceInvalidException.UNDERPAID : PlayChoiceInvalidException.OVERPAID;
+			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()), exceptionType);
 		}
 	}
 

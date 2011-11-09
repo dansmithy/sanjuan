@@ -20,14 +20,7 @@ public class ExtendedPlayAT {
 	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
 			.createTestRunner();
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture.
-	 * 
-	 * Bob's hand is: #quarry, #smithy, #markethall, #well, #library
-	 */
 	@Test
-	@Ignore
 	public void testCompletePhase() {
 
 		bdd.runTest(
@@ -38,10 +31,10 @@ public class ExtendedPlayAT {
 						.and(userPlays(
 								"#alice",
 								"round : 1; phase : 1; play : 1",
-								"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }"))
+								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 1; play : 2",
-								"{ build : '#smithy', payment : [ '#library' ] }")),
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }")),
 
 				when(roleChosenBy("#bob", "round : 1; phase : 2",
 						"role : PRODUCER")),
@@ -49,14 +42,7 @@ public class ExtendedPlayAT {
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 2 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'goodsCanProduce' : 2, 'factoriesCanProduce' : [ '#indigoplant2' ] } } ] } ] } ] }")));
 	}
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture.
-	 * 
-	 * Bob's hand is: #quarry, #smithy, #markethall, #well, #library
-	 */
 	@Test
-	@Ignore
 	public void testCompleteTwoPhases() {
 
 		bdd.runTest(
@@ -67,18 +53,18 @@ public class ExtendedPlayAT {
 						.and(userPlays(
 								"#alice",
 								"round : 1; phase : 1; play : 1",
-								"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }"))
+								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 1; play : 2",
-								"{ build : '#smithy', payment : [ '#library' ] }"))
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
 						.and(roleChosenBy("#bob", "round : 1; phase : 2",
-								"role : PRODUCER"))
+								"role : COUNCILLOR"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 2; play : 1",
-								"{ productionFactories : [ '#indigoplant2' ] }"))
+								"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
 						.and(userPlays("#alice",
 								"round : 1; phase : 2; play : 2",
-								"{ productionFactories : [ '#coffeeroaster' ] }")),
+								"{ councilDiscarded : [ ] }")),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 3",
 						"role : TRADER")),
@@ -86,14 +72,7 @@ public class ExtendedPlayAT {
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 2 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'goodsCanTrade' : 2 } } ] } ] } ] }")));
 	}
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture.
-	 * 
-	 * Bob's hand is: #quarry, #smithy, #markethall, #well, #library
-	 */
 	@Test
-	@Ignore
 	public void testCompleteRound() {
 
 		bdd.runTest(
@@ -104,26 +83,26 @@ public class ExtendedPlayAT {
 						.and(userPlays(
 								"#alice",
 								"round : 1; phase : 1; play : 1",
-								"{ build : '#coffeeroaster', payment : [ '#aqueduct', '#marketstand', '#tradingpost' ] }"))
+								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 1; play : 2",
-								"{ build : '#smithy', payment : [ '#library' ] }"))
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
 						.and(roleChosenBy("#bob", "round : 1; phase : 2",
-								"role : PRODUCER"))
+								"role : COUNCILLOR"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 2; play : 1",
-								"{ productionFactories : [ '#indigoplant2' ] }"))
+								"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
 						.and(userPlays("#alice",
 								"round : 1; phase : 2; play : 2",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
+								"{ councilDiscarded : [ ] }"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 3",
-								"role : TRADER"))
+								"role : PROSPECTOR"))
 						.and(userPlays("#alice",
 								"round : 1; phase : 3; play : 1",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
+								"{ }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant2' ] }")),
+								"{ 'skip' : true }")),
 
 				when(roleChosenBy("#bob", "round : 2; phase : 1",
 						"role : PROSPECTOR")),
@@ -131,14 +110,8 @@ public class ExtendedPlayAT {
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 2 } ], 'roundNumber' : 2, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
 	}
 
-	/**
-	 * Alice hand is: #coffeeroaster, #aqueduct, #marketstand, #tradingpost,
-	 * #prefecture.
-	 * 
-	 * Bob's hand is: #quarry, #smithy, #markethall, #well, #library
-	 */
 	@Test
-	public void testFirstPhaseOfSecondRound() {
+	public void testCanCompleteGame() {
 
 		bdd.runTest(
 
