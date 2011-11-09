@@ -24,4 +24,6 @@ public interface GameDriver {
 	void setLastResponse(Response lastResponse);
 
 	TranslatedValues getTranslatedValues();
+
+	void outputGamePlayers();
 }

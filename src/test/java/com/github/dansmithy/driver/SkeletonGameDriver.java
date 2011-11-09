@@ -101,5 +101,18 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	public TranslatedValues getTranslatedValues() {
 		return translatedValues;
 	}
+	
+	@Override
+	public void outputGamePlayers() {
+		StringBuilder builder = new StringBuilder();
+		String delimiter = "";
+		for (String user : playerSessions.keySet()) {
+			if (!user.equals(adminUsername)) {
+				builder.append(delimiter).append(translatedValues.get(user));
+			}
+			delimiter = ", ";
+		}
+		System.out.println(String.format("Started a game with players: %s.", builder.toString()));
+	}	
 
 }

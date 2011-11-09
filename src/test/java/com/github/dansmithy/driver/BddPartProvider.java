@@ -128,6 +128,7 @@ public class BddPartProvider {
 			@Override
 			public void execute(GameDriver context) {
 				Response actualResponse = context.getSession(username).startGame();
+				context.outputGamePlayers();
 				context.setLastResponse(actualResponse);
 			}
 		};

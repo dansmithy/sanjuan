@@ -100,7 +100,6 @@ public class GameRestDriverSession implements GameDriverSession {
 		RequestValues requestValues = createRequest(data);
 		Response response = post(wsBaseUri + "/games", body(requestValues.get("username"), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 		return rememberGame(response);
-		
 	}
 	
 	/* (non-Javadoc)
@@ -139,7 +138,11 @@ public class GameRestDriverSession implements GameDriverSession {
 	public Response makePlayChoice(String urlData, String postJson) {
 		RequestValues urlValues = createRequest(urlData);
 		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+//		if (urlValues.get("round").equals("8") && urlValues.get("phase").equals("2")) {
+//			System.out.println("here");
+//		}
 		String url = String.format("%s/games/%s/rounds/%s/phases/%s/plays/%s/decision", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"), urlValues.get("play"));
+		System.out.println(String.format("Calling [%s].", url));
 		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
