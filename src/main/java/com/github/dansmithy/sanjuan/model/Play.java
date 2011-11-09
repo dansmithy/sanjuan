@@ -42,10 +42,6 @@ public class Play {
 		return playChoice;
 	}
 
-	public void setPlayChoice(PlayChoice playChoice) {
-		this.playChoice = playChoice;
-	}
-	
 	public PlayOffered getOffered() {
 		return offered;
 	}

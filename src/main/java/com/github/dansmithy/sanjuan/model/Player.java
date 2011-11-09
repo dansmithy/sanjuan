@@ -57,40 +57,20 @@ public class Player {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public List<Integer> getHand() {
 		return hand;
-	}
-
-	public void setHand(List<Integer> hand) {
-		this.hand = hand;
 	}
 
 	public List<Integer> getBuildings() {
 		return buildings;
 	}
 
-	public void setBuildings(List<Integer> town) {
-		this.buildings = town;
-	}
-
 	public Map<Integer, Integer> getGoods() {
 		return goods;
 	}
 
-	public void setGoods(Map<Integer, Integer> goods) {
-		this.goods = goods;
-	}
-	
 	public List<Integer> getChapelCards() {
 		return chapelCards;
-	}
-
-	public void setChapelCards(List<Integer> chapelCards) {
-		this.chapelCards = chapelCards;
 	}
 
 	public Integer getVictoryPoints() {

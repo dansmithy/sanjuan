@@ -86,18 +86,8 @@ public class PlayCoords {
 	}
 
 	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(obj, this);
 	}
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this,
-				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
 }

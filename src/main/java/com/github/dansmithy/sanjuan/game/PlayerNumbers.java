@@ -28,10 +28,6 @@ public class PlayerNumbers implements BonusCardMatcher {
 	
 	private PlayerPrivileges privileges = new PlayerPrivileges();
 	
-	public PlayerPrivileges getPrivileges() {
-		return privileges;
-	}
-	
 	public int getTotalGoodsCanTrade(boolean withPrivilege) {
 		return withPrivilege ? (privileges.getGoodsCanTrade()*getTimesCanUsePrivilege()) + goodsCanTrade : goodsCanTrade; 
 	}

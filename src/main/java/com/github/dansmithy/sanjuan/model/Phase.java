@@ -76,10 +76,6 @@ public class Phase {
 		return playerCount;
 	}
 
-	public void setPlayerCount(int playerCount) {
-		this.playerCount = playerCount;
-	}
-
 	public int getPlayNumber() {
 		return plays.size();
 	}
