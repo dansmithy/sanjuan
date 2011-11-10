@@ -10,6 +10,7 @@ import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
 import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
 import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -69,7 +70,7 @@ public class GameCreationAT {
 
 				when(gameOwnedByJoinedBy("#alice", "#charlie")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_RECRUITING' }")));
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class GameCreationAT {
 
 				when(gameOwnedByJoinedBy("#alice", "#eric")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'TOO_MANY_PLAYERS' }")));
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class GameCreationAT {
 
 		when(gameOwnedByJoinedBy("#alice", "#alice")),
 
-		then(verifyResponseCodeIs(HTTP_CONFLICT)));
+		then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'ALREADY_PLAYER' }")));
 	}
 
 	@Test
@@ -117,7 +118,7 @@ public class GameCreationAT {
 
 				when(gameOwnedByJoinedBy("#alice", "#bob")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'ALREADY_PLAYER' }")));
 	}
 
 	@Test 
@@ -132,7 +133,7 @@ public class GameCreationAT {
 
 				when(gameStartedBy("#bob")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class GameCreationAT {
 
 				when(gameStartedBy("#alice")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_ENOUGH_PLAYERS' }")));
 	}
 
 	@Test

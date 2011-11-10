@@ -100,13 +100,13 @@ public class DatastoreGameService implements GameService {
 		// numbers should do that ok!
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
-			throw new IllegalGameStateException(String.format("Cannot join a game when in a %s state.", game.getState().toString()));
+			throw new IllegalGameStateException(String.format("Cannot join a game when in a %s state.", game.getState().toString()), IllegalGameStateException.NOT_RECRUITING);
 		}
 		if (game.getPlayers().size() == MAXIMUM_PLAYER_COUNT) {
-			throw new IllegalGameStateException(String.format("This game already has the maximum number of players (%d)", MAXIMUM_PLAYER_COUNT));
+			throw new IllegalGameStateException(String.format("This game already has the maximum number of players (%d)", MAXIMUM_PLAYER_COUNT), IllegalGameStateException.TOO_MANY_PLAYERS);
 		}		
 		if (game.hasPlayer(playerName)) {
-			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName));
+			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName), IllegalGameStateException.ALREADY_PLAYER);
 		}
 		Player player = new Player(playerName);
 		game.addPlayer(player);
@@ -133,7 +133,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
-			throw new IllegalStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.PLAYING));
+			throw new IllegalGameStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.PLAYING), IllegalGameStateException.NOT_RECRUITING);
 		}
 
 		game.startPlaying(cardFactory, tariffBuilder);

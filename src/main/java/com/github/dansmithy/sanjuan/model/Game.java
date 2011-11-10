@@ -43,7 +43,7 @@ public class Game {
 	public void startPlaying(CardFactory cardFactory, TariffBuilder tariffBuilder) {
 		
 		if (players.size() < 2) {
-			throw new IllegalGameStateException("Not enough players to start a game.");
+			throw new IllegalGameStateException("Not enough players to start a game.", IllegalGameStateException.NOT_ENOUGH_PLAYERS);
 		}
 		
 		initiateDeck(cardFactory);
