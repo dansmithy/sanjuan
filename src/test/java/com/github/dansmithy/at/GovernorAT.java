@@ -5,6 +5,7 @@ import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
+import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
@@ -42,25 +43,49 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")),
-				
+
 				when(roleChosenBy("#bob", "round : 1; phase : 1",
 						"role : BUILDER")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
+						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 	}
-	
+
 	@Test
 	public void testCannotChooseRoleWhenNotRoleChoiceTime() {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(roleChosenBy("#alice", "round : 1; phase : 1",
-						"role : BUILDER")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : PROSPECTOR")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
-	}	
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
+	}
 
+	@Test
+	public void testCannotChooseAlreadyChosenRole() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }")),
+
+				when(roleChosenBy("#bob", "round : 1; phase : 2",
+						"role : BUILDER")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'ROLE_ALREADY_TAKEN' }")));
+	}
 }

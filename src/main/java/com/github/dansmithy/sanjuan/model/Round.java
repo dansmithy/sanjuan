@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -66,6 +67,23 @@ public class Round {
 			}
 		}
 		return count;		
+	}
+	
+	@JsonIgnore
+	public List<Role> getRemainingRoles() {
+		List<Role> remainingRoles = new ArrayList<Role>(Arrays.asList(Role.values()));
+		remainingRoles.remove(Role.GOVERNOR);
+		remainingRoles.removeAll(getPlayedRoles());
+		return remainingRoles;
+	}
+
+	private List<Role> getPlayedRoles() {
+		List<Role> playedRoles = new ArrayList<Role>();
+		for (Phase phase : phases) {
+			playedRoles.add(phase.getRole());
+		}
+		return playedRoles;
+		
 	}
 
 	public Phase nextPhase(PlayerCycle cycle) {

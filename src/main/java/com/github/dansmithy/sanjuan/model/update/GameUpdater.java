@@ -154,7 +154,11 @@ public class GameUpdater {
 	}
 	
 	public Phase getCurrentPhase() {
-		return game.getRounds().get(playCoords.getRoundIndex()).getPhases().get(playCoords.getPhaseIndex());
+		return getCurrentRound().getPhases().get(playCoords.getPhaseIndex());
+	}
+	
+	public Round getCurrentRound() {
+		return game.getRounds().get(playCoords.getRoundIndex());
 	}
 
 	public boolean isPhaseChanged() {
@@ -172,4 +176,5 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
+
 }

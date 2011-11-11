@@ -167,8 +167,14 @@ public class DatastoreGameService implements GameService {
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
 			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."));
 		}
+		
 
 		Role role = choice.getRole();
+		
+		if (!gameUpdater.getCurrentRound().getRemainingRoles().contains(role)) {
+			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.ROLE_ALREADY_TAKEN);
+		}
+		
 		phase.selectRole(role);
 		gameUpdater.updatePhase(phase);
 		gameUpdater.createNextStep();

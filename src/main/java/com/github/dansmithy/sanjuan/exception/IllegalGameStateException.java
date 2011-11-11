@@ -11,6 +11,7 @@ public class IllegalGameStateException extends SanJuanException {
 	public static final String NOT_ENOUGH_PLAYERS = "NOT_ENOUGH_PLAYERS";
 	public static final String TOO_MANY_PLAYERS = "TOO_MANY_PLAYERS";
 	public static final String ALREADY_PLAYER = "ALREADY_PLAYER";
+	public static final String ROLE_ALREADY_TAKEN = "ROLE_ALREADY_TAKEN";
 	
 	private static final String DEFAULT_TYPE = "ILLEGALSTATE";
 
