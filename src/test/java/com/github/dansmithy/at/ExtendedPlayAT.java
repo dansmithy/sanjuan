@@ -27,6 +27,22 @@ public class ExtendedPlayAT {
 			.createTestRunner();
 
 	@Test
+	public void testCannotDoOtherPlay() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")),
+								
+				when(userPlays("#alice",
+								"round : 1; phase : 2; play : 1",
+								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'PLAY_NOT_ACTIVE' }")));
+	}
+	
+	@Test
 	public void testCompletePhase() {
 
 		bdd.runTest(
@@ -141,7 +157,7 @@ public class ExtendedPlayAT {
 	}
 	
 	@Test
-	public void testCannotContinueGameOnceCompleted() {
+	public void testCannotChooseRoleOnceGameCompleted() {
 		
 		bdd.runTest(
 
@@ -155,7 +171,7 @@ public class ExtendedPlayAT {
 	}	
 	
 	@Test
-	public void testCannotContinueGameInCheekyWayOnceCompleted() {
+	public void testCannotChooseRoleInCheekyWayOnceGameCompleted() {
 		
 		bdd.runTest(
 
@@ -164,6 +180,20 @@ public class ExtendedPlayAT {
 
 				when(roleChosenBy("#bob", "round : 0; phase : 0",
 						"role : COUNCILLOR")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
+	}	
+	
+	@Test
+	public void testCannotMakePlayInCheekyWayOnceGameCompleted() {
+		
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameCompleted()),
+
+				when(userPlays("#bob", "round : 0; phase : 0; play : 0",
+						"{ skip : 'true' }")),
 
 				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
 	}		

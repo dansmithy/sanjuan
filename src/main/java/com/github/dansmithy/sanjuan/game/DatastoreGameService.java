@@ -188,12 +188,16 @@ public class DatastoreGameService implements GameService {
 		Game game = getGame(coords.getGameId());
 		GameUpdater gameUpdater = new GameUpdater(game);
 		
+		if (!game.getState().equals(GameState.PLAYING)) {
+			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
+		}
+		
 		if (!gameUpdater.matchesCoords(coords)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()));
+			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()), IllegalGameStateException.PLAY_NOT_ACTIVE);
 		}
 		
 		if (!gameUpdater.getCurrentPlay().getState().equals(PlayState.AWAITING_INPUT)) {
-			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."));
+			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."), IllegalGameStateException.PLAY_NOT_ACTIVE);
 		}		
 		
 		if (!userProvider.getAuthenticatedUsername().equals(gameUpdater.getCurrentPlayer().getName())) {
