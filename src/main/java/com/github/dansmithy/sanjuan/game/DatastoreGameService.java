@@ -148,6 +148,10 @@ public class DatastoreGameService implements GameService {
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
 		Game game = getGame(playCoords.getGameId());
+		if (!game.getState().equals(GameState.PLAYING)) {
+			throw new IllegalGameStateException(String.format("Game not active, so cannot choose a role now."), IllegalGameStateException.NOT_PLAYING);
+		}
+		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		GameUpdater gameUpdater = new GameUpdater(game);
 		

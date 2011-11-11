@@ -4,14 +4,20 @@ import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
+import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
+import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
+import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static java.net.HttpURLConnection.HTTP_CONFLICT;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.BddTestRunner;
+import com.github.dansmithy.bdd.SimpleBddParts;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.GameDriver;
 
@@ -28,8 +34,7 @@ public class ExtendedPlayAT {
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
+						.and(userPlays("#alice",
 								"round : 1; phase : 1; play : 1",
 								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
@@ -50,8 +55,7 @@ public class ExtendedPlayAT {
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
+						.and(userPlays("#alice",
 								"round : 1; phase : 1; play : 1",
 								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
@@ -59,7 +63,8 @@ public class ExtendedPlayAT {
 								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
 						.and(roleChosenBy("#bob", "round : 1; phase : 2",
 								"role : COUNCILLOR"))
-						.and(userPlays("#bob",
+						.and(userPlays(
+								"#bob",
 								"round : 1; phase : 2; play : 1",
 								"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
 						.and(userPlays("#alice",
@@ -80,8 +85,7 @@ public class ExtendedPlayAT {
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
+						.and(userPlays("#alice",
 								"round : 1; phase : 1; play : 1",
 								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 						.and(userPlays("#bob",
@@ -89,7 +93,8 @@ public class ExtendedPlayAT {
 								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
 						.and(roleChosenBy("#bob", "round : 1; phase : 2",
 								"role : COUNCILLOR"))
-						.and(userPlays("#bob",
+						.and(userPlays(
+								"#bob",
 								"round : 1; phase : 2; play : 1",
 								"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
 						.and(userPlays("#alice",
@@ -98,8 +103,7 @@ public class ExtendedPlayAT {
 						.and(roleChosenBy("#alice", "round : 1; phase : 3",
 								"role : PROSPECTOR"))
 						.and(userPlays("#alice",
-								"round : 1; phase : 3; play : 1",
-								"{ }"))
+								"round : 1; phase : 3; play : 1", "{ }"))
 						.and(userPlays("#bob",
 								"round : 1; phase : 3; play : 2",
 								"{ 'skip' : true }")),
@@ -115,280 +119,276 @@ public class ExtendedPlayAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 1",
-								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
-								"round : 1; phase : 1; play : 1",
-								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
-						.and(userPlays("#bob",
-								"round : 1; phase : 1; play : 2",
-								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
-						.and(roleChosenBy("#bob", "round : 1; phase : 2",
-								"role : COUNCILLOR"))
-						.and(userPlays("#bob",
-								"round : 1; phase : 2; play : 1",
-								"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
-						.and(userPlays("#alice",
-								"round : 1; phase : 2; play : 2",
-								"{ councilDiscarded : [ ] }"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 3",
-								"role : PROSPECTOR"))
-						.and(userPlays("#alice",
-								"round : 1; phase : 3; play : 1",
-								"{ }"))
-						.and(userPlays("#bob",
-								"round : 1; phase : 3; play : 2",
-								"{ 'skip' : true }"))
-								
-						.and(roleChosenBy("#bob", "round : 2; phase : 1",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 2; phase : 1; play : 1",
-								"{ build : '#coffeeroaster', payment : [ '#indigoplant7', '#indigoplant8' ] }"))
-						.and(userPlays("#alice",
-								"round : 2; phase : 1; play : 2",
-								"{ build : '#quarry', payment : [ '#indigoplant5', '#sugarmill3', '#sugarmill4', '#sugarmill5' ] }"))
-						.and(roleChosenBy("#alice", "round : 2; phase : 2",
-								"role : COUNCILLOR"))
-						.and(userPlays(
-								"#alice",
-								"round : 2; phase : 2; play : 1",
-								"{ councilDiscarded : [ '#sugarmill7', '#sugarmill8', '#tobaccostorage2' ] }"))
-						.and(userPlays("#bob",
-								"round : 2; phase : 2; play : 2",
-								"{ councilDiscarded : [ '#tobaccostorage4' ] }"))
-						.and(roleChosenBy("#bob", "round : 2; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#bob",
-								"round : 2; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 2; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-						.and(roleChosenBy("#alice", "round : 3; phase : 1",
-								"role : TRADER"))
-								
-						.and(userPlays(
-								"#alice",
-								"round : 3; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-						.and(userPlays("#bob",
-								"round : 3; phase : 1; play : 2",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
-						.and(roleChosenBy("#bob", "round : 3; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 3; phase : 2; play : 1",
-								"{ build : '#well', payment : [ '#tobaccostorage3' ] }"))
-						.and(userPlays("#alice",
-								"round : 3; phase : 2; play : 2",
-								"{ build : '#sugarmill6', payment : [ '#tobaccostorage', '#tobaccostorage8' ] }"))
-						.and(roleChosenBy("#alice", "round : 3; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#alice",
-								"round : 3; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 3; phase : 3; play : 2",
-								"{ productionFactories : [ '#coffeeroaster' ] }"))
-								
-						.and(roleChosenBy("#bob", "round : 4; phase : 1",
-								"role : TRADER"))
-						.and(userPlays(
-								"#bob",
-								"round : 4; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 4; phase : 1; play : 2",
-								"{ productionFactories : [ '#sugarmill6' ] }"))
-						.and(roleChosenBy("#alice", "round : 4; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#alice",
-								"round : 4; phase : 2; play : 1",
-								"{ build : '#carpenter', payment : [ '#silversmelter' ] }"))
-						.and(userPlays("#bob",
-								"round : 4; phase : 2; play : 2",
-								"{ build : '#aqueduct', payment : [ '#coffeeroaster2', '#coffeeroaster3', '#coffeeroaster7' ] }"))						
-						.and(roleChosenBy("#bob", "round : 4; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#bob",
-								"round : 4; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 4; phase : 3; play : 2",
-								"{ productionFactories : [ '#sugarmill6' ] }"))
-								
-						.and(roleChosenBy("#alice", "round : 5; phase : 1",
-								"role : TRADER"))
-						.and(userPlays(
-								"#alice",
-								"round : 5; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 5; phase : 1; play : 2",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(roleChosenBy("#bob", "round : 5; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 5; phase : 2; play : 1",
-								"{ build : '#tradingpost', payment : [ '#aqueduct3' ] }"))
-						.and(userPlays("#alice",
-								"round : 5; phase : 2; play : 2",
-								"{ skip : true }"))
-						.and(roleChosenBy("#alice", "round : 5; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#alice",
-								"round : 5; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 5; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))								
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameAlmostCompleted()),
 
-						.and(roleChosenBy("#bob", "round : 6; phase : 1",
-								"role : TRADER"))
-						.and(userPlays(
-								"#bob",
-								"round : 6; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 6; phase : 1; play : 2",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-						.and(roleChosenBy("#alice", "round : 6; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#alice",
-								"round : 6; phase : 2; play : 1",
-								"{ build : '#markethall', payment : [ '#aqueduct2', '#quarry2' ] }"))
-						.and(userPlays("#bob",
-								"round : 6; phase : 2; play : 2",
-								"{ build : '#marketstand', payment : [ '#carpenter2', '#carpenter3' ] }"))						
-						.and(roleChosenBy("#bob", "round : 6; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#bob",
-								"round : 6; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 6; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-
-						.and(roleChosenBy("#alice", "round : 7; phase : 1",
-								"role : TRADER"))
-						.and(userPlays(
-								"#alice",
-								"round : 7; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 7; phase : 1; play : 2",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(roleChosenBy("#bob", "round : 7; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 7; phase : 2; play : 1",
-								"{ build : '#triumphalarch', payment : [ '#coffeeroaster8', '#prefecture2', '#prefecture3', '#smithy3', '#well3' ] }"))
-						.and(userPlays("#alice",
-								"round : 7; phase : 2; play : 2",
-								"{ build : '#archive', payment : [] }"))
-						.and(roleChosenBy("#alice", "round : 7; phase : 3",
-								"role : PRODUCER"))
-						.and(userPlays("#alice",
-								"round : 7; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 7; phase : 3; play : 2",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))								
-
-						.and(roleChosenBy("#bob", "round : 8; phase : 1",
-								"role : TRADER"))
-						.and(userPlays(
-								"#bob",
-								"round : 8; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 8; phase : 1; play : 2",
-								"{ productionFactories : [ '#sugarmill6' ] }"))
-						.and(roleChosenBy("#alice", "round : 8; phase : 2",
-								"role : BUILDER"))
-						.and(userPlays("#alice",
-								"round : 8; phase : 2; play : 1",
-								"{ build : '#cityhall', payment : [ '#tradingpost3', '#well2', '#archive3', '#goldmine3' ] }"))
-						.and(userPlays("#bob",
-								"round : 8; phase : 2; play : 2",
-								"{ build : '#statue', payment : [ '#statue2', '#statue3', '#archive2' ] }"))						
-						.and(roleChosenBy("#bob", "round : 8; phase : 3",
-								"role : PROSPECTOR"))
-						.and(userPlays("#bob",
-								"round : 8; phase : 3; play : 1",
-								"{ }"))
-						.and(userPlays("#alice",
-								"round : 8; phase : 3; play : 2",
-								"{ skip : true }"))								
-
-						.and(roleChosenBy("#alice", "round : 9; phase : 1",
-								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
-								"round : 9; phase : 1; play : 1",
-								"{ build : '#poorhouse', payment : [ ] }"))
-						.and(userPlays("#bob",
-								"round : 9; phase : 1; play : 2",
-								"{ build : '#victorycolumn', payment : [ '#chapel2', '#chapel3', '#crane2', '#crane3' ] }"))
-						.and(roleChosenBy("#bob", "round : 9; phase : 2",
-								"role : PROSPECTOR"))
-						.and(userPlays("#bob",
-								"round : 9; phase : 2; play : 1",
-								"{ }"))
-						.and(userPlays("#alice",
-								"round : 9; phase : 2; play : 2",
-								"{ skip : true }"))
-						.and(roleChosenBy("#alice", "round : 9; phase : 3",
-								"role : TRADER"))
-						.and(userPlays("#alice",
-								"round : 9; phase : 3; play : 1",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-						.and(userPlays("#bob",
-								"round : 9; phase : 3; play : 2",
-								"{ skip : true }"))
-
-						.and(roleChosenBy("#bob", "round : 10; phase : 1",
-								"role : PRODUCER"))
-						.and(userPlays(
-								"#bob",
-								"round : 10; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
-						.and(userPlays("#alice",
-								"round : 10; phase : 1; play : 2",
-								"{ productionFactories : [ '#sugarmill6' ] }"))
-						.and(roleChosenBy("#alice", "round : 10; phase : 2",
-								"role : TRADER"))
-						.and(userPlays("#alice",
-								"round : 10; phase : 2; play : 1",
-								"{ productionFactories : [ '#sugarmill6' ] }"))
-						.and(userPlays("#bob",
-								"round : 10; phase : 2; play : 2",
-								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))						
-						.and(roleChosenBy("#bob", "round : 10; phase : 3",
-								"role : BUILDER"))
-						.and(userPlays("#bob",
-								"round : 10; phase : 3; play : 1",
-								"{ build : '#goldmine2', payment : [ ] }"))
-						.and(userPlays("#alice",
-								"round : 10; phase : 3; play : 2",
-								"{ build : '#library', payment : [ '#tower2', '#tower3', '#goldmine', '#victorycolumn3' ] }"))
-								
-						.and(roleChosenBy("#alice", "round : 11; phase : 1",
-								"role : BUILDER"))
-						.and(userPlays(
-								"#alice",
-								"round : 11; phase : 1; play : 1",
-								"{ build : '#hero', payment : [ '#silversmelter8', '#hero3' ] }"))
-								,
-
-				when(userPlays("#bob",
-						"round : 11; phase : 1; play : 2",
-				"{ build : '#palace', payment : [ '#blackmarket', '#victorycolumn2', '#silversmelter5', '#library2', '#library3', '#hero2' ] }")),
+				when(finalMove()),
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#alice', 'players^name' : [ { 'name' : '#alice', victoryPoints: 29 }, { 'name' : '#bob', victoryPoints: 28 } ], 'roundNumber' : 11 }")));
+	}
+	
+	@Test
+	public void testCannotStartGameOnceCompleted() {
+		
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameCompleted()),
+
+				when(gameStartedBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_RECRUITING' }")));
+	}
+	
+	@Test
+	public void testCannotContinueGameOnceCompleted() {
+		
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameCompleted()),
+
+				when(roleChosenBy("#bob", "round : 11; phase : 2",
+						"role : COUNCILLOR")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
 	}	
+	
+	@Test
+	public void testCannotContinueGameInCheekyWayOnceCompleted() {
+		
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameCompleted()),
+
+				when(roleChosenBy("#bob", "round : 0; phase : 0",
+						"role : COUNCILLOR")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
+	}		
+
+	private BddPart<GameDriver> gameCompleted() {
+		return new SimpleBddParts<GameDriver>(gameAlmostCompleted())
+				.and(finalMove());
+	}
+
+	private BddPart<GameDriver> finalMove() {
+		return userPlays(
+				"#bob",
+				"round : 11; phase : 1; play : 2",
+				"{ build : '#palace', payment : [ '#blackmarket', '#victorycolumn2', '#silversmelter5', '#library2', '#library3', '#hero2' ] }");
+	}
+
+	private BddPart<GameDriver> gameAlmostCompleted() {
+		return new SimpleBddParts<GameDriver>(roleChosenBy("#alice",
+				"round : 1; phase : 1", "role : BUILDER"))
+				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
+				.and(userPlays("#bob", "round : 1; phase : 1; play : 2",
+						"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
+				.and(roleChosenBy("#bob", "round : 1; phase : 2",
+						"role : COUNCILLOR"))
+				.and(userPlays(
+						"#bob",
+						"round : 1; phase : 2; play : 1",
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
+				.and(userPlays("#alice", "round : 1; phase : 2; play : 2",
+						"{ councilDiscarded : [ ] }"))
+				.and(roleChosenBy("#alice", "round : 1; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#alice", "round : 1; phase : 3; play : 1",
+						"{ }"))
+				.and(userPlays("#bob", "round : 1; phase : 3; play : 2",
+						"{ 'skip' : true }"))
+
+				.and(roleChosenBy("#bob", "round : 2; phase : 1",
+						"role : BUILDER"))
+				.and(userPlays("#bob", "round : 2; phase : 1; play : 1",
+						"{ build : '#coffeeroaster', payment : [ '#indigoplant7', '#indigoplant8' ] }"))
+				.and(userPlays(
+						"#alice",
+						"round : 2; phase : 1; play : 2",
+						"{ build : '#quarry', payment : [ '#indigoplant5', '#sugarmill3', '#sugarmill4', '#sugarmill5' ] }"))
+				.and(roleChosenBy("#alice", "round : 2; phase : 2",
+						"role : COUNCILLOR"))
+				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
+						"{ councilDiscarded : [ '#sugarmill7', '#sugarmill8', '#tobaccostorage2' ] }"))
+				.and(userPlays("#bob", "round : 2; phase : 2; play : 2",
+						"{ councilDiscarded : [ '#tobaccostorage4' ] }"))
+				.and(roleChosenBy("#bob", "round : 2; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 2; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 2; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 1",
+						"role : TRADER"))
+
+				.and(userPlays("#alice", "round : 3; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 3; phase : 1; play : 2",
+						"{ productionFactories : [ '#coffeeroaster' ] }"))
+				.and(roleChosenBy("#bob", "round : 3; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays("#bob", "round : 3; phase : 2; play : 1",
+						"{ build : '#well', payment : [ '#tobaccostorage3' ] }"))
+				.and(userPlays(
+						"#alice",
+						"round : 3; phase : 2; play : 2",
+						"{ build : '#sugarmill6', payment : [ '#tobaccostorage', '#tobaccostorage8' ] }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 3; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 3; phase : 3; play : 2",
+						"{ productionFactories : [ '#coffeeroaster' ] }"))
+
+				.and(roleChosenBy("#bob", "round : 4; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#bob", "round : 4; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 4; phase : 1; play : 2",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+				.and(roleChosenBy("#alice", "round : 4; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays("#alice", "round : 4; phase : 2; play : 1",
+						"{ build : '#carpenter', payment : [ '#silversmelter' ] }"))
+				.and(userPlays(
+						"#bob",
+						"round : 4; phase : 2; play : 2",
+						"{ build : '#aqueduct', payment : [ '#coffeeroaster2', '#coffeeroaster3', '#coffeeroaster7' ] }"))
+				.and(roleChosenBy("#bob", "round : 4; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 4; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 4; phase : 3; play : 2",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+
+				.and(roleChosenBy("#alice", "round : 5; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 5; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 5; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(roleChosenBy("#bob", "round : 5; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays("#bob", "round : 5; phase : 2; play : 1",
+						"{ build : '#tradingpost', payment : [ '#aqueduct3' ] }"))
+				.and(userPlays("#alice", "round : 5; phase : 2; play : 2",
+						"{ skip : true }"))
+				.and(roleChosenBy("#alice", "round : 5; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 5; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 5; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+
+				.and(roleChosenBy("#bob", "round : 6; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#bob", "round : 6; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 6; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 6; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays("#alice", "round : 6; phase : 2; play : 1",
+						"{ build : '#markethall', payment : [ '#aqueduct2', '#quarry2' ] }"))
+				.and(userPlays("#bob", "round : 6; phase : 2; play : 2",
+						"{ build : '#marketstand', payment : [ '#carpenter2', '#carpenter3' ] }"))
+				.and(roleChosenBy("#bob", "round : 6; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 6; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 6; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+
+				.and(roleChosenBy("#alice", "round : 7; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 7; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 7; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(roleChosenBy("#bob", "round : 7; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays(
+						"#bob",
+						"round : 7; phase : 2; play : 1",
+						"{ build : '#triumphalarch', payment : [ '#coffeeroaster8', '#prefecture2', '#prefecture3', '#smithy3', '#well3' ] }"))
+				.and(userPlays("#alice", "round : 7; phase : 2; play : 2",
+						"{ build : '#archive', payment : [] }"))
+				.and(roleChosenBy("#alice", "round : 7; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 7; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 7; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+
+				.and(roleChosenBy("#bob", "round : 8; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#bob", "round : 8; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 8; phase : 1; play : 2",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+				.and(roleChosenBy("#alice", "round : 8; phase : 2",
+						"role : BUILDER"))
+				.and(userPlays(
+						"#alice",
+						"round : 8; phase : 2; play : 1",
+						"{ build : '#cityhall', payment : [ '#tradingpost3', '#well2', '#archive3', '#goldmine3' ] }"))
+				.and(userPlays("#bob", "round : 8; phase : 2; play : 2",
+						"{ build : '#statue', payment : [ '#statue2', '#statue3', '#archive2' ] }"))
+				.and(roleChosenBy("#bob", "round : 8; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#bob", "round : 8; phase : 3; play : 1", "{ }"))
+				.and(userPlays("#alice", "round : 8; phase : 3; play : 2",
+						"{ skip : true }"))
+
+				.and(roleChosenBy("#alice", "round : 9; phase : 1",
+						"role : BUILDER"))
+				.and(userPlays("#alice", "round : 9; phase : 1; play : 1",
+						"{ build : '#poorhouse', payment : [ ] }"))
+				.and(userPlays(
+						"#bob",
+						"round : 9; phase : 1; play : 2",
+						"{ build : '#victorycolumn', payment : [ '#chapel2', '#chapel3', '#crane2', '#crane3' ] }"))
+				.and(roleChosenBy("#bob", "round : 9; phase : 2",
+						"role : PROSPECTOR"))
+				.and(userPlays("#bob", "round : 9; phase : 2; play : 1", "{ }"))
+				.and(userPlays("#alice", "round : 9; phase : 2; play : 2",
+						"{ skip : true }"))
+				.and(roleChosenBy("#alice", "round : 9; phase : 3",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 9; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 9; phase : 3; play : 2",
+						"{ skip : true }"))
+
+				.and(roleChosenBy("#bob", "round : 10; phase : 1",
+						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 10; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(userPlays("#alice", "round : 10; phase : 1; play : 2",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+				.and(roleChosenBy("#alice", "round : 10; phase : 2",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 10; phase : 2; play : 1",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 10; phase : 2; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+				.and(roleChosenBy("#bob", "round : 10; phase : 3",
+						"role : BUILDER"))
+				.and(userPlays("#bob", "round : 10; phase : 3; play : 1",
+						"{ build : '#goldmine2', payment : [ ] }"))
+				.and(userPlays(
+						"#alice",
+						"round : 10; phase : 3; play : 2",
+						"{ build : '#library', payment : [ '#tower2', '#tower3', '#goldmine', '#victorycolumn3' ] }"))
+
+				.and(roleChosenBy("#alice", "round : 11; phase : 1",
+						"role : BUILDER"))
+				.and(userPlays("#alice", "round : 11; phase : 1; play : 1",
+						"{ build : '#hero', payment : [ '#silversmelter8', '#hero3' ] }"));
+	}
 
 }

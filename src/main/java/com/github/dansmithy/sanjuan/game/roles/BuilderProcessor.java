@@ -67,6 +67,7 @@ public class BuilderProcessor implements RoleProcessor {
 		player.removeHandCards(playChoice.getPayment());
 		deck.discard(playChoice.getPayment());
 
+		// TODO think this is incorrect. carpenter needs to be applied BEFORE poor house. this would do the reverse.
 		int bonusCardsCount = numbers.getBonusCardMatches(player, Role.BUILDER);
 		BuildingType type = cardFactory.getBuildingType(playChoice.getBuild());
 		if (type.isVioletBuilding()) {

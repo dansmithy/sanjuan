@@ -34,4 +34,12 @@ public class SimpleBddParts<T> implements BddParts<T> {
 		return this;
 	}
 
+	@Override
+	public BddParts<T> and(List<BddPart<T>> extraParts) {
+		for (BddPart<T> part : extraParts) {
+			and(part);
+		}
+		return this;
+	}
+
 }

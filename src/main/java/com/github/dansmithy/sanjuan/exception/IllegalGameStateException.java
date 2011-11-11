@@ -7,6 +7,7 @@ public class IllegalGameStateException extends SanJuanException {
 	public static final String PHASE_NOT_ACTIVE = "PHASE_NOT_ACTIVE";
 	public static final String PLAY_NOT_ACTIVE = "PLAY_NOT_ACTIVE";
 	public static final String NOT_RECRUITING = "NOT_RECRUITING";
+	public static final String NOT_PLAYING = "NOT_PLAYING";
 	public static final String NOT_ENOUGH_PLAYERS = "NOT_ENOUGH_PLAYERS";
 	public static final String TOO_MANY_PLAYERS = "TOO_MANY_PLAYERS";
 	public static final String ALREADY_PLAYER = "ALREADY_PLAYER";
