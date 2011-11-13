@@ -96,6 +96,21 @@ public class CouncillorAT {
 	}		
 	
 	@Test
+	public void testCannotCheatAndDiscardSameCardTwice() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : COUNCILLOR")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ councilDiscarded : [  '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'DUPLICATE_CHOICE' }")));
+	}		
+	
+	@Test
 	public void testCannotDiscardHandCardsWithoutArchive() {
 
 		bdd.runTest(

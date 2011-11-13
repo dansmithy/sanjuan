@@ -19,6 +19,7 @@ import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
 public class ProducerProcessor implements RoleProcessor {
@@ -73,15 +74,22 @@ public class ProducerProcessor implements RoleProcessor {
 		Deck deck = game.getDeck();
 		Player player = gameUpdater.getCurrentPlayer();
 		PlayerNumbers numbers = player.getPlayerNumbers();
+
+		boolean withPrivilege = play.isHasPrivilige();
+		if (playChoice.getProductionFactories().size() > numbers.getTotalGoodsCanProduce(withPrivilege)) {
+			throw new PlayChoiceInvalidException(String.format("Can only produce a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanProduce(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidException.OVER_PRODUCE);
+		}
+		
+		if (CollectionUtils.hasDuplicates(playChoice.getProductionFactories())) {
+			throw new PlayChoiceInvalidException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+		}
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
-			// TODO verify factory is permitted
 			
 			if (!player.getBuildings().contains(chosenFactory)) {
 				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
 			}
 			
-			// TODO verify cannot produce on same factory again
 			// TODO verify no repeats!
 			Integer good = deck.takeOne();
 			player.addGood(chosenFactory, good);

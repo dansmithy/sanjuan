@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
-import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -16,6 +15,7 @@ import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
 public class CouncillorProcessor implements RoleProcessor {
@@ -65,6 +65,10 @@ public class CouncillorProcessor implements RoleProcessor {
 		}
 		if (numberCardsDiscarded > numberCardsMustDiscard) {
 			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but must discard only %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidException.OVER_DISCARD);
+		}
+		
+		if (CollectionUtils.hasDuplicates(playChoice.getCouncilDiscarded())) {
+			throw new PlayChoiceInvalidException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
 		}
 		
 		List<Integer> offered = play.getOffered().getCouncilOffered();

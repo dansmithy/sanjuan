@@ -62,6 +62,59 @@ public class ProducerAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{ productionFactories : [ '#coffeeroaster' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_FACTORY' }")));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_OWNED_FACTORY' }")));
 	}
+
+	@Test
+	public void testCannotProduceMoreGoodsThanPermitted() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#indigoplant3', payment : [ ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ skip : true }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ skip : true }")),
+
+				when(userPlays("#alice", "round : 1; phase : 2; play : 2",
+						"{ productionFactories : [ '#indigoplant', '#indigoplant3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'OVER_PRODUCE' }")));
+	}
+
+	@Test
+	public void testCannotMistakenlyProduceSameFactoryTwice() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#indigoplant3', payment : [ ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#indigoplant6', payment : [ '#smithy' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER")),
+
+				when(userPlays("#bob", "round : 1; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#indigoplant2' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'DUPLICATE_CHOICE' }")));
+	}
+
 }
