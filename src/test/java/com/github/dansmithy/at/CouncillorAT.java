@@ -45,9 +45,9 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#sugarmill2' ] }")),
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#indigoplant10', '#sugarmill', '#sugarmill2' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] } } ] } ] } ] }")));
 	}
 
 	@Test
@@ -60,10 +60,40 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#silversmelter' ] }")),
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#silversmelter' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_COUNCIL_DISCARD' }")));
 	}
+	
+	@Test
+	public void testCannotDiscardTooFewCards() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : COUNCILLOR")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill'] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'UNDER_DISCARD' }")));
+	}
+	
+	@Test
+	public void testCannotDiscardTooManyCards() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : COUNCILLOR")),
+
+				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ councilDiscarded : [  '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2', '#well' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'OVER_DISCARD' }")));
+	}		
 	
 	@Test
 	public void testCannotDiscardHandCardsWithoutArchive() {
@@ -75,9 +105,9 @@ public class CouncillorAT {
 								"role : COUNCILLOR")),
 
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
-						"{ councilDiscarded : [ '#indigoplant10', '#sugarmill', '#indigoplant3' ] }")),
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#indigoplant3' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'NOT_OWNED_COUNCIL_DISCARD' }")));
-	}	
+	}
 
 }

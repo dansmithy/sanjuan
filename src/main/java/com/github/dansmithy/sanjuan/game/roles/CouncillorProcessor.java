@@ -51,13 +51,22 @@ public class CouncillorProcessor implements RoleProcessor {
 		Play play = gameUpdater.getCurrentPlay();
 		Game game = gameUpdater.getGame();
 		Deck deck = game.getDeck();
+		Player player = gameUpdater.getCurrentPlayer();
+		PlayerNumbers numbers = player.getPlayerNumbers();
+		boolean withPrivilege = play.isHasPrivilige();
 		
 		deck.discard(playChoice.getCouncilDiscarded());
 		gameUpdater.updateDeck(game.getDeck());
 		
-		String playerName = play.getPlayer();
-		Player player = game.getPlayer(playerName);
-
+		int numberCardsMustDiscard = numbers.getTotalCouncillorOfferedCards(withPrivilege) - numbers.getCouncillorRetainCards();
+		int numberCardsDiscarded = playChoice.getCouncilDiscarded().size();
+		if (numberCardsDiscarded < numberCardsMustDiscard) {
+			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but must discard %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidException.UNDER_DISCARD);
+		}
+		if (numberCardsDiscarded > numberCardsMustDiscard) {
+			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but must discard only %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidException.OVER_DISCARD);
+		}
+		
 		List<Integer> offered = play.getOffered().getCouncilOffered();
 		for (Integer discardedCard : playChoice.getCouncilDiscarded()) {
 			if (offered.contains(discardedCard)) {

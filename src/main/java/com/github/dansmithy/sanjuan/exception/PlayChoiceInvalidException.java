@@ -8,6 +8,8 @@ public class PlayChoiceInvalidException extends SanJuanException {
 	public static final String NOT_OWNED_BUILD_CHOICE = "NOT_OWNED_BUILD_CHOICE";
 	public static final String NOT_OWNED_COUNCIL_DISCARD = "NOT_OWNED_COUNCIL_DISCARD";
 	public static final String NOT_OWNED_FACTORY = "NOT_OWNED_FACTORY";
+	public static final String UNDER_DISCARD = "UNDER_DISCARD";
+	public static final String OVER_DISCARD = "OVER_DISCARD";
 	
 	private static final String DEFAULT_TYPE = "INVALID_CHOICE";
 	
