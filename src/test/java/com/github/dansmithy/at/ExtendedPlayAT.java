@@ -1,10 +1,9 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
+import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
 import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;

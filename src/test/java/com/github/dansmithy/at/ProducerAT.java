@@ -116,5 +116,44 @@ public class ProducerAT {
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
 						verifyResponseContains("{ code : 'DUPLICATE_CHOICE' }")));
 	}
+	
+	@Test
+	public void testCannotProduceOnFactoryWithGoodAlready() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : PRODUCER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ productionFactories : [ '#indigoplant2' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : BUILDER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ build : '#indigoplant6', payment : [ ] }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ build : '#indigoplant3', payment : [ '#indigoplant4' ] }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : PROSPECTOR"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1", "{ }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 3; play : 2",
+								"{ skip : true }"))
+						.and(roleChosenBy("#bob", "round : 2; phase : 1",
+								"role : PRODUCER")),
+
+				when(userPlays("#bob", "round : 2; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#indigoplant6' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_EMPTY_FACTORY' }")));
+	}	
 
 }

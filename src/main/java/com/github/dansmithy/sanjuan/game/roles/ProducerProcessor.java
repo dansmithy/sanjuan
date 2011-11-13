@@ -90,7 +90,10 @@ public class ProducerProcessor implements RoleProcessor {
 				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
 			}
 			
-			// TODO verify no repeats!
+			if (player.getGoods().containsKey(chosenFactory)) {
+				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as already has a good.", chosenFactory), PlayChoiceInvalidException.NOT_EMPTY_FACTORY);
+			}
+			
 			Integer good = deck.takeOne();
 			player.addGood(chosenFactory, good);
 		}
