@@ -63,9 +63,19 @@ public class JsonObjectMatcher extends TypeSafeMatcher<JSON> {
 				context = new ArrayContext(expectedKey.substring(expectedKey.indexOf("^")+1));
 				expectedKey = expectedKey.substring(0, expectedKey.indexOf("^"));
 			}
-			String newExpectedPath = expectedPath + "." + expectedKey;
-			Assert.assertTrue(String.format("Expected %s to exist!", newExpectedPath), actual.containsKey(expectedKey));
-			compare(actual.get(expectedKey), expected.get(expectedKeyObject), newExpectedPath, context);
+			if (expectedKey.endsWith(".size")) {
+				String arrayKey = expectedKey.substring(0, expectedKey.length() - 5);
+				Object arrayObj = actual.get(arrayKey);
+				String arrayPath = expectedPath + "." + arrayKey;
+				Assert.assertTrue(String.format("Expected %s to be an array so can detemrine size!", arrayPath), arrayObj instanceof JSONArray);
+				int expectedSize = expected.getInt(expectedKey);
+				JSONArray array = (JSONArray)arrayObj; 
+				Assert.assertEquals(String.format("Expected array at %s to be of size %d.", arrayPath, expectedSize), expectedSize, array.size());
+			} else {
+				String newExpectedPath = expectedPath + "." + expectedKey;
+				Assert.assertTrue(String.format("Expected %s to exist!", newExpectedPath), actual.containsKey(expectedKey));
+				compare(actual.get(expectedKey), expected.get(expectedKeyObject), newExpectedPath, context);
+			}
 		}
 	}
 

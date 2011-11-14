@@ -67,6 +67,63 @@ public class TraderAT {
 	}
 
 	@Test
+	public void testRewardedWithCorrectNumberOfCardsWhenTradeIndigo() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : PRODUCER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ productionFactories : [ '#indigoplant2' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : TRADER")),
+
+				when(userPlays("#bob", "round : 1; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant2' ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 6 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'productionFactories' : [ '#indigoplant2' ] } } ] } ] } ] }")));
+	}
+
+	@Test
+	public void testRewardedWithCorrectNumberOfCardsWhenTradeCoffeeRoaster() {
+		
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#indigoplant3', payment : [ ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#coffeeroaster', payment : [ '#smithy', '#indigoplant6', '#indigoplant7', '#indigoplant8' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : TRADER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1",
+								"{ skip : true }")),
+
+				when(userPlays("#bob", "round : 1; phase : 3; play : 2",
+						"{ productionFactories : [ '#coffeeroaster' ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 2 }, { 'name' : '#bob', victoryPoints: 3, hand.size : 3 } ] }")));
+	}
+
+	@Test
 	public void testCannotTradeWhenNoGood() {
 
 		bdd.runTest(
@@ -137,8 +194,7 @@ public class TraderAT {
 								"round : 1; phase : 3; play : 2",
 								"{ skip : true }"))
 						.and(roleChosenBy("#bob", "round : 2; phase : 1",
-								"role : TRADER"))
-								,
+								"role : TRADER")),
 
 				when(userPlays("#bob", "round : 2; phase : 1; play : 1",
 						"{ productionFactories : [ '#indigoplant2', '#indigoplant2' ] }")),
