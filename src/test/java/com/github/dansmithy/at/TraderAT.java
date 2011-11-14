@@ -106,4 +106,79 @@ public class TraderAT {
 						.and(verifyResponseContains("{ code : 'NOT_OWNED_FACTORY' }")));
 	}
 
+	@Test
+	public void testCannotMistakenlyTradeTheSameGoodTwice() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#indigoplant3', payment : [ ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#indigoplant6', payment : [ '#indigoplant7' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ productionFactories : [ '#indigoplant2', '#indigoplant6' ] }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : PROSPECTOR"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1",
+								"{ skip : true }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 3; play : 2",
+								"{ skip : true }"))
+						.and(roleChosenBy("#bob", "round : 2; phase : 1",
+								"role : TRADER"))
+								,
+
+				when(userPlays("#bob", "round : 2; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2', '#indigoplant2' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'DUPLICATE_CHOICE' }")));
+	}
+
+	@Test
+	public void testCannotTradeMoreGoodsThanPrivilegeAllows() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ build : '#indigoplant3', payment : [ ] }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#indigoplant6', payment : [ '#indigoplant7' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ productionFactories : [ '#indigoplant2', '#indigoplant6' ] }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : TRADER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1",
+								"{ skip : true }")),
+
+				when(userPlays("#bob", "round : 1; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#indigoplant6' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'OVER_TRADE' }")));
+	}
 }

@@ -20,6 +20,7 @@ import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
 public class TraderProcessor implements RoleProcessor {
@@ -76,6 +77,15 @@ public class TraderProcessor implements RoleProcessor {
 		Deck deck = game.getDeck();
 		Player player = gameUpdater.getCurrentPlayer();
 		PlayerNumbers numbers = player.getPlayerNumbers();
+		
+		boolean withPrivilege = play.isHasPrivilige();
+		if (playChoice.getProductionFactories().size() > numbers.getTotalGoodsCanTrade(withPrivilege)) {
+			throw new PlayChoiceInvalidException(String.format("Can only trade a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanTrade(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidException.OVER_TRADE);
+		}
+		
+		if (CollectionUtils.hasDuplicates(playChoice.getProductionFactories())) {
+			throw new PlayChoiceInvalidException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+		}		
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			
