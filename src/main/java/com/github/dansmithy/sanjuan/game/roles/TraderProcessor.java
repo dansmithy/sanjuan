@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
@@ -77,8 +78,12 @@ public class TraderProcessor implements RoleProcessor {
 		PlayerNumbers numbers = player.getPlayerNumbers();
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
+			
+			if (!player.getBuildings().contains(chosenFactory)) {
+				throw new PlayChoiceInvalidException(String.format("Cannot trade on factory %d as is not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
+			}
 			if (!player.getGoods().containsKey(chosenFactory)) {
-				throw new SanJuanUnexpectedException(String.format("There is not a good to trade on card %d.", chosenFactory));
+				throw new PlayChoiceInvalidException(String.format("There is not a good to trade on card %d.", chosenFactory), PlayChoiceInvalidException.NOT_FULL_FACTORY);
 			}
 			int price = calculatePrice(chosenFactory, gameUpdater.getCurrentPhase().getTariff());
 			Integer good = player.getGoods().remove(chosenFactory);

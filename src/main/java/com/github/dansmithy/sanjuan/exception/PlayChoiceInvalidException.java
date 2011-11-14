@@ -12,6 +12,7 @@ public class PlayChoiceInvalidException extends SanJuanException {
 	public static final String OVER_DISCARD = "OVER_DISCARD";
 	public static final String OVER_PRODUCE = "OVER_PRODUCE";
 	public static final String NOT_EMPTY_FACTORY = "NOT_EMPTY_FACTORY";
+	public static final String NOT_FULL_FACTORY = "NOT_FULL_FACTORY";
 	public static final String DUPLICATE_CHOICE = "DUPLICATE_CHOICE";
 	
 	private static final String DEFAULT_TYPE = "INVALID_CHOICE";
