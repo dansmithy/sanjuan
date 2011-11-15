@@ -221,13 +221,16 @@ public class DatastoreGameService implements GameService {
 		} else {
 			roleProcessor.makeChoice(gameUpdater, playChoice);
 		}
-		// do winner
-		if (game.isComplete()) {
+		
+		if (game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete()) {
 			calculationService.processPlayers(game.getPlayers());
-			gameUpdater.updatePlayers();
+			game.markCompleted();
 			game.calculateWinner();
-			gameUpdater.updateWinner();
-		}		
+			
+			gameUpdater.updateWinner();			
+			gameUpdater.updatePlayers();
+			gameUpdater.updateGameState();
+		}
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}		
 	

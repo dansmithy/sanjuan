@@ -84,13 +84,7 @@ public class BuilderProcessor implements RoleProcessor {
 		
 		if (!gameUpdater.isPhaseChanged()) {
 			initiateNewPlay(gameUpdater);
-		} else {
-			if (game.hasReachedEndCondition()) {
-				game.markCompleted();
-				gameUpdater.updateGameState();
-			}
-		}
-		
+		}		
 	}
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {

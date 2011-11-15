@@ -12,11 +12,12 @@ import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.BddTestRunner;
-import com.github.dansmithy.bdd.SimpleBddParts;
+import com.github.dansmithy.bdd.GivenBddParts;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.GameDriver;
 
@@ -30,17 +31,17 @@ public class ExtendedPlayAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
-								
-				when(userPlays("#alice",
-								"round : 1; phase : 2; play : 1",
-								"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'PLAY_NOT_ACTIVE' }")));
+				when(userPlays("#alice", "round : 1; phase : 2; play : 1",
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
+						verifyResponseContains("{ code : 'PLAY_NOT_ACTIVE' }")));
 	}
-	
+
 	@Test
 	public void testCompletePhase() {
 
@@ -139,12 +140,12 @@ public class ExtendedPlayAT {
 
 				when(finalMove()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#alice', 'players^name' : [ { 'name' : '#alice', victoryPoints: 29 }, { 'name' : '#bob', victoryPoints: 28 } ], 'roundNumber' : 11 }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#alice', 'players^name' : [ { 'name' : '#alice', victoryPoints: 29 }, { 'name' : '#bob', victoryPoints: 28 } ], 'roundNumber' : 12 }")));
 	}
-	
+
 	@Test
 	public void testCannotStartGameOnceCompleted() {
-		
+
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
@@ -152,12 +153,13 @@ public class ExtendedPlayAT {
 
 				when(gameStartedBy("#alice")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_RECRUITING' }")));
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
+						verifyResponseContains("{ code : 'NOT_RECRUITING' }")));
 	}
-	
+
 	@Test
 	public void testCannotChooseRoleOnceGameCompleted() {
-		
+
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
@@ -166,12 +168,13 @@ public class ExtendedPlayAT {
 				when(roleChosenBy("#bob", "round : 11; phase : 2",
 						"role : COUNCILLOR")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
-	}	
-	
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
+						verifyResponseContains("{ code : 'NOT_PLAYING' }")));
+	}
+
 	@Test
 	public void testCannotChooseRoleInCheekyWayOnceGameCompleted() {
-		
+
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
@@ -180,12 +183,13 @@ public class ExtendedPlayAT {
 				when(roleChosenBy("#bob", "round : 0; phase : 0",
 						"role : COUNCILLOR")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
-	}	
-	
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
+						verifyResponseContains("{ code : 'NOT_PLAYING' }")));
+	}
+
 	@Test
 	public void testCannotMakePlayInCheekyWayOnceGameCompleted() {
-		
+
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
@@ -194,24 +198,22 @@ public class ExtendedPlayAT {
 				when(userPlays("#bob", "round : 0; phase : 0; play : 0",
 						"{ skip : 'true' }")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_PLAYING' }")));
-	}		
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
+						verifyResponseContains("{ code : 'NOT_PLAYING' }")));
+	}
 
 	private BddPart<GameDriver> gameCompleted() {
-		return new SimpleBddParts<GameDriver>(gameAlmostCompleted())
-				.and(finalMove());
+		return new GivenBddParts(gameAlmostCompleted()).and(finalMove());
 	}
 
 	private BddPart<GameDriver> finalMove() {
-		return userPlays(
-				"#bob",
-				"round : 11; phase : 1; play : 2",
-				"{ build : '#palace', payment : [ '#blackmarket', '#victorycolumn2', '#silversmelter5', '#library2', '#library3', '#hero2' ] }");
+		return userPlays("#alice", "round : 12; phase : 1; play : 2",
+				"{ skip : true }");
 	}
 
 	private BddPart<GameDriver> gameAlmostCompleted() {
-		return new SimpleBddParts<GameDriver>(roleChosenBy("#alice",
-				"round : 1; phase : 1", "role : BUILDER"))
+		return new GivenBddParts(roleChosenBy("#alice", "round : 1; phase : 1",
+				"role : BUILDER"))
 				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }"))
 				.and(userPlays("#bob", "round : 1; phase : 1; play : 2",
@@ -299,7 +301,7 @@ public class ExtendedPlayAT {
 				.and(userPlays("#alice", "round : 5; phase : 1; play : 1",
 						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
 				.and(userPlays("#bob", "round : 5; phase : 1; play : 2",
-						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+						"{ productionFactories : [ '#coffeeroaster' ] }"))
 				.and(roleChosenBy("#bob", "round : 5; phase : 2",
 						"role : BUILDER"))
 				.and(userPlays("#bob", "round : 5; phase : 2; play : 1",
@@ -311,7 +313,7 @@ public class ExtendedPlayAT {
 				.and(userPlays("#alice", "round : 5; phase : 3; play : 1",
 						"{ productionFactories : [ '#indigoplant', '#sugarmill6' ] }"))
 				.and(userPlays("#bob", "round : 5; phase : 3; play : 2",
-						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+						"{ productionFactories : [ '#coffeeroaster' ] }"))
 
 				.and(roleChosenBy("#bob", "round : 6; phase : 1",
 						"role : TRADER"))
@@ -343,7 +345,7 @@ public class ExtendedPlayAT {
 				.and(userPlays(
 						"#bob",
 						"round : 7; phase : 2; play : 1",
-						"{ build : '#triumphalarch', payment : [ '#coffeeroaster8', '#prefecture2', '#prefecture3', '#smithy3', '#well3' ] }"))
+						"{ build : '#triumphalarch', payment : [ '#coffeeroaster8', '#statue2', '#prefecture3', '#smithy3', '#well3' ] }"))
 				.and(userPlays("#alice", "round : 7; phase : 2; play : 2",
 						"{ build : '#archive', payment : [] }"))
 				.and(roleChosenBy("#alice", "round : 7; phase : 3",
@@ -366,7 +368,7 @@ public class ExtendedPlayAT {
 						"round : 8; phase : 2; play : 1",
 						"{ build : '#cityhall', payment : [ '#tradingpost3', '#well2', '#archive3', '#goldmine3' ] }"))
 				.and(userPlays("#bob", "round : 8; phase : 2; play : 2",
-						"{ build : '#statue', payment : [ '#statue2', '#statue3', '#archive2' ] }"))
+						"{ build : '#statue3', payment : [ '#chapel2', '#chapel3', '#archive2' ] }"))
 				.and(roleChosenBy("#bob", "round : 8; phase : 3",
 						"role : PROSPECTOR"))
 				.and(userPlays("#bob", "round : 8; phase : 3; play : 1", "{ }"))
@@ -380,7 +382,7 @@ public class ExtendedPlayAT {
 				.and(userPlays(
 						"#bob",
 						"round : 9; phase : 1; play : 2",
-						"{ build : '#victorycolumn', payment : [ '#chapel2', '#chapel3', '#crane2', '#crane3' ] }"))
+						"{ build : '#victorycolumn', payment : [ '#goldmine2', '#blackmarket', '#crane2', '#crane3' ] }"))
 				.and(roleChosenBy("#bob", "round : 9; phase : 2",
 						"role : PROSPECTOR"))
 				.and(userPlays("#bob", "round : 9; phase : 2; play : 1", "{ }"))
@@ -407,8 +409,10 @@ public class ExtendedPlayAT {
 						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
 				.and(roleChosenBy("#bob", "round : 10; phase : 3",
 						"role : BUILDER"))
-				.and(userPlays("#bob", "round : 10; phase : 3; play : 1",
-						"{ build : '#goldmine2', payment : [ ] }"))
+				.and(userPlays(
+						"#bob",
+						"round : 10; phase : 3; play : 1",
+						"{ build : '#palace', payment : [ '#victorycolumn2', '#silversmelter5', '#library2', '#library3', '#hero2' ] }"))
 				.and(userPlays(
 						"#alice",
 						"round : 10; phase : 3; play : 2",
@@ -417,7 +421,29 @@ public class ExtendedPlayAT {
 				.and(roleChosenBy("#alice", "round : 11; phase : 1",
 						"role : BUILDER"))
 				.and(userPlays("#alice", "round : 11; phase : 1; play : 1",
-						"{ build : '#hero', payment : [ '#silversmelter8', '#hero3' ] }"));
+						"{ build : '#hero', payment : [ '#silversmelter8', '#hero3' ] }"))
+				.and(userPlays("#bob", "round : 11; phase : 1; play : 2",
+						"{ skip : true }"))
+				.and(roleChosenBy("#bob", "round : 11; phase : 2",
+						"role : PROSPECTOR"))
+				.and(userPlays("#bob", "round : 11; phase : 2; play : 1",
+						"{ }"))
+				.and(userPlays("#alice", "round : 11; phase : 2; play : 2",
+						"{ skip : true }"))
+				.and(roleChosenBy("#alice", "round : 11; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 11; phase : 3; play : 1",
+						"{ productionFactories : [ '#sugarmill6' ] }"))
+				.and(userPlays("#bob", "round : 11; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant2', '#coffeeroaster' ] }"))
+						
+				.and(roleChosenBy("#bob", "round : 12; phase : 1",
+						"role : BUILDER"))
+				.and(userPlays("#bob", "round : 12; phase : 1; play : 1",
+						"{ build : '#blackmarket2', payment : [ '#tower' ] }"))
+						
+						
+						;
 	}
 
 }

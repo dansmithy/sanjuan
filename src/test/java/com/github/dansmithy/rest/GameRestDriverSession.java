@@ -138,7 +138,7 @@ public class GameRestDriverSession implements GameDriverSession {
 	public Response makePlayChoice(String urlData, String postJson) {
 		RequestValues urlValues = createRequest(urlData);
 		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
-//		if (urlValues.get("round").equals("8") && urlValues.get("phase").equals("2")) {
+//		if (urlValues.get("round").equals("11") && urlValues.get("phase").equals("3") && urlValues.get("play").equals("1")) {
 //			System.out.println("here");
 //		}
 		String url = String.format("%s/games/%s/rounds/%s/phases/%s/plays/%s/decision", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"), urlValues.get("play"));
