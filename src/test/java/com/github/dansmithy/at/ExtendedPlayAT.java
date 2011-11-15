@@ -131,17 +131,30 @@ public class ExtendedPlayAT {
 	}
 
 	@Test
-	public void testCanCompleteGame() {
+	public void testCanCompleteGameWithASkipAndDecidedByVictoryPoints() {
 
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameAlmostCompleted()),
 
-				when(finalMove()),
+				when(finalLosingMove()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#alice', 'players^name' : [ { 'name' : '#alice', victoryPoints: 29 }, { 'name' : '#bob', victoryPoints: 28 } ], 'roundNumber' : 12 }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#bob', 'players^name' : [ { 'name' : '#alice', victoryPoints: 29 }, { 'name' : '#bob', victoryPoints: 30 } ], 'roundNumber' : 12 }")));
 	}
+	
+	@Test
+	public void testCanCompleteGameWithASkipAndDecidedByHandCards() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameAlmostCompleted()),
+
+				when(finalWinningMove()),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'COMPLETED', 'winner' : '#alice', 'players^name' : [ { 'name' : '#alice', victoryPoints: 30 }, { 'name' : '#bob', victoryPoints: 30 } ], 'roundNumber' : 12 }")));
+	}	
 
 	@Test
 	public void testCannotStartGameOnceCompleted() {
@@ -203,12 +216,17 @@ public class ExtendedPlayAT {
 	}
 
 	private BddPart<GameDriver> gameCompleted() {
-		return new GivenBddParts(gameAlmostCompleted()).and(finalMove());
+		return new GivenBddParts(gameAlmostCompleted()).and(finalLosingMove());
 	}
 
-	private BddPart<GameDriver> finalMove() {
+	private BddPart<GameDriver> finalLosingMove() {
 		return userPlays("#alice", "round : 12; phase : 1; play : 2",
 				"{ skip : true }");
+	}
+
+	private BddPart<GameDriver> finalWinningMove() {
+		return userPlays("#alice", "round : 12; phase : 1; play : 2",
+				"{ build : '#indigoplant5', payment : [ '#palace2' ] }");
 	}
 
 	private BddPart<GameDriver> gameAlmostCompleted() {
@@ -240,7 +258,7 @@ public class ExtendedPlayAT {
 				.and(userPlays(
 						"#alice",
 						"round : 2; phase : 1; play : 2",
-						"{ build : '#quarry', payment : [ '#indigoplant5', '#sugarmill3', '#sugarmill4', '#sugarmill5' ] }"))
+						"{ build : '#quarry', payment : [ '#silversmelter7', '#sugarmill3', '#sugarmill4', '#sugarmill5' ] }"))
 				.and(roleChosenBy("#alice", "round : 2; phase : 2",
 						"role : COUNCILLOR"))
 				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
@@ -440,7 +458,7 @@ public class ExtendedPlayAT {
 				.and(roleChosenBy("#bob", "round : 12; phase : 1",
 						"role : BUILDER"))
 				.and(userPlays("#bob", "round : 12; phase : 1; play : 1",
-						"{ build : '#blackmarket2', payment : [ '#tower' ] }"))
+						"{ build : '#tobaccostorage6', payment : [ '#tower' ] }"))
 						
 						
 						;

@@ -78,7 +78,7 @@ public class BuilderAT {
 				when(userPlays(
 						"#alice",
 						"round : 1; phase : 1; play : 1",
-						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4', '#indigoplant5' ] }")),
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4', '#silversmelter7' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(verifyResponseContains("{ code : 'OVERPAID' }")));
 	}
