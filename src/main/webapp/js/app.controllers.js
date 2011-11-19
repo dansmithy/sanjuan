@@ -144,6 +144,11 @@ GameController.prototype = {
 			game.$round = game.rounds[game.roundNumber-1];
 			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
 			
+			//reorder players
+			while (!this.isNameActivePlayer(game.players[0].name)) {
+				game.players.push(game.players.shift());
+			}
+			
 			var usedRoles = [ "governor" ];
 			var unusedRoles = [];
 			angular.forEach(game.$round.phases, function(phase) {
