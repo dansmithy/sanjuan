@@ -30,32 +30,45 @@
 
         <div class="player-row" ng:repeat="player in responder.game.players">
             <div class="row">
-                <div class="span2 player self-{{isSelf(player.name)}}">
-                    <div class="player-inner">
-                        <h2>{{player.name}}</h2>
-                        <h1>{{player.victoryPoints}} <small>pts</small></h1>
-                        <h3>{{player.buildings.length}} <small>/12</small></h3>
-                        <span class="label important" ng:show="player.governor">Governor</span>
-                        <span class="label warning" ng:show="player.governor">Privilege</span>
-                    </div>
-                </div>
-                
-                <div class="span14">
-                    <div class="row" ng:show="player.hand">
-                        <div class="span2"><h1><small>Hand</small></h1></div>
-                        <div class="span1 card" ng:repeat="handCard in player.hand" ng:click="getResponder(player.name).clickHandCard(handCard)"><img class="cardimage {{responder.handCardSelectedType(handCard)}}" ng:src="{{cardService.cardImageUrl(handCard)}}" width="55" height="80" /></div>
-                    </div>
-                    <div class="row" ng:show="player.hand">
-                        <p>&nbsp;</p>
-                    </div>                 
+                <div class="span16 player self-{{isSelf(player.name)}}">
                     <div class="row">
-                        <div class="span2"><h1><small>Buildings</small></h1></div>
-                        <div class="span1 card" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)"><div class="{{player.goods[building] | defined:'produced':'not-produced'}}">&nbsp;</div><img class="cardimage {{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
+                        <div class="span1">
+                            <img ng:show="responder.game.currentPlayerName == player.name" src="images/player-marker.png" width="40" height="40" />
+                            &nbsp;
+                        </div>
+                        <div class="span11">
+                            <h2 class="light">{{player.name}} <span ng:show="isSelf(player.name)" class="smaller">(you)</span></h2>
+                        </div>
+                        <div class="span2">
+                            <span class="label important" ng:show="responder.game.$round.governor == player.name">Governor</span>&nbsp;
+                            <span class="label warning" ng:show="responder.game.$round.$phase.leadPlayer == player.name">Privilege</span>&nbsp;
+                        </div>
+                        <div class="span2">
+                        </div>
+                        <div class="span2">
+                            <h1>{{player.victoryPoints}} <small>pts</small></h1>
+                        </div>
                     </div>
-                   
                 </div>
             </div>
-            
+            <div class="row" ng:show="isSelf(player.name)">
+                <div class="span2"><h1><small>Hand</small></h1></div>
+                <div ng:hide="player.hand" class="span7"><h1><small>No cards left in your hand!</small></h1></div>
+                <div class="span1 card" ng:repeat="handCard in player.hand" ng:click="getResponder(player.name).clickHandCard(handCard)"><img class="cardimage {{responder.handCardSelectedType(handCard)}}" ng:src="{{cardService.cardImageUrl(handCard)}}" width="55" height="80" /></div>
+            </div>
+            <div class="row" ng:show="isSelf(player.name)">
+                <p>&nbsp;</p>
+            </div>                 
+            <div class="row">
+                <div class="span2">
+                    <h1>
+                        <small>Buildings</small><br/>
+                        <small>{{player.buildings.length}}<span class="smaller">/12</span></small>
+                    </h1>
+                </div>
+                <div class="span1 card" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)"><div class="{{player.goods[building] | defined:'produced':'not-produced'}}">&nbsp;</div><img class="cardimage {{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
+            </div>
+               
             <div class="row">
                 <p>&nbsp;</p>
             </div>   

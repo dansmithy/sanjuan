@@ -118,10 +118,6 @@ GameController.prototype = {
 			}
 		},
 		
-		isSelf : function(playerName) {
-			return playerName === this.userManager.user.username;
-		},
-		
 		getResponder : function(playerName) {
 			return this.isSelf(playerName) ? this.responder : angular.noop;
 		},
@@ -168,18 +164,20 @@ GameController.prototype = {
 			if (game.$round.$phase.state === "PLAYING") {
 				game.$currentRole = game.$usedRoles.pop();
 				game.$round.$phase.$play = game.$round.$phase.plays[game.$round.$phase.playNumber-1];
-				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.$play.player);
+				game.currentPlayerName = game.$round.$phase.$play.player;
+				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
 					this.responder = this.determineActivePlayerResponder(game);
 				} else {
-					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.$play.player + "</strong> to choose what " + this.roleStatusMap[game.$currentRole] };
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to choose what " + this.roleStatusMap[game.$currentRole] };
 				}
 			} else if (game.$round.$phase.state === "AWAITING_ROLE_CHOICE") {
-				this.isActivePlayer = this.isNameActivePlayer(game.$round.$phase.leadPlayer);
+				game.currentPlayerName = game.$round.$phase.leadPlayer;
+				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
 					this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
 				} else {
-					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.$round.$phase.leadPlayer + "</strong> to choose role." };
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to choose role." };
 				}
 			} else {
 				// completed
@@ -213,7 +211,12 @@ GameController.prototype = {
 		
 		isNameActivePlayer : function(playerName) {
 			return this.userManager.user.username === playerName;
+		},
+		
+		isSelf : function(playerName) {
+			return playerName === this.userManager.user.username;
 		}
+		
 		
 //		computeIsActivePlayer : function(game, isRoleChosen) {
 //			return this.userManager.username !== this.computeActivePlayer(game, isRoleChosen);

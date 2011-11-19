@@ -20,15 +20,40 @@ span.progress {
 	background: #EEEEEE;
 }
 
+.light {
+	font-weight: normal;
+}
+
+.smaller {
+	font-size: 0.8em;
+}
+
 .player {
-	border-radius: 15px;
-	background: green;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	background: rgb(238, 220, 148);
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
+	background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
+	background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
+	background-image: linear-gradient(top, #fceec1, #eedc94);
+	background-image: -o-linear-gradient(top, #fceec1, #eedc94);
+	border-color: rgb(238, 220, 148) rgb(238, 220, 148) rgb(228, 198, 82);
+	border-width: 1px;
+	border-style: solid;
+	height: 40px;
+	margin-bottom: 10px;
 }
 
 .self-true {
-	background: red;
+/* 	background: #AAAAAA; */
 }
 
+.player-middle {
+/* 	padding-top: 8px; */
+}
 
 .player-inner {
 	padding: 10px;
