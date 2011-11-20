@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
@@ -103,6 +104,16 @@ public class BuilderProcessor implements RoleProcessor {
 			String exceptionType = playChoice.getPayment().size() < cost ? PlayChoiceInvalidException.UNDERPAID : PlayChoiceInvalidException.OVERPAID;
 			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()), exceptionType);
 		}
+		
+		if (cardFactory.getBuildingType(playChoice.getBuild()).isVioletBuilding()) {
+			if (buildingIsAlreadyInList(playChoice.getBuild(), player.getBuildings())) {
+				throw new IllegalGameStateException(String.format("Cannot build as already have that violet building in your buildings."), IllegalGameStateException.BUILDING_ALREADY_BUILT);
+			}
+		}
+	}
+
+	private boolean buildingIsAlreadyInList(Integer building, List<Integer> buildings) {
+		return cardFactory.getBuildings(buildings).contains(cardFactory.getBuildingType(building));
 	}
 
 	private int calculateCost(Integer build, PlayOffered offered) {

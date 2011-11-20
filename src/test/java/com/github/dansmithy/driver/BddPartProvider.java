@@ -143,13 +143,21 @@ public class BddPartProvider {
 	}	
 	
 	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player, final String player2) {
+		return gameBegunWithTwoPlayers(player, player2, DeckOrder.Order1);
+	}
+	
+	public static BddPart<GameDriver> gameBegunWithTwoPlayers(final String player, final String player2, List<Integer> deckOrder) {
 		return new SimpleBddParts<GameDriver>(userExistsAndAuthenticated(player))
 						.and(userExistsAndAuthenticated(player2))
 						.and(gameCreatedBy(player))
-						.and(orderDeckOwnedBy(player, DeckOrder.Order1))
+						.and(orderDeckOwnedBy(player, deckOrder))
 						.and(orderTariffOwnedBy(player, Arrays.asList(4, 3, 2, 1, 0)))
 						.and(gameOwnedByJoinedBy(player, player2))
 						.and(gameStartedBy(player));
+	}	
+	
+	public static List<Integer> withDeck(List<Integer> deckOrder) {
+		return deckOrder;
 	}
 	
 	public static BddPart<GameDriver> roleChosenBy(final String username, final String urlData, final String postData) {
