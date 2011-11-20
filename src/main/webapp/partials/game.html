@@ -36,12 +36,16 @@
                             <img ng:show="responder.game.currentPlayerName == player.name" src="images/player-marker.png" width="40" height="40" />
                             &nbsp;
                         </div>
-                        <div class="span11">
+                        <div class="span9">
                             <h2 class="light">{{player.name}} <span ng:show="isSelf(player.name)" class="smaller">(you)</span></h2>
                         </div>
                         <div class="span2">
+                            <h1 ng:hide="isSelf(player.name)"><small>{{player.hand.length}} in hand</small></h1>
+                            &nbsp;
+                        </div>
+                        <div class="span2">
                             <span class="label important" ng:show="responder.game.$round.governor == player.name">Governor</span>&nbsp;
-                            <span class="label warning" ng:show="responder.game.$round.$phase.leadPlayer == player.name">Privilege</span>&nbsp;
+                            <span class="label warning" ng:show="responder.game.$round.$phase.leadPlayer == player.name && responder.game.$round.$phase.state == 'PLAYING'">Privilege</span>&nbsp;
                         </div>
                         <div class="span2">
                         </div>
