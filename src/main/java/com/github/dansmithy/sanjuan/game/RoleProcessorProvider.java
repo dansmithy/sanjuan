@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.ListableBeanFactory;
 
+import com.github.dansmithy.sanjuan.game.roles.SkipAwareRoleProcessor;
 import com.github.dansmithy.sanjuan.model.Role;
 
 @Named
@@ -24,6 +25,6 @@ public class RoleProcessorProvider {
 	}
 
 	public RoleProcessor getProcessor(Role role) {
-		return processors.get(role);
+		return new SkipAwareRoleProcessor(processors.get(role));
 	}
 }

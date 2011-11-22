@@ -105,12 +105,12 @@ public class ProducerProcessor implements RoleProcessor {
 		
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
-		gameUpdater.completedPlay(play, playChoice);
-		gameUpdater.createNextStep();
-		
-		if (!gameUpdater.isPhaseChanged()) {
-			initiateNewPlay(gameUpdater);
-		}
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
+//		
+//		if (!gameUpdater.isPhaseChanged()) {
+//			initiateNewPlay(gameUpdater);
+//		}
 	}
 
 

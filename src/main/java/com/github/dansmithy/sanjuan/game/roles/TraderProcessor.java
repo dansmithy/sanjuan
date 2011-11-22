@@ -108,12 +108,12 @@ public class TraderProcessor implements RoleProcessor {
 		
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
-		gameUpdater.completedPlay(play, playChoice);
-		gameUpdater.createNextStep();
-		
-		if (!gameUpdater.isPhaseChanged()) {
-			initiateNewPlay(gameUpdater);
-		}
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
+//		
+//		if (!gameUpdater.isPhaseChanged()) {
+//			initiateNewPlay(gameUpdater);
+//		}
 	}
 
 	private int calculatePrice(Integer factory, Tariff tariff) {

@@ -44,8 +44,8 @@ public class ProspectorProcessor implements RoleProcessor {
 			gameUpdater.updatePlayer(player);
 		}
 		
-		gameUpdater.completedPlay(play, playChoice);
-		gameUpdater.createNextStep();
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
 	}
 
 }

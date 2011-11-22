@@ -21,6 +21,7 @@ import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
+import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -178,12 +179,27 @@ public class DatastoreGameService implements GameService {
 		phase.selectRole(role);
 		gameUpdater.updatePhase(phase);
 		gameUpdater.createNextStep();
-		calculationService.processPlayer(gameUpdater.getNewPlayer());
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
 		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
+	
+	public Game governorDiscard(PlayCoords playCoords, GovernorChoice governorChoice) {
+		
+		Game game = getGame(playCoords.getGameId());
+		
+		
+		
+		
+		// check whether current player
+		
+		// check whether current coords
+		
+		
+		
+		return null;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#makePlay(com.github.dansmithy.sanjuan.model.input.PlayCoords, com.github.dansmithy.sanjuan.model.input.PlayChoice)
@@ -210,18 +226,20 @@ public class DatastoreGameService implements GameService {
 			throw new NotResourceOwnerAccessException("It is not your turn to play.");
 		}
 		
-		calculationService.processPlayer(gameUpdater.getCurrentPlayer());
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
-		if (playChoice.getSkip() != null && playChoice.getSkip()) {
-			playSkip(gameUpdater, playChoice);
-			if (!gameUpdater.isPhaseChanged()) {
-				roleProcessor.initiateNewPlay(gameUpdater);
-			}
-		} else {
-			roleProcessor.makeChoice(gameUpdater, playChoice);
+		roleProcessor.makeChoice(gameUpdater, playChoice);
+		gameUpdater.createNextStep();
+		
+		if (!gameUpdater.isPhaseChanged()) {
+			roleProcessor.initiateNewPlay(gameUpdater);
 		}
 		
+		handleGameCompletion(game, gameUpdater);
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}
+
+	private void handleGameCompletion(Game game, GameUpdater gameUpdater) {
 		if (game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete()) {
 			calculationService.processPlayers(game.getPlayers());
 			game.markCompleted();
@@ -231,14 +249,13 @@ public class DatastoreGameService implements GameService {
 			gameUpdater.updatePlayers();
 			gameUpdater.updateGameState();
 		}
-		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}		
 	
 	private void playSkip(GameUpdater gameUpdater, PlayChoice playChoice) {
 		
-		Play play = gameUpdater.getCurrentPlay();
-		gameUpdater.completedPlay(play, playChoice);
-		gameUpdater.createNextStep();
+//		Play play = gameUpdater.getCurrentPlay();
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
 	}
 	
 	/* (non-Javadoc)

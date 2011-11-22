@@ -88,12 +88,12 @@ public class CouncillorProcessor implements RoleProcessor {
 		player.addToHand(offered);
 		
 		gameUpdater.updatePlayer(player);
-		gameUpdater.completedPlay(play, playChoice);
-		gameUpdater.createNextStep();
-		
-		if (!gameUpdater.isPhaseChanged()) {
-			initiateNewPlay(gameUpdater);
-		}
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
+//		
+//		if (!gameUpdater.isPhaseChanged()) {
+//			initiateNewPlay(gameUpdater);
+//		}
 	}
 
 }

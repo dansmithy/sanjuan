@@ -62,7 +62,6 @@ public class BuilderProcessor implements RoleProcessor {
 		
 		verifyPlay(player, play, playChoice);
 		
-		gameUpdater.completedPlay(play, playChoice);
 		
 		player.moveToBuildings(playChoice.getBuild());
 		player.removeHandCards(playChoice.getPayment());
@@ -81,11 +80,12 @@ public class BuilderProcessor implements RoleProcessor {
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateDeck(deck);
 		
-		gameUpdater.createNextStep();
-		
-		if (!gameUpdater.isPhaseChanged()) {
-			initiateNewPlay(gameUpdater);
-		}		
+//		gameUpdater.completedPlay(play, playChoice);
+//		gameUpdater.createNextStep();
+//		
+//		if (!gameUpdater.isPhaseChanged()) {
+//			initiateNewPlay(gameUpdater);
+//		}		
 	}
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {

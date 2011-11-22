@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.model.input;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -41,6 +42,11 @@ public class PlayChoice {
 	
 	public Boolean getSkip() {
 		return skip;
+	}
+	
+	@JsonIgnore
+	public boolean isSkipRequested() {
+		return skip != null && skip;
 	}
 	
 	public List<Integer> getProductionFactories() {
