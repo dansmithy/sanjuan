@@ -18,7 +18,6 @@ import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.PlayState;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
-import com.github.dansmithy.sanjuan.model.Round;
 import com.github.dansmithy.sanjuan.model.RoundState;
 import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
@@ -28,8 +27,6 @@ import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
-import com.github.dansmithy.sanjuan.model.update.PartialUpdate;
-import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
 @Named
