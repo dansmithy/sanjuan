@@ -18,6 +18,8 @@ import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.PlayState;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
+import com.github.dansmithy.sanjuan.model.Round;
+import com.github.dansmithy.sanjuan.model.RoundState;
 import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
@@ -26,6 +28,8 @@ import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.model.update.PartialUpdate;
+import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
 @Named
@@ -159,7 +163,11 @@ public class DatastoreGameService implements GameService {
 		if (!gameUpdater.matchesCoords(playCoords)) {
 			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
 		}
-		
+
+		if (gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
+			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as still in governor phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
+		}
+
 		Phase phase = gameUpdater.getCurrentPhase();
 		if (!phase.getState().equals(PhaseState.AWAITING_ROLE_CHOICE)) {
 			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.NOT_AWAITING_ROLE_CHOICE);
@@ -229,34 +237,33 @@ public class DatastoreGameService implements GameService {
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.makeChoice(gameUpdater, playChoice);
-		gameUpdater.createNextStep();
 		
-		if (!gameUpdater.isPhaseChanged()) {
-			roleProcessor.initiateNewPlay(gameUpdater);
+		calculationService.processPlayers(game.getPlayers());
+		
+		if (gameHasJustEnded(game, gameUpdater)) {
+			handleGameCompletion(game, gameUpdater);
+		} else {
+			gameUpdater.createNextStep();
+			if (!gameUpdater.isPhaseChanged()) {
+				roleProcessor.initiateNewPlay(gameUpdater);
+			}
 		}
 		
-		handleGameCompletion(game, gameUpdater);
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+	}
+	
+	private boolean gameHasJustEnded(Game game, GameUpdater gameUpdater) {
+		return game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete();
 	}
 
 	private void handleGameCompletion(Game game, GameUpdater gameUpdater) {
-		if (game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete()) {
-			calculationService.processPlayers(game.getPlayers());
-			game.markCompleted();
-			game.calculateWinner();
-			
-			gameUpdater.updateWinner();			
-			gameUpdater.updatePlayers();
-			gameUpdater.updateGameState();
-		}
-	}		
-	
-	private void playSkip(GameUpdater gameUpdater, PlayChoice playChoice) {
+		game.markCompleted();
+		game.calculateWinner();
 		
-//		Play play = gameUpdater.getCurrentPlay();
-//		gameUpdater.completedPlay(play, playChoice);
-//		gameUpdater.createNextStep();
-	}
+		gameUpdater.updateWinner();			
+		gameUpdater.updatePlayers();
+		gameUpdater.updateGameState();
+	}		
 	
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#deleteGame(java.lang.Long)

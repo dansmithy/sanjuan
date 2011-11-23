@@ -26,8 +26,7 @@ public class ChapelCardProcessor implements CardProcessor {
 
 	@Override
 	public void determinePrivileges(PlayerNumbers playerNumbers) {
-		// TODO Auto-generated method stub
-		
+		playerNumbers.setChapelOwner();
 	}
 
 }

@@ -21,7 +21,8 @@ public class PlayerNumbers implements BonusCardMatcher {
 	private List<BonusPair> traderBonusCounts = new ArrayList<BonusPair>();
 	private List<BonusPair> producerBonusCounts = new ArrayList<BonusPair>();
 	private int builderBonusOnViolet = 0;
-	private boolean hasLibrary = false;
+	private boolean libraryOwner = false;
+	private boolean chapelOwner = false;
 	private boolean useLibrary = true; 
 	
 	private List<BonusCardMatcher> matchers = new ArrayList<BonusCardMatcher>();
@@ -47,7 +48,7 @@ public class PlayerNumbers implements BonusCardMatcher {
 		return withPrivilege ? (privileges.getCouncillorOfferedCards()*getTimesCanUsePrivilege()) + councillorOfferedCards : councillorOfferedCards; 
 	}
 	private int getTimesCanUsePrivilege() {
-		return hasLibrary && useLibrary ? 2 : 1;
+		return libraryOwner && useLibrary ? 2 : 1;
 	}
 	
 	public boolean isCouncillorCanDiscardHandCards() {
@@ -107,10 +108,18 @@ public class PlayerNumbers implements BonusCardMatcher {
 	public void setUseLibrary() {
 		useLibrary = true;
 	}
-	public void setHasLibrary() {
-		hasLibrary = true;
+	public void setLibraryOwner() {
+		libraryOwner = true;
 	}
-
+	
+	public void setChapelOwner() {
+		chapelOwner = true;
+	}
+	
+	public boolean isChapelOwner() {
+		return chapelOwner;
+	}
+	
 	public int getTraderBonusCards(int value) {
 		return calculateBonusCards(traderBonusCounts, value);
 	}

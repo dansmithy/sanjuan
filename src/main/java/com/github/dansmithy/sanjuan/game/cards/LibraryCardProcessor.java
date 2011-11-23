@@ -14,7 +14,7 @@ public class LibraryCardProcessor extends StandardCardProcessor {
 
 	@Override
 	public void determinePrivileges(PlayerNumbers playerNumbers) {
-		playerNumbers.setHasLibrary();
+		playerNumbers.setLibraryOwner();
 	}
 
 }

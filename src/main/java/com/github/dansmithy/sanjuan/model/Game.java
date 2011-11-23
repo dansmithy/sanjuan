@@ -167,13 +167,10 @@ public class Game {
 		return new PlayerCycle(playerNames);
 	}
 
-	public Round nextRound(PlayerCycle cycle) {
-		String nextGovernor = cycle.next(getCurrentRound().getGovernor());
-		Round nextRound = new Round(nextGovernor, players.size());
-		rounds.add(nextRound);
-		return nextRound;
+	public void addRound(Round round) {
+		rounds.add(round);
 	}
-
+	
 	public Player getPlayer(String playerName) {
 		for (Player player : players) {
 			if (playerName.equals(player.getName())) {
@@ -226,6 +223,26 @@ public class Game {
 		for (Player winningPlayer : winningPlayers) {
 			winner += delimiter + winningPlayer.getName();
 			delimiter = ", ";
+		}
+	}
+
+	public GovernorPhase createGovernorPhase(String nextGovernor, PlayerCycle cycle) {
+		List<GovernorStep> governorSteps = new ArrayList<GovernorStep>();
+		for (String playerName : cycle.startAt(nextGovernor)) {
+			addGovernorStepIfRequired(getPlayer(playerName), governorSteps);
+		}
+		return new GovernorPhase(governorSteps);
+	}
+
+	private void addGovernorStepIfRequired(Player player,
+			List<GovernorStep> governorSteps) {
+		int cardsToDiscard = player.getHand().size() - player.getPlayerNumbers().getCardsCanHold();
+		if (cardsToDiscard < 0) {
+			cardsToDiscard = 0;
+		}
+		boolean chapelOwner = player.getPlayerNumbers().isChapelOwner();
+		if (cardsToDiscard > 0 || chapelOwner) {
+			governorSteps.add(new GovernorStep(player.getName(), cardsToDiscard, chapelOwner));
 		}
 	}
 

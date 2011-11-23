@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -9,6 +10,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 public class GovernorPhase {
 
 	private List<GovernorStep> governorSteps = new ArrayList<GovernorStep>();
+	
+	public static GovernorPhase EMPTY = new GovernorPhase(); 
 
 	public GovernorPhase(List<GovernorStep> governorSteps) {
 		super();
@@ -35,5 +38,9 @@ public class GovernorPhase {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isComplete() {
+		return getState().equals(PlayState.COMPLETED);
 	}
 }

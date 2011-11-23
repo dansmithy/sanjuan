@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.GovernorPhase;
 import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
@@ -91,11 +92,20 @@ public class GameUpdater {
 		updates.put("winner", new PartialUpdate("winner", game.getWinner()));
 	}
 	
+	public Round nextRound(PlayerCycle cycle) {
+		String nextGovernor = cycle.next(game.getCurrentRound().getGovernor());
+		int playerCount = game.getPlayers().size(); 
+		GovernorPhase governorPhase = game.createGovernorPhase(nextGovernor, cycle);
+		Round nextRound = new Round(nextGovernor, playerCount, governorPhase);
+		game.addRound(nextRound);
+		return nextRound;
+	}
+	
 	public void createNextStep() {
 		PlayerCycle cycle = game.createPlayerCycle();
 		Round currentRound = game.getCurrentRound();
 		if (currentRound.isComplete()) {
-			Round round = game.nextRound(cycle);
+			Round round = nextRound(cycle);
 			nextPlayCoords = playCoords.nextRound();		
 			updates.put("newRound", new PartialUpdate(nextPlayCoords.getRoundLocation(), round));
 

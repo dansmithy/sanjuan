@@ -11,15 +11,21 @@ import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 public class Round {
 
 	private String governor;
+	private GovernorPhase governorPhase;
 	private List<Phase> phases = new ArrayList<Phase>();
 	private int playerCount;
 
 	public Round(String governor, int playerCount) {
+		this(governor, playerCount, GovernorPhase.EMPTY);
+	}
+	
+	public Round(String governor, int playerCount, GovernorPhase governorPhase) {
 		super();
 		this.governor = governor;
 		this.playerCount = playerCount;
 		this.phases.add(new Phase(governor, playerCount));
-	}
+		this.governorPhase = governorPhase;
+	}	
 
 	public Round() {
 		super();
@@ -46,6 +52,9 @@ public class Round {
 		// calculate based on expected plays
 		if (getCompletedPhaseCount() == getRequiredPhases()) {
 			return RoundState.COMPLETED;
+		}
+		if (!governorPhase.isComplete()) {
+			return RoundState.GOVERNOR;
 		}
 		return RoundState.PLAYING;
 	}

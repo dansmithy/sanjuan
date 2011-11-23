@@ -21,8 +21,8 @@ public class BddPartProvider {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				Assert.assertThat(context.getLastResponse().asText(), containsJson(responseData, whenTranslatedBy(context.getTranslatedValues())));
 				Assert.assertThat("Response code is not 200", context.getLastResponse().getStatusCode(), is(equalTo(HttpURLConnection.HTTP_OK)));
+				Assert.assertThat(context.getLastResponse().asText(), containsJson(responseData, whenTranslatedBy(context.getTranslatedValues())));
 			}
 		};
 	}	
