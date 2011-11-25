@@ -40,6 +40,10 @@ public class GovernorPhase {
 		return null;
 	}
 	
+	public List<GovernorStep> getGovernorSteps() {
+		return governorSteps;
+	}
+
 	public boolean isComplete() {
 		return getState().equals(PlayState.COMPLETED);
 	}

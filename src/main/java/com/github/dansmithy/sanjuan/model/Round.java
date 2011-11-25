@@ -42,6 +42,10 @@ public class Round {
 	public int getPhaseNumber() {
 		return phases.size();
 	}
+	
+	public GovernorPhase getGovernorPhase() {
+		return governorPhase;
+	}
 
 	@JsonIgnore
 	public Phase getCurrentPhase() {

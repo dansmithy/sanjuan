@@ -35,7 +35,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	}
 
 	@Override
-	protected GameDriver createContext() {
+	public GameDriver createContext() {
 		return new GameSpringDriver(gameResource, userResource, sessionProvider, adminUsername, adminPassword);
 	}
 

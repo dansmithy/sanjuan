@@ -18,7 +18,7 @@ public class BddRestTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	}
 
 	@Override
-	protected GameDriver createContext() {
+	public GameDriver createContext() {
 		return new GameRestDriver(baseUrl, adminUsername, adminPassword);
 	}
 
