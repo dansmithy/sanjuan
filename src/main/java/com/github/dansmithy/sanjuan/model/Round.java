@@ -53,7 +53,7 @@ public class Round {
 		if (getCompletedPhaseCount() == getRequiredPhases()) {
 			return RoundState.COMPLETED;
 		}
-		if (!governorPhase.isComplete()) {
+		if (governorPhase != null && !governorPhase.isComplete()) {
 			return RoundState.GOVERNOR;
 		}
 		return RoundState.PLAYING;

@@ -58,7 +58,7 @@
             <div class="row" ng:show="isSelf(player.name)">
                 <div class="span2"><h1><small>Hand</small></h1></div>
                 <div ng:hide="player.hand" class="span7"><h1><small>No cards left in your hand!</small></h1></div>
-                <div class="span1 card" ng:repeat="handCard in player.hand" ng:click="getResponder(player.name).clickHandCard(handCard)"><img class="cardimage {{responder.handCardSelectedType(handCard)}}" ng:src="{{cardService.cardImageUrl(handCard)}}" width="55" height="80" /></div>
+                <div class="span1 card" ng:twipsy title="{{cardService.cardType(handCard).description}}" ng:repeat="handCard in player.hand" ng:click="getResponder(player.name).clickHandCard(handCard)"><img class="cardimage {{responder.handCardSelectedType(handCard)}}" ng:src="{{cardService.cardImageUrl(handCard)}}" width="55" height="80" /></div>
             </div>
             <div class="row" ng:show="isSelf(player.name)">
                 <p>&nbsp;</p>
@@ -70,7 +70,7 @@
                         <small>{{player.buildings.length}}<span class="smaller">/12</span></small>
                     </h1>
                 </div>
-                <div class="span1 card" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)"><div class="{{player.goods[building] | defined:'produced':'not-produced'}}">&nbsp;</div><img class="cardimage {{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
+                <div class="span1 card" ng:twipsy title="{{cardService.cardType(building).description}}" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)"><div class="{{player.goods[building] | defined:'produced':'not-produced'}}">&nbsp;</div><img class="cardimage {{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" /></div>
             </div>
                
             <div class="row">

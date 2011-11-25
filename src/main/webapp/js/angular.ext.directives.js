@@ -170,3 +170,10 @@ angular.directive('ng:worldmap', function(expression) {
 		  });
 	  };
 });
+
+
+angular.directive("ng:twipsy", function() {
+	return function(element) {
+		element.twipsy();
+	};
+});

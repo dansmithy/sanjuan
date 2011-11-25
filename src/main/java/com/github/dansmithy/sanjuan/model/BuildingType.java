@@ -15,9 +15,10 @@ public class BuildingType {
 	private BuildingCategory category;
 	private final Integer computeOrder;
 	private String processorType;
+	private String description;
 	
 	public BuildingType(String name, int count, int buildingCost,
-			int victoryPoints, BuildingCategory category, Integer computeOrder, String processorType) {
+			int victoryPoints, BuildingCategory category, Integer computeOrder, String processorType, String description) {
 		super();
 		this.name = name;
 		this.count = count;
@@ -26,6 +27,7 @@ public class BuildingType {
 		this.category = category;
 		this.computeOrder = computeOrder;
 		this.processorType = processorType;
+		this.description = description;
 	}
 
 	@JsonIgnore
@@ -53,6 +55,10 @@ public class BuildingType {
 
 	public BuildingCategory getCategory() {
 		return category;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 	@JsonIgnore

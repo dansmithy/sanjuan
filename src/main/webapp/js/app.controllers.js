@@ -132,6 +132,12 @@ GameController.prototype = {
 			}
 		},
 		
+		cardDescription : function(card) {
+			console.debug(this.cardMap);
+			return "nothing";
+//			return this.cardTypes[this.cardMap[card]].description;
+		},
+		
 		showSelected : function(role) {
 			return this.responder.mode == "role_choice" && role == this.responder.response.role;
 		},
