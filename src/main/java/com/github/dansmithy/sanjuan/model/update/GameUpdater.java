@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GovernorPhase;
@@ -25,6 +24,7 @@ public class GameUpdater {
 	private final PlayCoords playCoords;
 	private PlayCoords nextPlayCoords;
 	private final Game game;
+	private Map<String, Player> playerMap = new HashMap<String, Player>();
 	
 	public GameUpdater(Game game) {
 		this(game, PlayCoords.createFromGame(game));
@@ -34,8 +34,15 @@ public class GameUpdater {
 		super();
 		this.game = game;
 		this.playCoords = playCoords;
+		addPlayers(game.getPlayers());
 	}
 	
+	private void addPlayers(List<Player> players) {
+		for (Player player : players) {
+			playerMap.put(player.getName(), player);
+		}
+	}
+
 	public boolean matchesCoords(PlayCoords otherPlayCoords) {
 		return otherPlayCoords.equals(playCoords);
 	}	
@@ -138,13 +145,7 @@ public class GameUpdater {
 	}
 
 	private Player getPlayer(String playerName) {
-		for (Player player : game.getPlayers()) {
-			if (playerName.equals(player.getName())) {
-				return player;
-			}
-		}
-		throw new SanJuanUnexpectedException(String.format("Current user %s not one of the players in this game", playerName));
-		
+		return playerMap.get(playerName);
 	}
 	
 	public Player getNewPlayer() {

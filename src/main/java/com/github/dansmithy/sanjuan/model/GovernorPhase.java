@@ -1,7 +1,6 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;

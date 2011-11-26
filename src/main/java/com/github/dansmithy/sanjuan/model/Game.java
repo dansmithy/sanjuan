@@ -167,8 +167,9 @@ public class Game {
 		return new PlayerCycle(playerNames);
 	}
 
-	public void addRound(Round round) {
+	public Game addRound(Round round) {
 		rounds.add(round);
+		return this;
 	}
 	
 	public Player getPlayer(String playerName) {
@@ -245,6 +246,6 @@ public class Game {
 			governorSteps.add(new GovernorStep(player.getName(), cardsToDiscard, chapelOwner));
 		}
 	}
-
+	
 }
 	
