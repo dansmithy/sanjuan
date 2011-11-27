@@ -6,6 +6,8 @@ import java.util.Set;
 
 public class CollectionUtils {
 
+	CollectionUtils() {   }
+	
 	public static <T> boolean hasDuplicates(Collection<T> collection) {
 		Set<T> set = new HashSet<T>(collection);
 		return set.size() != collection.size();

@@ -8,6 +8,12 @@ import org.junit.Test;
 public class BuildingTypeTest {
 
 	@Test
+	public void testGetDescription() {
+		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
+		Assert.assertThat(type1.getDescription(), is(equalTo("description")));
+	}
+	
+	@Test
 	public void testHashcode() {
 		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
 		BuildingType type2 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
@@ -17,7 +23,7 @@ public class BuildingTypeTest {
 	@Test
 	public void testToString() {
 		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
-		Assert.assertThat(type1.hashCode(), is(not(nullValue())));
+		Assert.assertThat(type1.toString(), is(not(nullValue())));
 	}
 	
 }

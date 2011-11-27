@@ -4,6 +4,8 @@ import javax.inject.Named;
 
 import org.springframework.data.authentication.UserCredentials;
 
+import com.google.common.base.Objects;
+
 @Named
 public class AutoMongoDetails extends MongoDetails {
 
@@ -17,11 +19,7 @@ public class AutoMongoDetails extends MongoDetails {
 
 	private String getUri() {
 		String environmentValue = System.getenv(ENVIRONMENT_KEY);
-		if (environmentValue != null) {
-			return environmentValue;
-		} else {
-			return DEFAULT_URI;
-		}
+		return Objects.firstNonNull(environmentValue, DEFAULT_URI);
 	}
 
 	public UserCredentials createUserCredentials() {

@@ -15,6 +15,11 @@ public class MongoDetailsTest {
 		Assert.assertThat(details, is(equalTo(expectedDetails)));
 	}
 	
+	@Test(expected = RuntimeException.class)
+	public void testFailToCreateFromUri() {
+		MongoDetails.createFromUri("wrong_format");
+	}	
+	
 	@Test
 	public void testCreateFromDefaultUri() {
 		
