@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
  */
 public class Http403AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-	private static final String ACCESS_DENIED_JSON = "{ \"message\" : \"Access denied\" }";
+	static final String ACCESS_DENIED_JSON = "{ \"message\" : \"Access denied\" }";
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
