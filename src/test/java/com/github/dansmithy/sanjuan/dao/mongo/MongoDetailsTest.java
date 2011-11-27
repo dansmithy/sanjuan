@@ -1,7 +1,6 @@
 package com.github.dansmithy.sanjuan.dao.mongo;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,6 +23,27 @@ public class MongoDetailsTest {
 		Assert.assertThat(details, is(equalTo(expectedDetails)));
 	}	
 	
+	@Test
+	public void testCreateFromConstructor() {
+		MongoDetails details = new MongoDetails("username", "password", "localhost", 27017, "test");
+		MongoDetails expectedDetails = new MongoDetails().withUsername("username").withPassword("password").withHost("localhost").withPort(27017).withDatabase("test");
+		Assert.assertThat(details, is(equalTo(expectedDetails)));
+	}
+	
+	@Test
+	public void testHashcode() {
+		
+		MongoDetails details1 = new MongoDetails("username", "password", "localhost", 27017, "test");
+		MongoDetails details2 = new MongoDetails("username", "password", "localhost", 27017, "test");
+		Assert.assertThat(details1.hashCode(), is(equalTo(details2.hashCode())));
+	}
+	
+	@Test
+	public void testToString() {
+		
+		MongoDetails details1 = new MongoDetails("username", "password", "localhost", 27017, "test");
+		Assert.assertThat(details1.toString(), is(not(nullValue())));
+	}		
 
 	@Test
 	public void testAutoMongoDetails() {
@@ -31,5 +51,6 @@ public class MongoDetailsTest {
 		AutoMongoDetails details = new AutoMongoDetails();
 		MongoDetails expectedDetails = new MongoDetails().withUsername(null).withPassword(null).withHost("localhost").withPort(27017).withDatabase("test");
 		Assert.assertThat(details, is(equalTo(expectedDetails)));
-	}		
+	}	
+
 }

@@ -8,10 +8,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
-import com.github.dansmithy.sanjuan.exception.SanJuanUnexpectedException;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 public class Game {
 	
@@ -172,13 +173,14 @@ public class Game {
 		return this;
 	}
 	
-	public Player getPlayer(String playerName) {
-		for (Player player : players) {
-			if (playerName.equals(player.getName())) {
-				return player;
+	public Player getPlayer(final String playerName) {
+		return Iterables.find(players, new Predicate<Player>() {
+
+			@Override
+			public boolean apply(Player player) {
+				return player.getName().equals(playerName);
 			}
-		}
-		throw new SanJuanUnexpectedException(String.format("No player with name %s in game [%d].", playerName, gameId));
+		});
 	}
 
 	public boolean hasReachedEndCondition() {

@@ -133,7 +133,7 @@ public class GameUpdater {
 	}
 	
 	public Player getCurrentPlayer() {
-		return getPlayer(getCurrentUsername());
+		return game.getPlayer(getCurrentUsername());
 	}
 	
 	private String getCurrentUsername() {
@@ -144,12 +144,8 @@ public class GameUpdater {
 		}
 	}
 
-	private Player getPlayer(String playerName) {
-		return playerMap.get(playerName);
-	}
-	
 	public Player getNewPlayer() {
-		return getPlayer(getNewPlay().getPlayer());
+		return game.getPlayer(getNewPlay().getPlayer());
 	}	
 	
 	public Update createMongoUpdate() {

@@ -20,27 +20,11 @@ public class PlayChoiceInvalidException extends SanJuanException {
 	
 	private String type = DEFAULT_TYPE;
 	
-	public PlayChoiceInvalidException() {
-		super();
-	}
-
-	public PlayChoiceInvalidException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
 	public PlayChoiceInvalidException(String message, String type) {
 		super(message);
 		this.type = type;
 	}
 
-	public PlayChoiceInvalidException(String message) {
-		super(message);
-	}
-
-	public PlayChoiceInvalidException(Throwable cause) {
-		super(cause);
-	}
-	
 	@Override
 	public String getType() {
 		return type;

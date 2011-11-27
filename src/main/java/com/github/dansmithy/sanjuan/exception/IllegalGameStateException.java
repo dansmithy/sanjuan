@@ -19,27 +19,11 @@ public class IllegalGameStateException extends SanJuanException {
 	
 	private String type = DEFAULT_TYPE;
 
-	public IllegalGameStateException() {
-		super();
-	}
-
 	public IllegalGameStateException(String message, String type) {
 		super(message);
 		this.type = type;
 	}
 	
-	public IllegalGameStateException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public IllegalGameStateException(String message) {
-		super(message);
-	}
-
-	public IllegalGameStateException(Throwable cause) {
-		super(cause);
-	}
-
 	@Override
 	public String getType() {
 		return type;

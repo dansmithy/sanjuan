@@ -8,7 +8,7 @@ import org.springframework.data.authentication.UserCredentials;
 public class AutoMongoDetails extends MongoDetails {
 
 	private static final String DEFAULT_URI = "mongodb://:@localhost:27017/test";
-	private static final String ENVIRONMENT_KEY = "MONGOLAB_URI";
+	static final String ENVIRONMENT_KEY = "MONGOLAB_URI";
 	
 	public AutoMongoDetails() {
 		String uri = getUri();

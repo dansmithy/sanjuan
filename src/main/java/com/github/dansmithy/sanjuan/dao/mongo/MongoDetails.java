@@ -27,7 +27,6 @@ public class MongoDetails {
 	}
 	
 	public MongoDetails() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected static MongoDetails configureFromUri(MongoDetails details, String uri) {
