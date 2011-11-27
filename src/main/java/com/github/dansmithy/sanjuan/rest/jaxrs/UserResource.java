@@ -1,7 +1,5 @@
 package com.github.dansmithy.sanjuan.rest.jaxrs;
 
-import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.github.dansmithy.sanjuan.model.User;
+import com.github.dansmithy.sanjuan.model.output.Users;
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
 @RolesAllowed({ SanJuanRole.ADMIN })
@@ -40,6 +39,6 @@ public interface UserResource {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	List<User> getUsers();
+	Users getUsers();
 
 }

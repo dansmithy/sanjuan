@@ -1,11 +1,6 @@
 package com.github.dansmithy.rest;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.body;
-import static com.github.restdriver.serverdriver.RestServerDriver.delete;
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
-import static com.github.restdriver.serverdriver.RestServerDriver.post;
-import static com.github.restdriver.serverdriver.RestServerDriver.put;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +55,21 @@ public class GameRestDriverSession implements GameDriverSession {
 			throw new AcceptanceTestException(String.format("Unable to create user with username %s.", username));
 		}
 	}
+	
+
+	@Override
+	public Response updateUser(String username, String postJson) {
+		RequestValues urlValues = createRequest(String.format("username : %s", username));
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+		String url = String.format("%s/users/%s", wsBaseUri, urlValues.get("username"));
+		System.out.println(String.format("Calling [%s].", url));
+		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
+	
+	@Override
+	public Response getUsers() {
+		return get(wsBaseUri + "/users", ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
 	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
@@ -231,6 +241,4 @@ public class GameRestDriverSession implements GameDriverSession {
 			getTranslatedValues().add(entry.getKey(), entry.getValue());
 		}
 	}
-
-
 }

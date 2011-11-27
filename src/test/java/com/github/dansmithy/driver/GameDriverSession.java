@@ -39,5 +39,9 @@ public interface GameDriverSession {
 
 	void addTranslatedValues(String data);
 
+	Response updateUser(String username, String userJson);
+
+	Response getUsers();
+
 
 }

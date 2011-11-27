@@ -8,6 +8,7 @@ import javax.inject.Named;
 import com.github.dansmithy.sanjuan.dao.UserDao;
 import com.github.dansmithy.sanjuan.exception.ImmutableDataException;
 import com.github.dansmithy.sanjuan.model.User;
+import com.github.dansmithy.sanjuan.model.output.Users;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
 
 @Named
@@ -46,8 +47,8 @@ public class UserBean implements UserResource {
 	}
 
 	@Override
-	public List<User> getUsers() {
-		return userDao.getUsers();
+	public Users getUsers() {
+		return new Users(userDao.getUsers());
 	}
 
 }

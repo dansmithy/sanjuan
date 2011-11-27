@@ -1,6 +1,8 @@
 package com.github.dansmithy.driver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.restdriver.serverdriver.http.response.Response;
@@ -8,6 +10,7 @@ import com.github.restdriver.serverdriver.http.response.Response;
 public abstract class SkeletonGameDriver implements GameDriver {
 
 	private Map<String, GameDriverSession> playerSessions = new HashMap<String, GameDriverSession>();
+	private List<String> players = new ArrayList<String>();
 	private TranslatedValues translatedValues;
 	private Response lastResponse;
 	
@@ -49,6 +52,13 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	
 	protected abstract GameDriverSession login(String username, String password);
 	
+
+	@Override
+	public void createUser(String username) {
+		getAdminSession().createUser(username);
+		players.add(username);
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.driver.BddContext#loginUser(java.lang.String)
 	 */
@@ -69,13 +79,22 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	 */
 	@Override
 	public void cleanup() {
-		for (String user : playerSessions.keySet()) {
+		for (String user : players) {
 			if (!user.equals(adminUsername)) {
-				getSession(user).deleteAnyGame();
+				if (playerSessions.containsKey(user)) {
+					deleteGameForUser(user);
+				}
 				getAdminSession().deleteUser(String.format("username : %s", user));
 			}
 		}
 		getAdminSession().logout();
+	}
+
+	private void deleteGameForUser(String user) {
+		GameDriverSession session = getSession(user);
+		if (session != null) {
+			session.deleteAnyGame();
+		}		
 	}
 
 	/* (non-Javadoc)
@@ -113,6 +132,5 @@ public abstract class SkeletonGameDriver implements GameDriver {
 			delimiter = ", ";
 		}
 		System.out.println(String.format("Started a game with players: %s.", builder.toString()));
-	}	
-
+	}
 }

@@ -49,6 +49,19 @@ public class GameSpringDriverSession implements GameDriverSession {
 		userResource.createUser(user);
 	}
 	
+	@Override
+	public Response updateUser(String username, String postJson) {
+		RequestValues urlValues = createRequest(String.format("username : %s", username));
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+		User user = (User)JSONObject.toBean((JSONObject)json, User.class);
+		return new SpringResponse(userResource.updateUser(urlValues.get("username"), user));
+	}	
+	
+	@Override
+	public Response getUsers() {
+		return new SpringResponse(userResource.getUsers());
+	}
+	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
 		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));

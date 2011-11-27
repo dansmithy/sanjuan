@@ -26,4 +26,6 @@ public interface GameDriver {
 	TranslatedValues getTranslatedValues();
 
 	void outputGamePlayers();
+
+	void createUser(String username);
 }

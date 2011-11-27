@@ -42,10 +42,6 @@ public class UserDao {
 		mongoTemplate.save(currentUser);
 	}
 	
-	public User addUser(User user) {
-		return null;
-	}
-
 	public void removeUser(String username) {
 		Query query = MongoHelper.createSimpleQuery("username", username);	
 		mongoTemplate.remove(query, User.class);

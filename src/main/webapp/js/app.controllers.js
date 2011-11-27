@@ -701,7 +701,7 @@ AdminController.prototype = {
 		},
 		
 		userCallback : function(code, response) {
-			this.users = response;
+			this.users = response.users;
 		},
 		
 		update : function(user) {
