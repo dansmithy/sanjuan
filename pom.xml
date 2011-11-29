@@ -27,6 +27,7 @@
         <jodatime.version>2.0</jodatime.version>
         <jpa.version>2.0-cr-1</jpa.version>
         <json.lib.version>2.4</json.lib.version>
+        <jsonpath.version>0.5.5</jsonpath.version>
         <junit.version>4.5</junit.version>
         <lambdaj.version>2.3.1</lambdaj.version>
         <log4j.version>1.2.9</log4j.version>
@@ -364,6 +365,11 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${jsonpath.version}</version>
+        </dependency>        
     </dependencies>
     <profiles>
         <profile>

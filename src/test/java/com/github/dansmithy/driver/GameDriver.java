@@ -4,11 +4,6 @@ import com.github.restdriver.serverdriver.http.response.Response;
 
 public interface GameDriver {
 
-//	GameDriverSession login(String data, TranslatedValues translatedValues);
-//
-//	GameDriverSession login(String data,
-//			TranslatedValues translatedValues, boolean isAdmin);
-
 	GameDriverSession getAdminSession();
 
 	void loginUser(String username);
@@ -28,4 +23,9 @@ public interface GameDriver {
 	void outputGamePlayers();
 
 	void createUser(String username);
+
+	Response getRememberedResponse(String rememberedResponseKey);
+
+	void rememberLastResponse(String rememberedResponseKey);
+
 }

@@ -11,9 +11,10 @@ public interface GameDriverSession {
 	void deleteUser(String data);
 
 	//** GAME ADMIN ONLY ** 
-	//
 	void orderDeck(String gameId, List<Integer> order);
 	void orderTariff(String gameId, List<Integer> order);
+	Response updateUser(String username, String userJson);
+	Response getUsers();
 
 	Response createGame(String data);
 
@@ -39,9 +40,7 @@ public interface GameDriverSession {
 
 	void addTranslatedValues(String data);
 
-	Response updateUser(String username, String userJson);
-
-	Response getUsers();
+	Response getGetGamesFor(String username);
 
 
 }

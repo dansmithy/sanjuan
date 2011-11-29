@@ -62,6 +62,12 @@ public class GameSpringDriverSession implements GameDriverSession {
 		return new SpringResponse(userResource.getUsers());
 	}
 	
+	@Override
+	public Response getGetGamesFor(String username) {
+		RequestValues urlValues = createRequest(String.format("username : %s", username));
+		return new SpringResponse(gameResource.getGames(urlValues.get("username"), null));
+	}
+	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
 		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));

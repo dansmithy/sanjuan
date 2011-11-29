@@ -70,6 +70,13 @@ public class GameRestDriverSession implements GameDriverSession {
 	public Response getUsers() {
 		return get(wsBaseUri + "/users", ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
+
+	@Override
+	public Response getGetGamesFor(String username) {
+		RequestValues urlValues = createRequest(String.format("username : %s", username));
+		String url = String.format("%s/games?player=%s", wsBaseUri, urlValues.get("username"));
+		return get(url, ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
 	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {

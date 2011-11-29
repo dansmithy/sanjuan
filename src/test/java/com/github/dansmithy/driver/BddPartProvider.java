@@ -1,11 +1,10 @@
 package com.github.dansmithy.driver;
 
-import static com.github.dansmithy.json.JsonMatchers.containsJson;
-import static com.github.dansmithy.json.JsonMatchers.whenTranslatedBy;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static com.github.dansmithy.json.JsonMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 import java.net.HttpURLConnection;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import org.junit.Assert;
 import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.SimpleBddParts;
 import com.github.restdriver.serverdriver.http.response.Response;
+import com.jayway.jsonpath.JsonPath;
 
 public class BddPartProvider {
 
@@ -56,16 +56,6 @@ public class BddPartProvider {
 		};
 	}
 
-	// public static BddPart<GameDriver> verifySuccessful() {
-	// return new BddPart<GameDriver>() {
-	// @Override
-	// public void execute(GameDriver context) {
-	// Assert.assertThat(context.getLastResponse().getStatusCode(),
-	// is(equalTo(HttpURLConnection.HTTP_OK)));
-	// }
-	// };
-	// }
-
 	public static BddPart<GameDriver> verifyResponseCodeIs(final int code) {
 		return new BddPart<GameDriver>() {
 			@Override
@@ -88,8 +78,61 @@ public class BddPartProvider {
 			}
 		};
 	}
-	
 
+	public static BddPart<GameDriver> getGamesFor(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getSession(username).getGetGamesFor(username);
+				context.setLastResponse(response);
+			}
+		};
+	}
+	
+	public static BddPart<GameDriver> lastResponseRememberedAs(final String rememberedResponseKey) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				context.rememberLastResponse(rememberedResponseKey);
+			}
+		};
+	}
+	
+	public static BddPart<GameDriver> verifyResponse(final ResponseMatcher matcher) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Assert.assertTrue(matcher.getPurpose(), matcher.matches(context));
+			}
+		};
+	}	
+	
+	public static RememberedResponseContextOperator rememberedAs(final String rememberedResponseKey) {
+		return new RememberedResponseContextOperator(rememberedResponseKey);
+	}
+	public static ResponseMatcher containsGameFoundInResponse(final ContextOperator<Response, GameDriver> contextOperator) {
+		return new ResponseMatcher() {
+			
+			@Override
+			public boolean matches(GameDriver context) {
+				Response lastResponse = context.getLastResponse();
+				Response rememberedResponse = contextOperator.getFromContext(context);
+				Integer gameId = rememberedResponse.asJson().path("gameId").asInt();
+				try {
+					List<Integer> ids = JsonPath.read(lastResponse.getContent(), "$[*].gameId");
+					return ids.contains(gameId);
+				} catch (ParseException e) {
+					return false;
+				}
+			}
+			
+			@Override
+			public String getPurpose() {
+				return "Response did not contain expected game.";
+			}
+		};
+	}	
+	
 	public static BddPart<GameDriver> updateUser(final String username, final String userJson) {
 		return new BddPart<GameDriver>() {
 			@Override

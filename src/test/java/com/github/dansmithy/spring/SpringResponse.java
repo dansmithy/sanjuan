@@ -1,8 +1,11 @@
 package com.github.dansmithy.spring;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Element;
 
@@ -33,8 +36,7 @@ public class SpringResponse implements Response {
 
 	@Override
 	public String getContent() {
-		// TODO Auto-generated method stub
-		return null;
+		return asText();
 	}
 
 	@Override
@@ -78,8 +80,11 @@ public class SpringResponse implements Response {
 
 	@Override
 	public JsonNode asJson() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return mapper.readValue(asText(), JsonNode.class);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Cannot convert response [%s] to JsonNode.", asText()));
+		}
 	}
 
 	@Override

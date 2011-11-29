@@ -13,6 +13,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	private List<String> players = new ArrayList<String>();
 	private TranslatedValues translatedValues;
 	private Response lastResponse;
+	private Map<String, Response> rememberedResponses = new HashMap<String, Response>();
 	
 	private String adminUsername;
 	private String adminPassword;
@@ -133,4 +134,14 @@ public abstract class SkeletonGameDriver implements GameDriver {
 		}
 		System.out.println(String.format("Started a game with players: %s.", builder.toString()));
 	}
+	
+	@Override
+	public Response getRememberedResponse(String rememberedResponseKey) {
+		return rememberedResponses.get(rememberedResponseKey);
+	}
+
+	@Override
+	public void rememberLastResponse(String rememberedResponseKey) {
+		rememberedResponses.put(rememberedResponseKey, getLastResponse());
+	}	
 }
