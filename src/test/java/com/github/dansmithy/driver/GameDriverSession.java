@@ -42,5 +42,7 @@ public interface GameDriverSession {
 
 	Response getGetGamesFor(String username);
 
+	Response getGamesInState(String username, String state);
+
 
 }

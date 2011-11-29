@@ -78,6 +78,13 @@ public class GameRestDriverSession implements GameDriverSession {
 		return get(url, ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	
+	@Override
+	public Response getGamesInState(String username, String state) {
+		RequestValues urlValues = createRequest(String.format("username : %s", username));
+		String url = String.format("%s/games?state=%s", wsBaseUri, state);
+		return get(url, ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
+	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
 		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));

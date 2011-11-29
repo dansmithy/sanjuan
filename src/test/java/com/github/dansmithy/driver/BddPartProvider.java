@@ -89,6 +89,16 @@ public class BddPartProvider {
 		};
 	}
 	
+	public static BddPart<GameDriver> getGamesInState(final String username, final String state) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getSession(username).getGamesInState(username, state);
+				context.setLastResponse(response);
+			}
+		};
+	}	
+	
 	public static BddPart<GameDriver> lastResponseRememberedAs(final String rememberedResponseKey) {
 		return new BddPart<GameDriver>() {
 			@Override
