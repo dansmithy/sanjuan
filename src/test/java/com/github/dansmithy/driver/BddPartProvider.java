@@ -93,7 +93,17 @@ public class BddPartProvider {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				Response response = context.getSession(username).getGamesInState(username, state);
+				Response response = context.getSession(username).getGamesInState(state);
+				context.setLastResponse(response);
+			}
+		};
+	}	
+	
+	public static BddPart<GameDriver> getAllGames(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getSession(username).getAllGames();
 				context.setLastResponse(response);
 			}
 		};

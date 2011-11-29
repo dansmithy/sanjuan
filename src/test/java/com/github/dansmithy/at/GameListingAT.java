@@ -37,5 +37,16 @@ public class GameListingAT {
 
 				then(verifyResponseCodeIs(HTTP_OK)).and(verifyResponse(containsGameFoundInResponse(rememberedAs("created")))));
 	}
+	
+	@Test
+	public void testCanGetAllGames() {
+
+		bdd.runTest(
+				given(userExistsAndAuthenticated("#alice")).and(gameCreatedBy("#alice")).and(lastResponseRememberedAs("created")),
+
+				when(getAllGames("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_OK)).and(verifyResponse(containsGameFoundInResponse(rememberedAs("created")))));
+	}	
 
 }

@@ -79,9 +79,14 @@ public class GameRestDriverSession implements GameDriverSession {
 	}	
 	
 	@Override
-	public Response getGamesInState(String username, String state) {
-		RequestValues urlValues = createRequest(String.format("username : %s", username));
+	public Response getGamesInState(String state) {
 		String url = String.format("%s/games?state=%s", wsBaseUri, state);
+		return get(url, ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+	
+	@Override
+	public Response getAllGames() {
+		String url = String.format("%s/games", wsBaseUri);
 		return get(url, ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	

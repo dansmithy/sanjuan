@@ -69,10 +69,14 @@ public class GameSpringDriverSession implements GameDriverSession {
 	}
 	
 	@Override
-	public Response getGamesInState(String username, String state) {
-		RequestValues urlValues = createRequest(String.format("username : %s", username));
+	public Response getGamesInState(String state) {
 		return new SpringResponse(gameResource.getGames(null, state));
 	}
+
+	@Override
+	public Response getAllGames() {
+		return new SpringResponse(gameResource.getGames(null, null));
+	}	
 	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
@@ -185,5 +189,4 @@ public class GameSpringDriverSession implements GameDriverSession {
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
 		return translatedValues.translateRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
 	}
-
 }
