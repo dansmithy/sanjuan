@@ -195,9 +195,15 @@ public class GameRestDriverSession implements GameDriverSession {
 	 */
 	@Override
 	public Response getGame() {
+		return getGame(Long.valueOf(gameId));
+	}
+	
+	@Override
+	public Response getGame(long gameId) {
 		Response response = get(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
 		return response;
-	}
+		
+	}	
 
 	private RequestValues createRequest(String data) {
 		return createRequest(emptyMap(), data);

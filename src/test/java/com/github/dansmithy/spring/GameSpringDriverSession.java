@@ -140,6 +140,11 @@ public class GameSpringDriverSession implements GameDriverSession {
 	public Response getGame() {
 		return new SpringResponse(gameResource.getGame(gameId));
 	}
+	
+	@Override
+	public Response getGame(long gameId) {
+		return new SpringResponse(gameResource.getGame(gameId));
+	}	
 
 	@Override
 	public TranslatedValues getTranslatedValues() {

@@ -27,8 +27,8 @@ public interface GameDriverSession {
 	Response makePlayChoice(String urlData, String postData);
 
 	Response getGame();
-
-//	Response getGame(String gameId);
+	
+	Response getGame(long gameId);
 
 	TranslatedValues getTranslatedValues();
 
@@ -45,6 +45,5 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
-
 
 }

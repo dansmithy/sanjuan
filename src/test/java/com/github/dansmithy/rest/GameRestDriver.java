@@ -1,5 +1,6 @@
 package com.github.dansmithy.rest;
 
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.body;
 import static com.github.restdriver.serverdriver.RestServerDriver.header;
 import static com.github.restdriver.serverdriver.RestServerDriver.post;
@@ -57,6 +58,11 @@ public class GameRestDriver extends SkeletonGameDriver {
 			}
 		}
 		return "";
+	}
+
+	@Override
+	public Response getCards() {
+		return get(baseUri + "/ws/cards", ACCEPT_JSON_HEADER);
 	}
 
 }

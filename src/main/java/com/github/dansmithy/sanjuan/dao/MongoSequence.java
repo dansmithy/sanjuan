@@ -25,19 +25,8 @@ public class MongoSequence {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public Long getSeq() {
 		return seq;
 	}
-
-	public void setSeq(Long seq) {
-		this.seq = seq;
-	}
-	
-	
-	
 	
 }

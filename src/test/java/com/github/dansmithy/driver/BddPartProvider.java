@@ -78,12 +78,26 @@ public class BddPartProvider {
 			}
 		};
 	}
-
-	public static BddPart<GameDriver> getGamesFor(final String username) {
+	
+	public static String loggedInAs(String username) {
+		return username;
+	}
+	
+	public static BddPart<GameDriver> getGame(final String username, final long gameId) {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				Response response = context.getSession(username).getGetGamesFor(username);
+				Response response = context.getSession(username).getGame(gameId);
+				context.setLastResponse(response);
+			}
+		};
+	}
+
+	public static BddPart<GameDriver> getGamesFor(final String username, final String loggedInUser) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getSession(loggedInUser).getGetGamesFor(username);
 				context.setLastResponse(response);
 			}
 		};
@@ -107,7 +121,26 @@ public class BddPartProvider {
 				context.setLastResponse(response);
 			}
 		};
-	}	
+	}
+	
+	public static BddPart<GameDriver> noSetUp() {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				// nothing
+			}
+		};
+	}			
+	
+	public static BddPart<GameDriver> getCards() {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getCards();
+				context.setLastResponse(response);
+			}
+		};
+	}		
 	
 	public static BddPart<GameDriver> lastResponseRememberedAs(final String rememberedResponseKey) {
 		return new BddPart<GameDriver>() {

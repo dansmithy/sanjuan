@@ -7,23 +7,27 @@ import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.SkeletonGameDriver;
 import com.github.dansmithy.sanjuan.model.User;
+import com.github.dansmithy.sanjuan.rest.jaxrs.CardResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
 import com.github.dansmithy.sanjuan.security.SecurityContextAuthenticatedSessionProvider;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GameSpringDriver extends SkeletonGameDriver {
 
 	private GameResource gameResource;
 	private UserResource userResource;
+	private final CardResource cardResource;
 	private SecurityContextAuthenticatedSessionProvider sessionProvider;
 	
 	private Map<String, User> users = new HashMap<String, User>();
 	
 	public GameSpringDriver(GameResource gameResource,
-			UserResource userResource, SecurityContextAuthenticatedSessionProvider sessionProvider, String adminUsername, String adminPassword) {
+			UserResource userResource, CardResource cardResource, SecurityContextAuthenticatedSessionProvider sessionProvider, String adminUsername, String adminPassword) {
 		super(adminUsername, adminPassword);
 		this.gameResource = gameResource;
 		this.userResource = userResource;
+		this.cardResource = cardResource;
 		this.sessionProvider = sessionProvider;
 		createAdminSession();
 	}
@@ -45,6 +49,11 @@ public class GameSpringDriver extends SkeletonGameDriver {
 		User user = users.get(username);
 		sessionProvider.addUser(user);
 		return super.getSession(username);
+	}
+
+	@Override
+	public Response getCards() {
+		return new SpringResponse(cardResource.getCards());
 	}
 	
 	

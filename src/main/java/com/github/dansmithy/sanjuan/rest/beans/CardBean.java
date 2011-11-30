@@ -30,6 +30,4 @@ public class CardBean implements CardResource {
 		return cardFactory.getCardTypes();
 	}
 
-
-
 }

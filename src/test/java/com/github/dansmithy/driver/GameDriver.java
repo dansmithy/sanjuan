@@ -28,4 +28,6 @@ public interface GameDriver {
 
 	void rememberLastResponse(String rememberedResponseKey);
 
+	Response getCards();
+
 }
