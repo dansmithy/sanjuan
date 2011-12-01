@@ -56,6 +56,10 @@ public class GameSpringDriver extends SkeletonGameDriver {
 		return new SpringResponse(cardResource.getCards());
 	}
 	
+	@Override
+	public Response getCardTypes() {
+		return new SpringResponse(cardResource.getCardTypes());
+	}
 	
 	
 	

@@ -28,4 +28,15 @@ public class CardsAT {
 						.and(verifyResponseContains("{ 1 : 'IndigoPlant' }")));
 	}
 
+	@Test
+	public void testGetCardTypes() {
+
+		bdd.runTest(
+				given(noSetUp()),
+
+				when(getCardTypes()),
+
+				then(verifyResponseCodeIs(HTTP_OK))
+						.and(verifyResponseContains("{ 'IndigoPlant' : { buildingCost : 1, victoryPoints : 1, category: 'PRODUCTION' } }")));
+	}
 }

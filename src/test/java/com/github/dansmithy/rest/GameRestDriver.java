@@ -65,4 +65,9 @@ public class GameRestDriver extends SkeletonGameDriver {
 		return get(baseUri + "/ws/cards", ACCEPT_JSON_HEADER);
 	}
 
+	@Override
+	public Response getCardTypes() {
+		return get(baseUri + "/ws/cards/types", ACCEPT_JSON_HEADER);
+	}
+
 }

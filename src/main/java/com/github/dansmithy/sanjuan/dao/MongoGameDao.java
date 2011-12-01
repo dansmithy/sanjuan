@@ -21,8 +21,6 @@ public class MongoGameDao implements GameDao {
 
 	private static final String GAME_ID_TYPE = "sanJuanGame";
 	
-	private static final String[] EMPTY_ARRAY = new String[0];
-	private static final String[] BASIC_FIELDS = {  };
 	private static final String[] BASIC_GAME_FIELDS = { "state", "gameId", "players", "owner" };
 
 	
@@ -53,17 +51,7 @@ public class MongoGameDao implements GameDao {
 	@Override
 	@ProcessGame
 	public Game getGame(Long gameId) {
-		return getGame(gameId, EMPTY_ARRAY, EMPTY_ARRAY);
-	}
-	
-	private Game getGame(Long gameId, String[] includes, String[] excludes) {
 		Query query = MongoHelper.createSimpleQuery("gameId", gameId);
-		for (String include : includes) {
-			query.fields().include(include);
-		}
-		for (String exclude : excludes) {
-			query.fields().exclude(exclude);
-		}
 		Game game = mongoTemplate.findOne(query, Game.class);
 		return convertNullTo404(game, "game", gameId.toString());
 	}	

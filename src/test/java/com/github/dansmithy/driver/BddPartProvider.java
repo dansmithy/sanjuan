@@ -140,6 +140,16 @@ public class BddPartProvider {
 				context.setLastResponse(response);
 			}
 		};
+	}	
+	
+	public static BddPart<GameDriver> getCardTypes() {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getCardTypes();
+				context.setLastResponse(response);
+			}
+		};
 	}		
 	
 	public static BddPart<GameDriver> lastResponseRememberedAs(final String rememberedResponseKey) {

@@ -30,4 +30,6 @@ public interface GameDriver {
 
 	Response getCards();
 
+	Response getCardTypes();
+
 }
