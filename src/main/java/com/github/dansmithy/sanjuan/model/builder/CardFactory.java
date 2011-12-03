@@ -88,7 +88,7 @@ public class CardFactory {
 		return getCardTypes().get(getCardMap().get(cardId));
 	}
 
-	public List<BuildingType> getBuildings(List<Integer> buildings) {
+	public List<BuildingType> getBuildingTypes(List<Integer> buildings) {
 		List<BuildingType> list = new ArrayList<BuildingType>();
 		for (Integer building : buildings) {
 			list.add(getBuildingType(building));

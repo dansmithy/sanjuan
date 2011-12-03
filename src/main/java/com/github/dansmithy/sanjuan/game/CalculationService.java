@@ -25,7 +25,7 @@ public class CalculationService {
 	
 	public void processPlayer(Player player) {
 		
-		List<BuildingType> buildingList = cardFactory.getBuildings(player.getBuildings());
+		List<BuildingType> buildingList = cardFactory.getBuildingTypes(player.getBuildings());
 		Collections.sort(buildingList, new Comparator<BuildingType>() {
 
 			@Override

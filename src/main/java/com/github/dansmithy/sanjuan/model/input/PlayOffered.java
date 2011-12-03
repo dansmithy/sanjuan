@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.model.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -16,6 +17,7 @@ public class PlayOffered {
 	
 	private Integer builderDiscountOnProduction;
 	private Integer builderDiscountOnViolet;
+	private Map<Integer, String> builderNotAllowedToBuild;
 	
 	private Integer goodsCanProduce;
 	private Integer goodsCanTrade;
@@ -56,6 +58,13 @@ public class PlayOffered {
 	}
 	public void setBuilderDiscountOnViolet(Integer builderDiscountOnViolet) {
 		this.builderDiscountOnViolet = builderDiscountOnViolet;
+	}
+	public Map<Integer, String> getBuilderNotAllowedToBuild() {
+		return builderNotAllowedToBuild;
+	}
+	public void setBuilderNotAllowedToBuild(
+			Map<Integer, String> builderNotAllowedToBuild) {
+		this.builderNotAllowedToBuild = builderNotAllowedToBuild;
 	}
 	public Integer getGoodsCanProduce() {
 		return goodsCanProduce;

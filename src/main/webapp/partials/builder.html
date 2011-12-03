@@ -1,6 +1,12 @@
         <div class="row">
             <div ng:show="responder.response.build == -1" class="span8"><h3>What do you want do build?</h3></div>
-            <div ng:show="responder.response.build != -1" class="span8"><h3>Choosing to build a {{cardService.cardMap[responder.response.build]}}. Cost to you is {{responder.currentBuildCost}}.</h3></div>
+            <div ng:show="responder.response.build != -1" class="span8">
+                <h3>
+                    Choosing to build a {{cardService.cardMap[responder.response.build]}}. 
+                    <span ng:show="responder.unableToBuildReason">{{responder.unableToBuildReason}}</span>
+                    <span ng:hide="responder.unableToBuildReason">Cost to you is {{responder.currentBuildCost}}.</span>
+                </h3>
+            </div>
             <div class="span3">
                 <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Build</button>
                 <button class="btn" ng:click="responder.commitSkipResponse()">Skip build</button>

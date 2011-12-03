@@ -368,6 +368,7 @@ function BuilderResponder($xhr, cardService, game, gameCallback) {
 	this.cardService = cardService;
 	this.offered = game.$round.$phase.$play.offered;
 	this.response = { "build" : -1, "payment" : [] };
+	this.unableToBuildReason = undefined;
 	this.currentBuildCost = -1;
 	this.emptyResponse = { "skip" : true };
 	this.template = "partials/builder.html";
@@ -387,7 +388,7 @@ BuilderResponder.prototype = {
 	},
 	
 	choicesMade : function() {
-		return this.response.build != -1 && this.response.payment.length === this.currentBuildCost;
+		return angular.isUndefined(this.unableToBuildReason) && this.response.build != -1 && this.response.payment.length === this.currentBuildCost;
 	},
 	
 	handCardSelectedType : function(handCard) {
@@ -429,6 +430,7 @@ BuilderResponder.prototype = {
 				if (this.isPaymentCard(handCard)) {
 					this.removePayment(handCard);
 				}
+				this.unableToBuildReason = this.offered.builderNotAllowedToBuild[handCard];
 				this.selectToBuild(handCard);
 				
 			} else { // have something to build already

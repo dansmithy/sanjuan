@@ -1,6 +1,8 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,13 +42,15 @@ public class BuilderProcessor implements RoleProcessor {
 		
 		Play play = gameUpdater.getNewPlay();
 		Deck deck = gameUpdater.getGame().getDeck();
-		PlayerNumbers numbers = gameUpdater.getNewPlayer().getPlayerNumbers();
+		Player player = gameUpdater.getNewPlayer();
+		PlayerNumbers numbers = player.getPlayerNumbers();
 		
 		boolean withPrivilege = play.isHasPrivilige();
 		
 		PlayOffered offered = play.createOffered();
 		offered.setBuilderDiscountOnProduction(numbers.getTotalBuilderDiscountOnProduction(withPrivilege));
 		offered.setBuilderDiscountOnViolet(numbers.getTotalBuilderDiscountOnViolet(withPrivilege));
+		offered.setBuilderNotAllowedToBuild(createNotAllowedToBuild(player, offered));
 		
 		gameUpdater.updateDeck(deck);			
 	}
@@ -79,14 +83,23 @@ public class BuilderProcessor implements RoleProcessor {
 		
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateDeck(deck);
-		
-//		gameUpdater.completedPlay(play, playChoice);
-//		gameUpdater.createNextStep();
-//		
-//		if (!gameUpdater.isPhaseChanged()) {
-//			initiateNewPlay(gameUpdater);
-//		}		
 	}
+	
+	private Map<Integer, String> createNotAllowedToBuild(Player player, PlayOffered offered) {
+		Map<Integer, String> notAllowed = new HashMap<Integer, String>();
+		int maximumPayment = calculateMaxmimumPayment(player.getHand());
+		for (Integer card : player.getHand()) {
+			if (isAlreadyBuiltVioletBuilding(card, player.getBuildings())) {
+				notAllowed.put(card, String.format("Already have a one, so cannot build another."));
+			} else {
+				int cost = calculateCost(card, offered);
+				if (cost > maximumPayment) {
+					notAllowed.put(card, String.format("Cannot afford. Costs %d but can only pay %d maximum.", cost, maximumPayment));
+				}
+			}
+		}
+		return notAllowed;
+	}	
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {
 		if (!player.getHand().contains(playChoice.getBuild())) {
@@ -105,15 +118,25 @@ public class BuilderProcessor implements RoleProcessor {
 			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()), exceptionType);
 		}
 		
-		if (cardFactory.getBuildingType(playChoice.getBuild()).isVioletBuilding()) {
-			if (buildingIsAlreadyInList(playChoice.getBuild(), player.getBuildings())) {
-				throw new IllegalGameStateException(String.format("Cannot build as already have that violet building in your buildings."), IllegalGameStateException.BUILDING_ALREADY_BUILT);
-			}
+		if (isAlreadyBuiltVioletBuilding(playChoice.getBuild(), player.getBuildings())) {
+			throw new IllegalGameStateException(String.format("Cannot build as already have that violet building in your buildings."), IllegalGameStateException.BUILDING_ALREADY_BUILT);
 		}
 	}
+	
+	private int calculateMaxmimumPayment(List<Integer> hand) {
+		return hand.size() - 1;
+	}
+	
+	private boolean isAlreadyBuiltVioletBuilding(Integer building, List<Integer> buildings) {
+		return isVioletBuilding(building) && buildingTypeIsAlreadyInList(building, buildings);
+	}
+	
+	private boolean isVioletBuilding(Integer building) {
+		return cardFactory.getBuildingType(building).isVioletBuilding();
+	}
 
-	private boolean buildingIsAlreadyInList(Integer building, List<Integer> buildings) {
-		return cardFactory.getBuildings(buildings).contains(cardFactory.getBuildingType(building));
+	private boolean buildingTypeIsAlreadyInList(Integer building, List<Integer> buildings) {
+		return cardFactory.getBuildingTypes(buildings).contains(cardFactory.getBuildingType(building));
 	}
 
 	private int calculateCost(Integer build, PlayOffered offered) {

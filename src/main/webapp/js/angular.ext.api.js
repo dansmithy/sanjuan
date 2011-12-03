@@ -25,6 +25,10 @@ angular.Array.get = function(array, matchingItem, fieldToMatchOn) {
 	return foundItem;	
 };
 
-angular.Array.contains = function(array, matchingItem, fieldToMatchOn) {
+angular.Array.containsObject = function(array, matchingItem, fieldToMatchOn) {
 	return angular.Array.get(array, matchingItem, fieldToMatchOn) == false ? false : true;
+};
+
+angular.Array.contains = function(array, matchingItem) {
+	return angular.Array.indexOf(array, matchingItem) != -1;
 };
