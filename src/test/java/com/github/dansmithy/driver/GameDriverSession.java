@@ -26,6 +26,8 @@ public interface GameDriverSession {
 
 	Response makePlayChoice(String urlData, String postData);
 
+	Response makesGovernorPlay(String urlData, String postJson);
+	
 	Response getGame();
 	
 	Response getGame(long gameId);
@@ -45,5 +47,6 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
+
 
 }

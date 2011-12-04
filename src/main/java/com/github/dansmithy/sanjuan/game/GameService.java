@@ -8,6 +8,7 @@ import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Tariff;
+import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -30,6 +31,8 @@ public interface GameService {
 
 	Game makePlay(PlayCoords coords, PlayChoice playChoice);
 
+	Game governorDiscard(PlayCoords playCoords, GovernorChoice governorChoice);
+	
 	void deleteGame(Long gameId);
 
 	Deck updateDeckOrder(Long gameId, List<Integer> deckOrder);
@@ -38,5 +41,6 @@ public interface GameService {
 			Integer playNumber);
 
 	List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder);
+
 
 }

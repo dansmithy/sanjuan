@@ -12,6 +12,7 @@ import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
+import com.github.dansmithy.sanjuan.model.GovernorStep;
 import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.PhaseState;
 import com.github.dansmithy.sanjuan.model.Play;
@@ -190,20 +191,35 @@ public class DatastoreGameService implements GameService {
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
 	
+	@Override
 	public Game governorDiscard(PlayCoords playCoords, GovernorChoice governorChoice) {
 		
 		Game game = getGame(playCoords.getGameId());
+		GameUpdater gameUpdater = new GameUpdater(game);
+		Player player = gameUpdater.getCurrentPlayer();
+		String loggedInUser = userProvider.getAuthenticatedUsername();
 		
-		
-		
-		
+		if (!game.getState().equals(GameState.PLAYING)) {
+			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
+		}
+
 		// check whether current player
 		
 		// check whether current coords
 		
+		GovernorStep step = gameUpdater.getGovernorStep(loggedInUser);
+		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
+		step.setState(PlayState.COMPLETED);
 		
+		player.removeHandCards(governorChoice.getCardsToDiscard());
+		game.getDeck().discard(governorChoice.getCardsToDiscard());
 		
-		return null;
+		gameUpdater.updateDeck(game.getDeck());
+		gameUpdater.updatePlayer(player);
+		gameUpdater.updateGovernorStep(step);
+		
+		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
+		
 	}
 	
 	/* (non-Javadoc)

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GovernorPhase;
+import com.github.dansmithy.sanjuan.model.GovernorStep;
 import com.github.dansmithy.sanjuan.model.Phase;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
@@ -182,6 +183,36 @@ public class GameUpdater {
 	
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
+	}
+
+	public GovernorStep getGovernorStep(String player) {
+		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
+			if (step.getPlayerName().equals(player)) {
+				return step;
+			}
+		}
+		return null;
+	}
+	
+	public GovernorPhase getGovernorPhase() {
+		return getCurrentRound().getGovernorPhase();
+	}	
+	
+	private int getStepIndex(GovernorStep stepToMatch) {
+		int index = 0;
+		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
+			if (step.getPlayerName().equals(stepToMatch.getPlayerName())) {
+				return index;
+			}
+			index++;
+		}
+		return -1;
+	}	
+
+	public void updateGovernorStep(GovernorStep step) {
+		int governorStepIndex = getStepIndex(step);
+		String stepLocation = String.format("%s.governorPhase.governorSteps.%d", playCoords.getRoundLocation(), governorStepIndex);
+		updates.put("governorStep", new PartialUpdate(stepLocation, step));
 	}
 
 }

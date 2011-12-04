@@ -18,6 +18,7 @@ import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Tariff;
+import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
@@ -130,6 +131,13 @@ public class GameBean implements GameResource {
 	}
 	
 	@Override
+	public Game makeGovernorPlay(Long gameId, Integer roundNumber, GovernorChoice governorChoice) {
+		
+		PlayCoords coords = new PlayCoords(gameId, roundNumber, 0, 0);
+		return gameService.governorDiscard(coords, governorChoice);
+	}	
+	
+	@Override
 	public void deleteGame(Long gameId) {
 		gameService.deleteGame(gameId);
 	}
@@ -151,4 +159,5 @@ public class GameBean implements GameResource {
 		// TODO verify game state		
 		return gameService.updateTariff(gameId, tariffOrder);
 	}
+
 }

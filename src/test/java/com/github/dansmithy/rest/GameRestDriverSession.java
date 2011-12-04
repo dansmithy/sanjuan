@@ -175,6 +175,15 @@ public class GameRestDriverSession implements GameDriverSession {
 		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
+	@Override
+	public Response makesGovernorPlay(String urlData, String postJson) {
+		RequestValues urlValues = createRequest(urlData);
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+		String url = String.format("%s/games/%s/rounds/%s/governorChoice", wsBaseUri, gameId, urlValues.get("round"));
+		System.out.println(String.format("Calling [%s].", url));
+		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
+	
 	
 	private Response rememberGame(Response response) {
 		gameId = extractGameId(response);

@@ -18,6 +18,7 @@ import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.User;
+import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
@@ -137,6 +138,14 @@ public class GameSpringDriverSession implements GameDriverSession {
 	}
 
 	@Override
+	public Response makesGovernorPlay(String urlData, String postJson) {
+		RequestValues urlValues = createRequest(urlData);
+		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
+		GovernorChoice choice = (GovernorChoice)JSONObject.toBean((JSONObject)json, GovernorChoice.class);
+		return new SpringResponse(gameResource.makeGovernorPlay(gameId, Integer.valueOf(urlValues.get("round")), choice));
+	}
+	
+	@Override
 	public Response getGame() {
 		return new SpringResponse(gameResource.getGame(gameId));
 	}
@@ -194,4 +203,5 @@ public class GameSpringDriverSession implements GameDriverSession {
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
 		return translatedValues.translateRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
 	}
+
 }

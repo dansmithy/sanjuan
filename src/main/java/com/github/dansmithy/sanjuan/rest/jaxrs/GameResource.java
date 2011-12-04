@@ -24,6 +24,7 @@ import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Tariff;
+import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
@@ -81,6 +82,12 @@ public interface GameResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	Game makePlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber, PlayChoice playChoice);
+
+	@PUT
+	@Path("{gameId}/rounds/{roundNumber}/governorChoice")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	Game makeGovernorPlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, GovernorChoice governorChoice);
 
 	@GET
 	@Path("{gameId}/rounds/{roundNumber}/phases/{phaseNumber}/plays/{playNumber}")

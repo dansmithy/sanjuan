@@ -93,8 +93,7 @@ public class GovernorAT {
 
 				when(initiateGovernorPhase()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { cardsToDiscard : 2 } ] } } ] }")));
-
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size : 9 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 2 } ] } } ] }")));
 	}
 
 	@Test
@@ -109,6 +108,37 @@ public class GovernorAT {
 
 				then(verifyResponseCodeIs(HTTP_CONFLICT))
 						.and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
+
+	}
+
+	@Test
+	public void testCanDiscardCardsSuccessfully() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						accrueOverSevenCards()).and(initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
+
+	}
+
+	@Test
+	public void testCanDiscardCardsAndChooseRoleAfterwards() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(accrueOverSevenCards())
+						.and(initiateGovernorPhase())
+						.and(userMakesGovernorPlay("#alice", "round : 3",
+								"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				when(roleChosenBy("#alice", "round : 3; phase : 1",
+						"role : BUILDER")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
 
 	}
 
