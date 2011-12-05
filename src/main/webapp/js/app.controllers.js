@@ -267,7 +267,7 @@ GovernorChoiceResponse.prototype = {
 function GovernorPhaseResponse($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.options = game.$round.$governorStep;
-	this.response = { };
+	this.response = { "cardsToDiscard" : [ ] };
 	this.mode = "do_something";
 	this.template = "partials/governor.html";
 	this.game = game;
@@ -277,10 +277,34 @@ function GovernorPhaseResponse($xhr, game, gameCallback) {
 GovernorPhaseResponse.prototype = {
 	
 	sendResponse : function() {
-		var modifiedResponse = angular.Object.copy(this.response);
-		modifiedResponse.role = modifiedResponse.role.toUpperCase();
-		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", modifiedResponse, this.gameCallback);
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/governorChoice", this.response, this.gameCallback);
+	},
+	
+	handCardSelectedType : function(handCard) {
+		if (this.isDiscardCard(handCard)) {
+			return "hand-to-build";
+		}
+	},
+	
+	isDiscardCard : function(card) {
+		return angular.Array.contains(this.response.cardsToDiscard, card);
+	},
+	
+	clickHandCard : function(handCard) {
+		if (this.isDiscardCard(handCard)) {
+			angular.Array.remove(this.response.cardsToDiscard, handCard);
+		} else {
+			if (this.choicesMade()) {
+				this.response.cardsToDiscard.pop();
+			}
+			this.response.cardsToDiscard.push(handCard);
+		}
+	},
+	
+	choicesMade : function() {
+		return this.response.cardsToDiscard.length === this.options.numberOfCardsToDiscard;
 	}
+
 };
 
 
