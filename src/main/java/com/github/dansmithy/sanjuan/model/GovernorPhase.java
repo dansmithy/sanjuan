@@ -21,13 +21,20 @@ public class GovernorPhase {
 		super();
 	}
 	
-	public PlayState getState() {
+	public int getCurrentStepIndex() {
+		int index = 0;
 		for (GovernorStep step : governorSteps) {
 			if (step.getState().equals(PlayState.AWAITING_INPUT)) {
-				return PlayState.AWAITING_INPUT;
+				return index;
 			}
+			index++;
 		}
-		return PlayState.COMPLETED;
+		return -1;
+		
+	}	
+	
+	public PlayState getState() {
+		return getCurrentStepIndex() == -1 ? PlayState.COMPLETED : PlayState.AWAITING_INPUT;
 	}
 	
 	public GovernorStep getCurrentStep() {
@@ -42,7 +49,7 @@ public class GovernorPhase {
 	public List<GovernorStep> getGovernorSteps() {
 		return governorSteps;
 	}
-
+	
 	public boolean isComplete() {
 		return getState().equals(PlayState.COMPLETED);
 	}

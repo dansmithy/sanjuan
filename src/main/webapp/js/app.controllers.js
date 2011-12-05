@@ -166,8 +166,17 @@ GameController.prototype = {
 			});
 				
 			game.$usedRoles = usedRoles;
-			game.$unusedRoles = unusedRoles;			
-			if (game.$round.$phase.state === "PLAYING") {
+			game.$unusedRoles = unusedRoles;
+			if (game.$round.state === "GOVERNOR") {
+				game.$round.$governorStep = game.$round.governorPhase.governorSteps[game.$round.governorPhase.currentStepIndex];
+				game.currentPlayerName = game.$round.$governorStep.playerName;
+				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
+				if (this.isActivePlayer) {
+					this.responder = new GovernorPhaseResponse(this.$xhr, game, this.gameCallback);
+				} else {
+					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to make their choice for the Governor phase" };
+				}
+			} else if (game.$round.$phase.state === "PLAYING") {
 				game.$currentRole = game.$usedRoles.pop();
 				game.$round.$phase.$play = game.$round.$phase.plays[game.$round.$phase.playNumber-1];
 				game.currentPlayerName = game.$round.$phase.$play.player;
@@ -254,6 +263,26 @@ GovernorChoiceResponse.prototype = {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", modifiedResponse, this.gameCallback);
 	}
 };
+
+function GovernorPhaseResponse($xhr, game, gameCallback) {
+	this.$xhr = $xhr;
+	this.options = game.$round.$governorStep;
+	this.response = { };
+	this.mode = "do_something";
+	this.template = "partials/governor.html";
+	this.game = game;
+	this.gameCallback = gameCallback;
+};
+
+GovernorPhaseResponse.prototype = {
+	
+	sendResponse : function() {
+		var modifiedResponse = angular.Object.copy(this.response);
+		modifiedResponse.role = modifiedResponse.role.toUpperCase();
+		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", modifiedResponse, this.gameCallback);
+	}
+};
+
 
 
 function DoSomethingResponder($xhr, game, gameCallback) {
