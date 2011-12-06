@@ -202,12 +202,19 @@ public class DatastoreGameService implements GameService {
 		if (!game.getState().equals(GameState.PLAYING)) {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
 		}
-
-		// check whether current player
+		
+		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
+			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
+		}
+		
+		GovernorStep step = gameUpdater.getGovernorStep(loggedInUser);
+		if (step == null) {
+			throw new NotResourceOwnerAccessException(String.format("Not your turn to make Governor phase choices."));
+		}
+		
 		
 		// check whether current coords
 		
-		GovernorStep step = gameUpdater.getGovernorStep(loggedInUser);
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
 		

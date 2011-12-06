@@ -142,6 +142,55 @@ public class GovernorAT {
 
 	}
 
+	@Test
+	public void testCannotMakeGovernorChoiceWhenNotGovernorPhase() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(userMakesGovernorPlay("#alice", "round : 1",
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
+
+	}
+
+	@Test
+	public void testCannotDiscardCardsWhenNotCurrentPlayer() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						accrueOverSevenCards()).and(initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#bob", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
+						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
+
+	}
+
+	// TODO cannot redo-same governor step
+	// Need BOTH players to be in a card-discarding position!
+	@Test
+	public void testCannotMakeGovernorChoicesTwice() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(accrueOverSevenCards())
+						.and(initiateGovernorPhase())
+						.and(userMakesGovernorPlay("#alice", "round : 3",
+								"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'CHOICE_ALREADY_MADE' }")));
+
+	}
+
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
 		return new GivenBddParts(accrueOverSevenCards())
 				.and(initiateGovernorPhase());
