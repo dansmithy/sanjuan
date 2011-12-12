@@ -39,7 +39,7 @@ public class GovernorPhase {
 	
 	public GovernorStep getCurrentStep() {
 		for (GovernorStep step : governorSteps) {
-			if (step.isComplete()) {
+			if (!step.isComplete()) {
 				return step;
 			}
 		}

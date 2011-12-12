@@ -93,7 +93,7 @@ public class GovernorAT {
 
 				when(initiateGovernorPhase()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size : 9 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 2 } ] } } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 1 }, { numberOfCardsToDiscard : 1 } ] } } ] }")));
 	}
 
 	@Test
@@ -119,11 +119,15 @@ public class GovernorAT {
 						accrueOverSevenCards()).and(initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
-						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
 
 	}
+
+	// TODO cannot discard too many cards
+	// TODO cannot discard too few cards
+	// TODO cards do not own
 
 	@Test
 	public void testCanDiscardCardsAndChooseRoleAfterwards() {
@@ -133,12 +137,14 @@ public class GovernorAT {
 						.and(accrueOverSevenCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
-								"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
+						.and(userMakesGovernorPlay("#bob", "round : 3",
+								"{ 'cardsToDiscard' : [  ] }")),
 
 				when(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : BUILDER")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
 
 	}
 
@@ -174,7 +180,7 @@ public class GovernorAT {
 	// TODO cannot redo-same governor step
 	// Need BOTH players to be in a card-discarding position!
 	@Test
-	public void testCannotMakeGovernorChoicesTwice() {
+	public void testCannotMakeGovernorChoiceWhenStillGovernorPhaseButChoiceAlreadyMade() {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
@@ -186,8 +192,8 @@ public class GovernorAT {
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT))
-						.and(verifyResponseContains("{ code : 'CHOICE_ALREADY_MADE' }")));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
+						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 
 	}
 
@@ -198,7 +204,7 @@ public class GovernorAT {
 
 	private BddPart<GameDriver> initiateGovernorPhase() {
 		return userPlays("#alice", "round : 2; phase : 3; play : 2",
-				"{ productionFactories : [ '#indigoplant' ] }");
+				"{ skip : true }");
 	}
 
 	private BddPart<GameDriver> accrueOverSevenCards() {
@@ -229,15 +235,14 @@ public class GovernorAT {
 				.and(userPlays("#alice", "round : 2; phase : 1; play : 2",
 						"{ productionFactories : [ '#indigoplant' ] }"))
 				.and(roleChosenBy("#alice", "round : 2; phase : 2",
-						"role : PROSPECTOR"))
-				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
-						"{ }"))
-				.and(userPlays("#bob", "round : 2; phase : 2; play : 2",
-						"{ skip : true }"))
-				.and(roleChosenBy("#bob", "round : 2; phase : 3",
 						"role : PRODUCER"))
-				.and(userPlays("#bob", "round : 2; phase : 3; play : 1",
+				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 2; phase : 2; play : 2",
 						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(roleChosenBy("#bob", "round : 2; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#bob", "round : 2; phase : 3; play : 1", "{  }"))
 
 		;
 	}
