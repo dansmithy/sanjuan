@@ -8,6 +8,7 @@ import javax.inject.Named;
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -208,7 +209,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhase().getCurrentStep();
-		// cannot be null, cos wouldn't be GOVERNOR state
+		// cannot be null, cos wouldn't be GOVERNOR state (verified by previous check)
 		
  		if (!loggedInUser.equals(step.getPlayerName())) {
 			throw new NotResourceOwnerAccessException(String.format("Not your turn to make Governor phase choices."));
@@ -216,6 +217,21 @@ public class DatastoreGameService implements GameService {
 		
 		// check whether current coords
 		
+ 		int cardsShouldDiscardCount = player.getHand().size() - player.getPlayerNumbers().getCardsCanHold();
+ 		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
+ 		
+ 		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
+ 			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but only need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidException.OVER_DISCARD);
+ 		}
+
+ 		if (cardsRequestedToDiscardCount < cardsShouldDiscardCount) {
+ 			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidException.UNDER_DISCARD);
+ 		}
+
+ 		
+ 		if (!player.getHand().containsAll(governorChoice.getCardsToDiscard())) {
+ 			throw new PlayChoiceInvalidException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidException.NOT_OWNED_HAND_CARD);
+ 		}
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
 		

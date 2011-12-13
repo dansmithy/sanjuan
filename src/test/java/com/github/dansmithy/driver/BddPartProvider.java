@@ -32,7 +32,7 @@ public class BddPartProvider {
 			@Override
 			public void execute(GameDriver context) {
 				Assert.assertNotNull("Expected successful response to have been saved, but none found.", context.getLastResponse());
-				Assert.assertThat("Response code is not 200", context
+				Assert.assertThat(String.format("Response code is not 200 (body content is %s)", context.getLastResponse().asText()), context
 						.getLastResponse().getStatusCode(),
 						is(equalTo(HttpURLConnection.HTTP_OK)));
 				Assert.assertThat(

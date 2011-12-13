@@ -125,10 +125,6 @@ public class GovernorAT {
 
 	}
 
-	// TODO cannot discard too many cards
-	// TODO cannot discard too few cards
-	// TODO cards do not own
-
 	@Test
 	public void testCanDiscardCardsAndChooseRoleAfterwards() {
 		bdd.runTest(
@@ -177,8 +173,6 @@ public class GovernorAT {
 
 	}
 
-	// TODO cannot redo-same governor step
-	// Need BOTH players to be in a card-discarding position!
 	@Test
 	public void testCannotMakeGovernorChoiceWhenStillGovernorPhaseButChoiceAlreadyMade() {
 		bdd.runTest(
@@ -187,16 +181,60 @@ public class GovernorAT {
 						.and(accrueOverSevenCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
-								"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
-						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4' ] }")),
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
 						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
-
 	}
 
+	@Test
+	public void testCannotDiscardTooManyCards() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						accrueOverSevenCards()).and(initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4', '#tobaccostorage' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'OVER_DISCARD' }")));
+	}
+
+	@Test
+	public void testCannotDiscardTooFewCards() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						accrueOverSevenCards()).and(initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'cardsToDiscard' : [ ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'UNDER_DISCARD' }")));
+	}
+	
+	@Test
+	public void testCannotDiscardCardsDoNotOwn() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						accrueOverSevenCards()).and(initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'cardsToDiscard' : [ '#sugarmill3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
+	}	
+
+	// TODO duplicate cards
+	// TODO not current round
+	
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
 		return new GivenBddParts(accrueOverSevenCards())
 				.and(initiateGovernorPhase());
