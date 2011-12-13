@@ -204,10 +204,18 @@ public class DatastoreGameService implements GameService {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
 		}
 		
+		if (!gameUpdater.matchesCoords(playCoords)) {
+			throw new IllegalGameStateException(String.format("Cannot modify round %d", playCoords.getRoundNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
+		}		
+		
 		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
 		}
-		
+
+		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
+			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
+		}
+
 		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhase().getCurrentStep();
 		// cannot be null, cos wouldn't be GOVERNOR state (verified by previous check)
 		

@@ -133,7 +133,7 @@ public class GameBean implements GameResource {
 	@Override
 	public Game makeGovernorPlay(Long gameId, Integer roundNumber, GovernorChoice governorChoice) {
 		
-		PlayCoords coords = new PlayCoords(gameId, roundNumber, 0, 0);
+		PlayCoords coords = new PlayCoords(gameId, roundNumber, 1, 0);
 		return gameService.governorDiscard(coords, governorChoice);
 	}	
 	

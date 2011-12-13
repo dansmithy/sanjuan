@@ -5,12 +5,12 @@ import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.bdd.GivenBddParts;
-import com.github.dansmithy.bdd.SkeletonBddTestRunner;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.GameDriver;
 
@@ -89,7 +89,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()),
+						bothPlayersAccrueOverSevenCards()),
 
 				when(initiateGovernorPhase()),
 
@@ -116,7 +116,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()).and(initiateGovernorPhase()),
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -130,7 +131,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(accrueOverSevenCards())
+						.and(bothPlayersAccrueOverSevenCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
@@ -163,7 +164,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()).and(initiateGovernorPhase()),
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#bob", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -178,7 +180,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(accrueOverSevenCards())
+						.and(bothPlayersAccrueOverSevenCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -195,13 +197,16 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()).and(initiateGovernorPhase()),
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
 
-				when(userMakesGovernorPlay("#alice", "round : 3",
+				when(userMakesGovernorPlay(
+						"#alice",
+						"round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3', '#indigoplant4', '#tobaccostorage' ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
-						.and(verifyResponseContains("{ code : 'OVER_DISCARD' }")));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'OVER_DISCARD' }")));
 	}
 
 	@Test
@@ -209,35 +214,84 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()).and(initiateGovernorPhase()),
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ ] }")),
 
-				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
-						.and(verifyResponseContains("{ code : 'UNDER_DISCARD' }")));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'UNDER_DISCARD' }")));
 	}
-	
+
 	@Test
 	public void testCannotDiscardCardsDoNotOwn() {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						accrueOverSevenCards()).and(initiateGovernorPhase()),
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#sugarmill3' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
 						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
-	}	
+	}
 
-	// TODO duplicate cards
-	// TODO not current round
-	
+	// TODO duplicate cards - need to discard multiple
+
+	@Test
+	public void testCannotDiscardWhenSpecifyIncorrectRound() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						bothPlayersAccrueOverSevenCards()).and(
+						initiateGovernorPhase()),
+
+				when(userMakesGovernorPlay("#alice", "round : 2",
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'PHASE_NOT_ACTIVE' }")));
+
+	}
+
+	@Test
+	@Ignore
+	public void testCanDiscardMultipleCardsSuccessfully() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(playUpToGovernorDiscardCardPhase())
+						.and(discardThenAccrueOverEightCards())
+						.and(userPlays("#alice",
+								"round : 3; phase : 1; play : 1",
+								"{ productionFactories : [ '#indigoplant' ] }"))
+						.and(userPlays("#alice",
+								"round : 3; phase : 1; play : 2",
+								"{ productionFactories : [ '#indigoplant2' ] }")),
+
+				when(nothingHappens()),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
+	}
+
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
-		return new GivenBddParts(accrueOverSevenCards())
+		return new GivenBddParts(bothPlayersAccrueOverSevenCards())
 				.and(initiateGovernorPhase());
+	}
+
+	private BddPart<GameDriver> discardThenAccrueOverEightCards() {
+		return new GivenBddParts(userMakesGovernorPlay("#alice", "round : 3",
+				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")).and(
+				userMakesGovernorPlay("#bob", "round : 3",
+						"{ 'cardsToDiscard' : [  ] }")).and(
+				roleChosenBy("#alice", "round : 3; phase : 1",
+						"role : PRODUCER"))
+
+		;
 	}
 
 	private BddPart<GameDriver> initiateGovernorPhase() {
@@ -245,7 +299,7 @@ public class GovernorAT {
 				"{ skip : true }");
 	}
 
-	private BddPart<GameDriver> accrueOverSevenCards() {
+	private BddPart<GameDriver> bothPlayersAccrueOverSevenCards() {
 		return new GivenBddParts(roleChosenBy("#alice", "round : 1; phase : 1",
 				"role : PROSPECTOR"))
 				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
