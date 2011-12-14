@@ -239,8 +239,6 @@ public class GovernorAT {
 						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
 	}
 
-	// TODO duplicate cards - need to discard multiple
-
 	@Test
 	public void testCannotDiscardWhenSpecifyIncorrectRound() {
 		bdd.runTest(
@@ -258,24 +256,32 @@ public class GovernorAT {
 	}
 
 	@Test
-	@Ignore
 	public void testCanDiscardMultipleCardsSuccessfully() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(playUpToGovernorDiscardCardPhase())
-						.and(discardThenAccrueOverEightCards())
-						.and(userPlays("#alice",
-								"round : 3; phase : 1; play : 1",
-								"{ productionFactories : [ '#indigoplant' ] }"))
-						.and(userPlays("#alice",
-								"round : 3; phase : 1; play : 2",
-								"{ productionFactories : [ '#indigoplant2' ] }")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						playUpToGovernorDiscardCardPhase()).and(
+						discardThenAccrueOverEightCards()),
 
-				when(nothingHappens()),
+				when(userMakesGovernorPlay("#bob", "round : 4",
+						"{ 'cardsToDiscard' : [ '#indigoplant7', '#indigoplant8' ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 9 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 7 } ], 'roundNumber' : 4, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
+	}
+
+	@Test
+	public void testCannotSpecifySameCardTwiceToDiscard() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						playUpToGovernorDiscardCardPhase()).and(
+						discardThenAccrueOverEightCards()),
+
+				when(userMakesGovernorPlay("#bob", "round : 4",
+						"{ 'cardsToDiscard' : [ '#indigoplant7', '#indigoplant7' ] }")),
 
 				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
-						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
+						.and(verifyResponseContains("{ code : 'DUPLICATE_CHOICE' }")));
 	}
 
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
@@ -285,11 +291,27 @@ public class GovernorAT {
 
 	private BddPart<GameDriver> discardThenAccrueOverEightCards() {
 		return new GivenBddParts(userMakesGovernorPlay("#alice", "round : 3",
-				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")).and(
-				userMakesGovernorPlay("#bob", "round : 3",
-						"{ 'cardsToDiscard' : [  ] }")).and(
-				roleChosenBy("#alice", "round : 3; phase : 1",
+				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
+				.and(userMakesGovernorPlay("#bob", "round : 3",
+						"{ 'cardsToDiscard' : [  ] }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 3; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 3; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(roleChosenBy("#bob", "round : 3; phase : 2",
 						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 3; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(userPlays("#alice", "round : 3; phase : 2; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#alice", "round : 3; phase : 3; play : 1",
+						"{  }"))
+				.and(userPlays("#bob", "round : 3; phase : 3; play : 2",
+						"{ skip : true }"))
 
 		;
 	}

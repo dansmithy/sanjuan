@@ -30,6 +30,7 @@ import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
+import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
 public class DatastoreGameService implements GameService {
@@ -222,8 +223,10 @@ public class DatastoreGameService implements GameService {
  		if (!loggedInUser.equals(step.getPlayerName())) {
 			throw new NotResourceOwnerAccessException(String.format("Not your turn to make Governor phase choices."));
  		}
-		
-		// check whether current coords
+
+		if (CollectionUtils.hasDuplicates(governorChoice.getCardsToDiscard())) {
+			throw new PlayChoiceInvalidException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+		}
 		
  		int cardsShouldDiscardCount = player.getHand().size() - player.getPlayerNumbers().getCardsCanHold();
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
