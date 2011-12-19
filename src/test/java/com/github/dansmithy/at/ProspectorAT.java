@@ -29,7 +29,7 @@ public class ProspectorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : PROSPECTOR")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : null } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT', 'offered' : null } } } }")));
 	}
 
 	@Test
@@ -44,7 +44,9 @@ public class ProspectorAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{}")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'offered' : { 'prospected' : [ '#well' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING' } } }")));
+		
+		//currentPlay : [ { 'state' : 'COMPLETED', 'offered' : { 'prospected' : [ '#well' ] } }
 	}
 
 

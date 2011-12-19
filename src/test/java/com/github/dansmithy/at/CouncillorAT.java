@@ -32,7 +32,7 @@ public class CouncillorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : COUNCILLOR")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#well', '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT', 'offered' : { 'councilOffered' : [ '#well', '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ], 'councilRetainCount' : 1, 'councilCanDiscardHandCards' : false } } } } }")));
 	}
 
 	@Test
@@ -47,7 +47,9 @@ public class CouncillorAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING' } } }")));
+		
+		//plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'councilDiscarded' : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] } } ] } ] 
 	}
 
 	@Test

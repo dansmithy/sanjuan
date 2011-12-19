@@ -120,6 +120,7 @@ public class Game {
 		return tariffs;
 	}
 
+	@JsonIgnore
 	public List<Round> getRounds() {
 		return rounds;
 	}
@@ -155,7 +156,6 @@ public class Game {
 		return -1;
 	}
 
-	@JsonIgnore
 	public Round getCurrentRound() {
 		return rounds.isEmpty() ? null : rounds.get(getRoundNumber()-1);
 	}

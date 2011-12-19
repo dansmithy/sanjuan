@@ -36,7 +36,7 @@ public class BuilderAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'builderDiscountOnProduction' : 1, 'builderDiscountOnViolet' : 1 } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT', 'offered' : { 'builderDiscountOnProduction' : 1, 'builderDiscountOnViolet' : 1 } } } } }")));
 	}
 
 	@Test
@@ -51,7 +51,9 @@ public class BuilderAT {
 				when(userPlays("#alice", "round : 1; phase : 1; play : 1",
 						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : {  build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING' } } }")));
+		
+		//currentPlay : { 'state' : 'COMPLETED', 'playChoice' : {  build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] } } 
 	}
 
 	@Test

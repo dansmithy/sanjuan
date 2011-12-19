@@ -142,32 +142,30 @@ GameController.prototype = {
 			return this.responder.mode == "role_choice" && role == this.responder.response.role;
 		},
 		
+		switchToLowercase : function(array) {
+			for (var i=0; i<array.length; i++) {
+				array[i] = array[i].toLowerCase();
+			}
+			return array;
+		},
+		
 		processGame : function(game) {
-			game.$round = game.rounds[game.roundNumber-1];
-			game.$round.$phase = game.$round.phases[game.$round.phaseNumber-1];
+			game.$round = game.currentRound;
+			game.$round.$phase = game.$round.currentPhase;
 			
 			//reorder players
 			while (!this.isNameActivePlayer(game.players[0].name)) {
 				game.players.push(game.players.shift());
 			}
 			
-			var usedRoles = [ "governor" ];
-			var unusedRoles = [];
-			angular.forEach(game.$round.phases, function(phase) {
-				if (angular.isDefined(phase.role)) {
-					usedRoles.push(phase.role.toLowerCase());
-				}
-				
-			});
-			angular.forEach(this.allRoles, function(role) {
-				if (angular.Array.indexOf(usedRoles, role) == -1) {
-					unusedRoles.push(role);
-				}
-			});
-				
+			var usedRoles = this.switchToLowercase(game.$round.playedRoles);
+			var unusedRoles = this.switchToLowercase(game.$round.remainingRoles);
+			
 			game.$usedRoles = usedRoles;
 			game.$unusedRoles = unusedRoles;
+			
 			if (game.$round.state === "GOVERNOR") {
+				game.$currentRole = game.$unusedRoles.shift();
 				game.$round.$governorStep = game.$round.governorPhase.governorSteps[game.$round.governorPhase.currentStepIndex];
 				game.currentPlayerName = game.$round.$governorStep.playerName;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
@@ -177,8 +175,8 @@ GameController.prototype = {
 					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to make their choice for the Governor phase" };
 				}
 			} else if (game.$round.$phase.state === "PLAYING") {
-				game.$currentRole = game.$usedRoles.pop();
-				game.$round.$phase.$play = game.$round.$phase.plays[game.$round.$phase.playNumber-1];
+				game.$currentRole = game.$unusedRoles.shift();
+				game.$round.$phase.$play = game.$round.$phase.currentPlay;
 				game.currentPlayerName = game.$round.$phase.$play.player;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {

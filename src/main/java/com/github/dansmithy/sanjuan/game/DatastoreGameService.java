@@ -179,6 +179,9 @@ public class DatastoreGameService implements GameService {
 		
 
 		Role role = choice.getRole();
+		if (role.equals(Role.GOVERNOR)) {
+			throw new IllegalGameStateException(String.format("Cannot choose the Governor role."), PlayChoiceInvalidException.INVALID_ROLE);
+		}
 		
 		if (!gameUpdater.getCurrentRound().getRemainingRoles().contains(role)) {
 			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.ROLE_ALREADY_TAKEN);

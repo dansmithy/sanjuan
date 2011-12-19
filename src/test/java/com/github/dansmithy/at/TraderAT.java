@@ -40,7 +40,7 @@ public class TraderAT {
 				when(roleChosenBy("#bob", "round : 1; phase : 2",
 						"role : TRADER")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays : [ { 'state' : 'AWAITING_INPUT', 'offered' : { 'goodsCanTrade' : 2 } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT', 'offered' : { 'goodsCanTrade' : 2 } } } } }")));
 	}
 
 	@Test
@@ -63,7 +63,9 @@ public class TraderAT {
 				when(userPlays("#bob", "round : 1; phase : 2; play : 1",
 						"{ productionFactories : [ '#indigoplant2' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'productionFactories' : [ '#indigoplant2' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING' } } }")));
+		
+		//{ 'state' : 'COMPLETED', 'playChoice' : { 'productionFactories' : [ '#indigoplant2' ] } 
 	}
 
 	@Test
@@ -86,7 +88,8 @@ public class TraderAT {
 				when(userPlays("#bob", "round : 1; phase : 2; play : 1",
 						"{ productionFactories : [ '#indigoplant2' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 6 } ], 'roundNumber' : 1, 'rounds^state' : [ { 'state' : 'PLAYING', phases^state : [ { 'state' : 'PLAYING', plays^state : [ { 'state' : 'COMPLETED', 'playChoice' : { 'productionFactories' : [ '#indigoplant2' ] } } ] } ] } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 6 } ], 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING' } } }")));
+		//{ 'state' : 'COMPLETED', 'playChoice' : { 'productionFactories' : [ '#indigoplant2' ] }
 	}
 
 	@Test

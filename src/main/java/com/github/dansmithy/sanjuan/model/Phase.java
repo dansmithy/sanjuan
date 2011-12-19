@@ -30,9 +30,12 @@ public class Phase {
 	public Role getRole() {
 		return role;
 	}
+	
+	@JsonIgnore
 	public List<Play> getPlays() {
 		return plays;
 	}
+	
 	public String getLeadPlayer() {
 		return leadPlayer;
 	}
@@ -80,7 +83,6 @@ public class Phase {
 		return plays.size();
 	}
 	
-	@JsonIgnore
 	public Play getCurrentPlay() {
 		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}

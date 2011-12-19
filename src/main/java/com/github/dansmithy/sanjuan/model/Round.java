@@ -35,6 +35,7 @@ public class Round {
 		return governor;
 	}
 
+	@JsonIgnore
 	public List<Phase> getPhases() {
 		return phases;
 	}
@@ -47,9 +48,12 @@ public class Round {
 		return governorPhase;
 	}
 
-	@JsonIgnore
 	public Phase getCurrentPhase() {
 		return phases.get(getPhaseNumber() - 1);
+	}
+	
+	private boolean isGovernorPhase() {
+		return getState().equals(RoundState.GOVERNOR);
 	}
 	
 	public RoundState getState() {
@@ -82,18 +86,21 @@ public class Round {
 		return count;		
 	}
 	
-	@JsonIgnore
 	public List<Role> getRemainingRoles() {
 		List<Role> remainingRoles = new ArrayList<Role>(Arrays.asList(Role.values()));
-		remainingRoles.remove(Role.GOVERNOR);
 		remainingRoles.removeAll(getPlayedRoles());
 		return remainingRoles;
 	}
 
-	private List<Role> getPlayedRoles() {
+	public List<Role> getPlayedRoles() {
 		List<Role> playedRoles = new ArrayList<Role>();
+		if (!isGovernorPhase()) {
+			playedRoles.add(Role.GOVERNOR);
+		}
 		for (Phase phase : phases) {
-			playedRoles.add(phase.getRole());
+			if (phase.isComplete()) {
+				playedRoles.add(phase.getRole());
+			}
 		}
 		return playedRoles;
 		
