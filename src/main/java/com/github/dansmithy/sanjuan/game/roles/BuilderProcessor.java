@@ -87,8 +87,8 @@ public class BuilderProcessor implements RoleProcessor {
 	
 	private Map<Integer, String> createNotAllowedToBuild(Player player, PlayOffered offered) {
 		Map<Integer, String> notAllowed = new HashMap<Integer, String>();
-		int maximumPayment = calculateMaxmimumPayment(player.getHand());
-		for (Integer card : player.getHand()) {
+		int maximumPayment = calculateMaxmimumPayment(player.getHandCards());
+		for (Integer card : player.getHandCards()) {
 			if (isAlreadyBuiltVioletBuilding(card, player.getBuildings())) {
 				notAllowed.put(card, String.format("Already have a one, so cannot build another."));
 			} else {
@@ -102,12 +102,12 @@ public class BuilderProcessor implements RoleProcessor {
 	}	
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {
-		if (!player.getHand().contains(playChoice.getBuild())) {
+		if (!player.getHandCards().contains(playChoice.getBuild())) {
 			throw new PlayChoiceInvalidException("Cannot build as build choice is not one you own.", PlayChoiceInvalidException.NOT_OWNED_BUILD_CHOICE);
 		}
 		
 		for (Integer paymentCard : playChoice.getPayment()) {
-			if (!player.getHand().contains(paymentCard)) {
+			if (!player.getHandCards().contains(paymentCard)) {
 				throw new PlayChoiceInvalidException(String.format("Cannot pay with card %d as is not one you own.", paymentCard), PlayChoiceInvalidException.NOT_OWNED_PAYMENT);
 			}
 		}

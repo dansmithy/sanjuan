@@ -213,10 +213,10 @@ public class Game {
 				winningPlayers.clear();
 				winningPlayers.add(0, player);
 			} else if (player.getVictoryPoints() == winningPlayers.get(0).getVictoryPoints()) {
-				if (player.getHand().size() > winningPlayers.get(0).getHand().size()) {
+				if (player.getHandCards().size() > winningPlayers.get(0).getHandCards().size()) {
 					winningPlayers.clear();
 					winningPlayers.add(0, player);
-				} else if (player.getHand().size() == winningPlayers.get(0).getHand().size()) {
+				} else if (player.getHandCards().size() == winningPlayers.get(0).getHandCards().size()) {
 					winningPlayers.add(player);
 				}
 			}
@@ -239,7 +239,7 @@ public class Game {
 
 	private void addGovernorStepIfRequired(Player player,
 			List<GovernorStep> governorSteps) {
-		int cardsToDiscard = player.getHand().size() - player.getPlayerNumbers().getCardsCanHold();
+		int cardsToDiscard = player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold();
 		if (cardsToDiscard < 0) {
 			cardsToDiscard = 0;
 		}

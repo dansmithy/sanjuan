@@ -89,8 +89,8 @@ function GameController($xhr, $defer, userManager, gameService, cardService) {
 	if (this.userManager.isAuthenticated()) {
 		this.gameService.updateGame(this.params.gameId, 0, this.gameCallback);
 	}
-	this.$watch("userManager.user", function(username) {
-		if (username) {
+	this.$watch("userManager.state", function(state) {
+		if (state === "authenticated") {
 			self.gameService.updateGame(self.params.gameId, 0, self.gameCallback);
 		}
 	});
@@ -230,6 +230,10 @@ GameController.prototype = {
 		
 		isSelf : function(playerName) {
 			return playerName === this.userManager.user.username;
+		},
+		
+		arrayContains : function(array, item) {
+			return angular.Array.contains(array, item);
 		}
 		
 		
@@ -565,7 +569,8 @@ function TraderResponder($xhr, cardService, userManager, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.cardService = cardService;
 	this.userManager = userManager;
-	this.goods = this.getPlayer(game, userManager.user.username).goods;
+	this.goods = this.getPlayer(game, userManager.user.username).producedFactories
+	;
 	this.offered = game.$round.$phase.$play.offered;
 	this.prices = game.$round.$phase.tariff.prices;
 	this.response = { "productionFactories" : [] };
@@ -611,7 +616,7 @@ TraderResponder.prototype = {
 	},	
 	
 	hasGoodToSell : function(card) {
-		return angular.isDefined(this.goods[card]);
+		return angular.Array.contains(this.goods, card);
 	},
 	
 	isChosenFactory : function(card) {

@@ -93,7 +93,7 @@ public class GovernorAT {
 
 				when(initiateGovernorPhase()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 1 }, { numberOfCardsToDiscard : 1 } ] } } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 1 }, { numberOfCardsToDiscard : 1 } ] } } ] }")));
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class GovernorAT {
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 7 }, { 'name' : '#bob', victoryPoints: 1, handCount : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
 
 	}
 
@@ -141,7 +141,7 @@ public class GovernorAT {
 				when(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : BUILDER")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 7 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 7 }, { 'name' : '#bob', victoryPoints: 1, handCount : 8 } ], 'roundNumber' : 3, 'rounds^state' : [ { state : 'PLAYING' } ] }")));
 
 	}
 
@@ -266,7 +266,7 @@ public class GovernorAT {
 				when(userMakesGovernorPlay("#bob", "round : 4",
 						"{ 'cardsToDiscard' : [ '#indigoplant7', '#indigoplant8' ] }")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, hand.size: 9 }, { 'name' : '#bob', victoryPoints: 1, hand.size : 7 } ], 'roundNumber' : 4, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 9 }, { 'name' : '#bob', victoryPoints: 1, handCount : 7 } ], 'roundNumber' : 4, 'rounds^state' : [ { state : 'GOVERNOR' } ] }")));
 	}
 
 	@Test

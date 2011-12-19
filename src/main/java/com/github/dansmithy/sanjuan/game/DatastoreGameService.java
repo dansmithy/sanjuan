@@ -228,7 +228,7 @@ public class DatastoreGameService implements GameService {
 			throw new PlayChoiceInvalidException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
 		}
 		
- 		int cardsShouldDiscardCount = player.getHand().size() - player.getPlayerNumbers().getCardsCanHold();
+ 		int cardsShouldDiscardCount = player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold();
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
  		
  		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
@@ -240,7 +240,7 @@ public class DatastoreGameService implements GameService {
  		}
 
  		
- 		if (!player.getHand().containsAll(governorChoice.getCardsToDiscard())) {
+ 		if (!player.getHandCards().containsAll(governorChoice.getCardsToDiscard())) {
  			throw new PlayChoiceInvalidException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidException.NOT_OWNED_HAND_CARD);
  		}
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());

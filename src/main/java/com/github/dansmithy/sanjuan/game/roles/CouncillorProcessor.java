@@ -75,11 +75,11 @@ public class CouncillorProcessor implements RoleProcessor {
 		for (Integer discardedCard : playChoice.getCouncilDiscarded()) {
 			if (offered.contains(discardedCard)) {
 				offered.remove(discardedCard);
-			} else if (player.getHand().contains(discardedCard)) {
+			} else if (player.getHandCards().contains(discardedCard)) {
 				if (!gameUpdater.getCurrentPlayer().getPlayerNumbers().isCouncillorCanDiscardHandCards()) {
 					throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidException.NOT_OWNED_COUNCIL_DISCARD);
 				}
-				player.getHand().remove(discardedCard);
+				player.getHandCards().remove(discardedCard);
 				deck.discard(discardedCard);
 			} else {
 				throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidException.NOT_OWNED_COUNCIL_DISCARD);

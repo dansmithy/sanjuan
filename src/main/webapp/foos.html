@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:ng="http://angularjs.org"> 
+  <head> 
+    <title>Foos</title> 
+    <script src="js/angular-0.9.17.js" ng:autobind></script> 
+    <script src="js/angular.ext.api.js"></script>
+    <script src="js/angular.ext.directives.js"></script>
+    <script src="js/angular.ext.filters.js"></script>
+    <script src="js/foos.js"></script>           
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/foos.css">
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+      }
+    </style>
+
+  </head> 
+  <body ng:controller="MainController">
+  
+    <div class="container" ng:eval="filtered = results.$filter(player)">
+        <select name="selectedPlayer">
+            <option ng:repeat="player in playerList">{{player}}</option>
+        </select>
+        <select name="highlighted">
+            <option ng:repeat="player in playerList">{{player}}</option>
+        </select>
+        <h2>Showing {{filtered.length}} games of {{results.length}}.</h2>
+        
+        <div class="won" ng:eval="winning = filtered.$filter({'winningTeam.players' : selectedPlayer})">
+            <h2>Has won {{winning.length}} games.</h2>
+            
+            
+            <table class="zebra-striped">
+            
+                <thead>
+                    <tr>
+                        <th colspan="2">First team</th>
+                        <th colspan="3">Second team</th>
+                        <th colapan="1">other</th>
+                    </tr>
+                    <tr>
+                        <th>Defender</th>
+                        <th>Attacker</th>
+                        <th>Defender</th>
+                        <th>Attacker</th>
+                        <th>Score</th>
+                        <th>{{player}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng:repeat="result in winning">
+                        <td class="highlight-{{player == highlighted}}" ng:repeat="player in result.players"><div>{{player}}</div></td>
+                        <td class="won-false">{{result.losingTeam.score}}</td>
+                        <td class="player-winner"><div>Won</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+        
+        <div class="list" ng:eval="losing = filtered.$filter({'losingTeam.players' : selectedPlayer})">
+            <h2>Has lost {{losing.length}} games.</h2>
+            
+            <table class="zebra-striped">
+            
+                <thead>
+                    <tr>
+                        <th colspan="2">First team</th>
+                        <th colspan="3">Second team</th>
+                        <th colapan="1">other</th>
+                    </tr>
+                    <tr>
+                        <th>Defender</th>
+                        <th>Attacker</th>
+                        <th>Defender</th>
+                        <th>Attacker</th>
+                        <th>Score</th>
+                        <th>{{player}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng:repeat="result in losing">
+                        <td class="highlight-{{player == highlighted}}" ng:repeat="player in result.players"><div>{{player}}</div></td>
+                        <td class="won-false">{{result.losingTeam.score}}</td>
+                        <td class="player-loser"><div>Lost</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>            
+    </div>
+  </body>
+</html>

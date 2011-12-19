@@ -26,7 +26,7 @@ public class PoorHouseCardProcessor extends StandardCardProcessor {
 
 		@Override
 		public int getBonusCardMatches(Player player, Role role) {
-			if (Role.BUILDER.equals(role) && player.getHand().size() <= 1) {
+			if (Role.BUILDER.equals(role) && player.getHandCards().size() <= 1) {
 				return 1;
 			}
 			return 0;

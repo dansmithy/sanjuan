@@ -10,21 +10,27 @@ import javax.inject.Named;
 import com.github.dansmithy.sanjuan.model.BuildingType;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
+import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
 @Named
 public class CalculationService {
 
 	private final CardFactory cardFactory;
 	private final CardProcessorProvider cardProcessorProvider;
+	private final AuthenticatedSessionProvider authenticatedSessionProvider;
 
 	@Inject
-	public CalculationService(CardFactory cardFactory, CardProcessorProvider cardProcessorProvider) {
+	public CalculationService(CardFactory cardFactory, CardProcessorProvider cardProcessorProvider, AuthenticatedSessionProvider authenticatedSessionProvider) {
 		this.cardFactory = cardFactory;
 		this.cardProcessorProvider = cardProcessorProvider;
+		this.authenticatedSessionProvider = authenticatedSessionProvider;
 	}
 	
 	public void processPlayer(Player player) {
 		
+		if (authenticatedSessionProvider.getAuthenticatedUsername().equals(player.getName())) {
+			player.setAuthenticatedPlayer(true);
+		}
 		List<BuildingType> buildingList = cardFactory.getBuildingTypes(player.getBuildings());
 		Collections.sort(buildingList, new Comparator<BuildingType>() {
 

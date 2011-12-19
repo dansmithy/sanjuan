@@ -1,0 +1,19 @@
+td div {
+	width: 100%;
+	height: 100%;
+}
+td.player-winner div {
+	background-color: green;
+}
+
+td.player-loser div {
+	background-color: red;
+}
+
+td.won-true {
+/* 	border: solid 1px green; */
+}
+
+td.highlight-true div {
+	background-color: grey;
+}

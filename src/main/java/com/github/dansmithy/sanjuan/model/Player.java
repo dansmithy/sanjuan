@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Player {
 
 	private String name;
@@ -20,6 +23,8 @@ public class Player {
 	private Integer victoryPoints;
 	@Transient
 	private PlayerNumbers playerNumbers;
+	@Transient
+	private boolean authenticatedPlayer = false;
 	
 	public Player(String name) {
 		super();
@@ -57,20 +62,58 @@ public class Player {
 		return name;
 	}
 
-	public List<Integer> getHand() {
+	/**
+	 * Used for Java-code access to hand cards for any player
+	 */
+	@JsonIgnore
+	public List<Integer> getHandCards() {
 		return hand;
+	}
+	
+	/**
+	 * Used to produce JSON for current player only
+	 */
+	public List<Integer> getHand() {
+		if (isAuthenticatedPlayer()) {
+			return hand;
+		} else {
+			return null;
+		}
+	}	
+	
+	/**
+	 * For JSON only
+	 */
+	public int getHandCount() {
+		return getHandCards().size();
 	}
 
 	public List<Integer> getBuildings() {
 		return buildings;
 	}
 
+	@JsonIgnore
 	public Map<Integer, Integer> getGoods() {
 		return goods;
 	}
+	
+	/**
+	 * For JSON only
+	 */
+	public Set<Integer> getProducedFactories() {
+		return getGoods().keySet();
+	}
 
+	@JsonIgnore
 	public List<Integer> getChapelCards() {
 		return chapelCards;
+	}
+	
+	/**
+	 * For JSON only
+	 */
+	public int getChapelCardCount() {
+		return getChapelCards().size();
 	}
 
 	public Integer getVictoryPoints() {
@@ -89,5 +132,16 @@ public class Player {
 	public PlayerNumbers getPlayerNumbers() {
 		return playerNumbers;
 	}
+	
+	@JsonIgnore
+	public boolean isAuthenticatedPlayer() {
+		return authenticatedPlayer;
+	}
+
+	public void setAuthenticatedPlayer(boolean currentPlayer) {
+		this.authenticatedPlayer = currentPlayer;
+	}
+
+	
 
 }
