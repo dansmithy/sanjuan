@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Round {
 
 	private String governor;
@@ -44,9 +46,19 @@ public class Round {
 		return phases.size();
 	}
 	
-	public GovernorPhase getGovernorPhase() {
+	@JsonIgnore
+	public GovernorPhase getGovernorPhaseHidden() {
 		return governorPhase;
 	}
+	
+	public GovernorPhase getGovernorPhase() {
+		if (isGovernorPhase()) {
+			return getGovernorPhaseHidden();
+		} else {
+			return null;
+		}
+	}
+	
 
 	public Phase getCurrentPhase() {
 		return phases.get(getPhaseNumber() - 1);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
@@ -14,6 +15,7 @@ import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Game {
 	
 	private static final int STARTING_CARDS = 5;

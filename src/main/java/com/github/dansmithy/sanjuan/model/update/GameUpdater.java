@@ -186,7 +186,7 @@ public class GameUpdater {
 	}
 
 	public GovernorStep getGovernorStep(String player) {
-		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
+		for (GovernorStep step : getCurrentRound().getGovernorPhaseHidden().getGovernorSteps()) {
 			if (step.getPlayerName().equals(player)) {
 				return step;
 			}
@@ -195,12 +195,12 @@ public class GameUpdater {
 	}
 	
 	public GovernorPhase getGovernorPhase() {
-		return getCurrentRound().getGovernorPhase();
+		return getCurrentRound().getGovernorPhaseHidden();
 	}	
 	
 	private int getStepIndex(GovernorStep stepToMatch) {
 		int index = 0;
-		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
+		for (GovernorStep step : getCurrentRound().getGovernorPhaseHidden().getGovernorSteps()) {
 			if (step.getPlayerName().equals(stepToMatch.getPlayerName())) {
 				return index;
 			}
