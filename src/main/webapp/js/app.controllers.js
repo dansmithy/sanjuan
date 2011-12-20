@@ -166,10 +166,10 @@ GameController.prototype = {
 			
 			if (game.$round.state === "GOVERNOR") {
 				game.$currentRole = game.$unusedRoles.shift();
-				game.$round.$governorStep = game.$round.governorPhase.governorSteps[game.$round.governorPhase.currentStepIndex];
-				game.currentPlayerName = game.$round.$governorStep.playerName;
+				game.currentPlayerName = game.$round.governorPhase.currentPlayer;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
+					game.$round.$governorStep = game.$round.governorPhase.currentStep;
 					this.responder = new GovernorPhaseResponse(this.$xhr, game, this.gameCallback);
 				} else {
 					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to make their choice for the Governor phase" };

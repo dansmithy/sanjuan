@@ -3,6 +3,7 @@ package com.github.dansmithy.sanjuan.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -33,6 +34,10 @@ public class GovernorPhase {
 		
 	}	
 	
+	public String getCurrentPlayer() {
+		return isComplete() ? null : getCurrentStep().getPlayerName();
+	}
+	
 	public PlayState getState() {
 		return getCurrentStepIndex() == -1 ? PlayState.COMPLETED : PlayState.AWAITING_INPUT;
 	}
@@ -46,6 +51,7 @@ public class GovernorPhase {
 		return null;
 	}
 	
+	@JsonIgnore
 	public List<GovernorStep> getGovernorSteps() {
 		return governorSteps;
 	}
