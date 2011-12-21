@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 
@@ -16,6 +17,9 @@ public class Phase {
 	private String leadPlayer;
 	private int playerCount;
 	private Tariff tariff;
+	
+	@Transient
+	private boolean authenticatedPlayer = false;
 	
 	public Phase() {
 		super();
@@ -83,10 +87,15 @@ public class Phase {
 		return plays.size();
 	}
 	
-	public Play getCurrentPlay() {
+	@JsonIgnore
+	public Play getCurrentPlayHidden() {
 		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}
 	
+	public Play getCurrentPlay() {
+		return isAuthenticatedPlayer() ? getCurrentPlayHidden() : null;
+	}
+
 	public void selectRole(Role role) {
 		this.role = role;
 	}
@@ -94,13 +103,22 @@ public class Phase {
 	public Play nextPlay(PlayerCycle playerCycle) {
 		
 		String nextPlayer = leadPlayer;
-		if (getCurrentPlay() != null) {
-			nextPlayer = playerCycle.next(getCurrentPlay().getPlayer());
+		if (getCurrentPlayHidden() != null) {
+			nextPlayer = playerCycle.next(getCurrentPlayHidden().getPlayer());
 		}
 		Play nextPlay = new Play(nextPlayer, nextPlayer.equals(leadPlayer)); 
 		plays.add(nextPlay);
 		return nextPlay;
 	}
+	
+	@JsonIgnore
+	public boolean isAuthenticatedPlayer() {
+		return authenticatedPlayer;
+	}
+
+	public void setAuthenticatedPlayer(boolean currentPlayer) {
+		this.authenticatedPlayer = currentPlayer;
+	}	
 
 
 }

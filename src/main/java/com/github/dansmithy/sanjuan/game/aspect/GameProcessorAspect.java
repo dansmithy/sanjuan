@@ -29,9 +29,8 @@ public class GameProcessorAspect {
 	public void doGameAug(Object gameObject) {
 
 		Game game = (Game) gameObject;
-		for (Player player : game.getPlayers()) {
-			calculationService.processPlayer(player);
-		}
+		calculationService.processPlayers(game.getPlayers());
+		calculationService.setAuthenicatedUser(game);
 	}
 
 }

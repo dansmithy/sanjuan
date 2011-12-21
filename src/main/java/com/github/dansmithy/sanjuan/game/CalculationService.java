@@ -8,7 +8,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.model.BuildingType;
+import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.GameState;
+import com.github.dansmithy.sanjuan.model.GovernorPhase;
+import com.github.dansmithy.sanjuan.model.Phase;
+import com.github.dansmithy.sanjuan.model.PhaseState;
 import com.github.dansmithy.sanjuan.model.Player;
+import com.github.dansmithy.sanjuan.model.Round;
+import com.github.dansmithy.sanjuan.model.RoundState;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
 
@@ -54,6 +61,19 @@ public class CalculationService {
 	public void processPlayers(List<Player> players) {
 		for (Player player : players) {
 			processPlayer(player);
+		}
+	}
+
+	public void setAuthenicatedUser(Game game) {
+		if (game.getState().equals(GameState.PLAYING)) {
+			Round currentRound = game.getCurrentRound();
+			if (currentRound.getState().equals(RoundState.GOVERNOR)) {
+				GovernorPhase governorPhase = currentRound.getGovernorPhase();
+				governorPhase.setAuthenticatedPlayer(authenticatedSessionProvider.getAuthenticatedUsername().equals(governorPhase.getCurrentStepHidden().getPlayerName()));
+			} else if (currentRound.getState().equals(RoundState.PLAYING) && currentRound.getCurrentPhase().getState().equals(PhaseState.PLAYING)) {
+				Phase currentPhase = currentRound.getCurrentPhase(); 
+				currentPhase.setAuthenticatedPlayer(authenticatedSessionProvider.getAuthenticatedUsername().equals(currentPhase.getCurrentPlayHidden().getPlayer()));
+			}
 		}
 	}
 }

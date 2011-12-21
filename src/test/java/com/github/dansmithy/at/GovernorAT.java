@@ -93,7 +93,7 @@ public class GovernorAT {
 
 				when(initiateGovernorPhase()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'currentRound' : { state : 'GOVERNOR', governorPhase : { governorSteps : [ { numberOfCardsToDiscard : 1 }, { numberOfCardsToDiscard : 1 } ] } } }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 1 } } } }")));
 	}
 
 	@Test
