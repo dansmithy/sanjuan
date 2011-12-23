@@ -89,11 +89,11 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()),
+						bothPlayersAccrueEightCards()),
 
 				when(initiateGovernorPhase()),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1 } ], 'roundNumber' : 3, 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 1 } } } }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1, handCount : 8 } ], 'roundNumber' : 3, 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 1 } } } }")));
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
@@ -131,17 +131,17 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(bothPlayersAccrueOverSevenCards())
+						.and(bothPlayersAccrueEightCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
 						.and(userMakesGovernorPlay("#bob", "round : 3",
-								"{ 'cardsToDiscard' : [  ] }")),
+								"{ 'cardsToDiscard' : [ '#indigoplant7' ] }")),
 
 				when(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : BUILDER")),
 
-				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 7 }, { 'name' : '#bob', victoryPoints: 1, handCount : 8 } ], 'roundNumber' : 3, 'currentRound' : { state : 'PLAYING' } }")));
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 7 }, { 'name' : '#bob', victoryPoints: 1, handCount : 7 } ], 'roundNumber' : 3, 'currentRound' : { state : 'PLAYING' } }")));
 
 	}
 
@@ -164,7 +164,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#bob", "round : 3",
@@ -180,7 +180,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(bothPlayersAccrueOverSevenCards())
+						.and(bothPlayersAccrueEightCards())
 						.and(initiateGovernorPhase())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -197,7 +197,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay(
@@ -214,7 +214,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
@@ -229,7 +229,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
@@ -244,7 +244,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueOverSevenCards()).and(
+						bothPlayersAccrueEightCards()).and(
 						initiateGovernorPhase()),
 
 				when(userMakesGovernorPlay("#alice", "round : 2",
@@ -264,7 +264,7 @@ public class GovernorAT {
 						discardThenAccrueOverEightCards()),
 
 				when(userMakesGovernorPlay("#bob", "round : 4",
-						"{ 'cardsToDiscard' : [ '#indigoplant7', '#indigoplant8' ] }")),
+						"{ 'cardsToDiscard' : [ '#indigoplant8' ] }")),
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount: 9 }, { 'name' : '#bob', victoryPoints: 1, handCount : 7 } ], 'roundNumber' : 4, 'currentRound' : { state : 'GOVERNOR' } }")));
 	}
@@ -285,7 +285,7 @@ public class GovernorAT {
 	}
 
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
-		return new GivenBddParts(bothPlayersAccrueOverSevenCards())
+		return new GivenBddParts(bothPlayersAccrueEightCards())
 				.and(initiateGovernorPhase());
 	}
 
@@ -293,7 +293,7 @@ public class GovernorAT {
 		return new GivenBddParts(userMakesGovernorPlay("#alice", "round : 3",
 				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
 				.and(userMakesGovernorPlay("#bob", "round : 3",
-						"{ 'cardsToDiscard' : [  ] }"))
+						"{ 'cardsToDiscard' : [ '#indigoplant7' ] }"))
 				.and(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : TRADER"))
 				.and(userPlays("#alice", "round : 3; phase : 1; play : 1",
@@ -321,7 +321,7 @@ public class GovernorAT {
 				"{ skip : true }");
 	}
 
-	private BddPart<GameDriver> bothPlayersAccrueOverSevenCards() {
+	private BddPart<GameDriver> bothPlayersAccrueEightCards() {
 		return new GivenBddParts(roleChosenBy("#alice", "round : 1; phase : 1",
 				"role : PROSPECTOR"))
 				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",

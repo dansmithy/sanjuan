@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import com.github.dansmithy.sanjuan.game.CalculationService;
 import com.github.dansmithy.sanjuan.model.Game;
-import com.github.dansmithy.sanjuan.model.Player;
 
 @Named
 @Aspect
