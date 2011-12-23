@@ -29,7 +29,6 @@ public class GameProcessorAspect {
 
 		Game game = (Game) gameObject;
 		calculationService.processPlayers(game.getPlayers());
-		calculationService.setAuthenicatedUser(game);
 	}
 
 }

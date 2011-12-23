@@ -5,13 +5,11 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.data.annotation.Transient;
+
+import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class GovernorPhase {
-
-	@Transient
-	private boolean authenticatedPlayer = false;
 
 	private List<GovernorStep> governorSteps = new ArrayList<GovernorStep>();
 	
@@ -71,10 +69,10 @@ public class GovernorPhase {
 	
 	@JsonIgnore
 	public boolean isAuthenticatedPlayer() {
-		return authenticatedPlayer;
+		if (!isComplete()) {
+			return getCurrentStepHidden().getPlayerName().equals(AuthenticatedUser.get());
+		}
+		return false;
 	}
 
-	public void setAuthenticatedPlayer(boolean currentPlayer) {
-		this.authenticatedPlayer = currentPlayer;
-	}		
 }

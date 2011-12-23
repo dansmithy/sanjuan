@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
+import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Phase {
@@ -17,9 +17,6 @@ public class Phase {
 	private String leadPlayer;
 	private int playerCount;
 	private Tariff tariff;
-	
-	@Transient
-	private boolean authenticatedPlayer = false;
 	
 	public Phase() {
 		super();
@@ -113,12 +110,10 @@ public class Phase {
 	
 	@JsonIgnore
 	public boolean isAuthenticatedPlayer() {
-		return authenticatedPlayer;
+		if (getState().equals(PhaseState.PLAYING)) {
+			return getCurrentPlayHidden().getPlayer().equals(AuthenticatedUser.get());
+		}
+		return false;
 	}
-
-	public void setAuthenticatedPlayer(boolean currentPlayer) {
-		this.authenticatedPlayer = currentPlayer;
-	}	
-
 
 }

@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
+import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Player {
@@ -23,8 +24,6 @@ public class Player {
 	private Integer victoryPoints;
 	@Transient
 	private PlayerNumbers playerNumbers;
-	@Transient
-	private boolean authenticatedPlayer = false;
 	
 	public Player(String name) {
 		super();
@@ -135,13 +134,7 @@ public class Player {
 	
 	@JsonIgnore
 	public boolean isAuthenticatedPlayer() {
-		return authenticatedPlayer;
+		return name.equals(AuthenticatedUser.get());
 	}
-
-	public void setAuthenticatedPlayer(boolean currentPlayer) {
-		this.authenticatedPlayer = currentPlayer;
-	}
-
-	
 
 }
