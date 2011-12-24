@@ -165,7 +165,7 @@ GameController.prototype = {
 			game.$unusedRoles = unusedRoles;
 			
 			if (game.$round.state === "GOVERNOR") {
-				game.$currentRole = game.$unusedRoles.shift();
+				game.$currentRole = game.$round.currentRole.toLowerCase();
 				game.currentPlayerName = game.$round.governorPhase.currentPlayer;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
@@ -175,7 +175,7 @@ GameController.prototype = {
 					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to make their choice for the Governor phase" };
 				}
 			} else if (game.$round.$phase.state === "PLAYING") {
-				game.$currentRole = game.$unusedRoles.shift();
+				game.$currentRole = game.$round.currentRole.toLowerCase();
 				game.$round.$phase.$play = game.$round.$phase.currentPlay;
 				game.currentPlayerName = game.$round.$phase.$play.player;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);

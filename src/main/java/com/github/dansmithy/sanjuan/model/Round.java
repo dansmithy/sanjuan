@@ -101,7 +101,18 @@ public class Round {
 	public List<Role> getRemainingRoles() {
 		List<Role> remainingRoles = new ArrayList<Role>(Arrays.asList(Role.values()));
 		remainingRoles.removeAll(getPlayedRoles());
+		remainingRoles.remove(getCurrentRole());
 		return remainingRoles;
+	}
+	
+	public Role getCurrentRole() {
+		if (getState().equals(RoundState.GOVERNOR)) {
+			return Role.GOVERNOR;
+		}
+		if (getState().equals(RoundState.PLAYING)) {
+			return getCurrentPhase().getRole();
+		}
+		return null;
 	}
 
 	public List<Role> getPlayedRoles() {

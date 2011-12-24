@@ -84,15 +84,10 @@ public class Phase {
 		return plays.size();
 	}
 	
-	@JsonIgnore
-	public Play getCurrentPlayHidden() {
+	public Play getCurrentPlay() {
 		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}
 	
-	public Play getCurrentPlay() {
-		return isAuthenticatedPlayer() ? getCurrentPlayHidden() : null;
-	}
-
 	public void selectRole(Role role) {
 		this.role = role;
 	}
@@ -100,20 +95,11 @@ public class Phase {
 	public Play nextPlay(PlayerCycle playerCycle) {
 		
 		String nextPlayer = leadPlayer;
-		if (getCurrentPlayHidden() != null) {
-			nextPlayer = playerCycle.next(getCurrentPlayHidden().getPlayer());
+		if (getCurrentPlay() != null) {
+			nextPlayer = playerCycle.next(getCurrentPlay().getPlayer());
 		}
 		Play nextPlay = new Play(nextPlayer, nextPlayer.equals(leadPlayer)); 
 		plays.add(nextPlay);
 		return nextPlay;
 	}
-	
-	@JsonIgnore
-	public boolean isAuthenticatedPlayer() {
-		if (getState().equals(PhaseState.PLAYING)) {
-			return getCurrentPlayHidden().getPlayer().equals(AuthenticatedUser.get());
-		}
-		return false;
-	}
-
 }

@@ -1,11 +1,15 @@
 package com.github.dansmithy.sanjuan.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayOffered;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
+import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Play {
 
 	private String player;
@@ -42,8 +46,9 @@ public class Play {
 		return playChoice;
 	}
 
+	
 	public PlayOffered getOffered() {
-		return offered;
+		return isAuthenticatedPlayer() ? offered : null;
 	}
 
 	public PlayOffered createOffered() {
@@ -60,4 +65,8 @@ public class Play {
 		return PlayState.COMPLETED.equals(state);
 	}
 
+	@JsonIgnore
+	public boolean isAuthenticatedPlayer() {
+		return getPlayer().equals(AuthenticatedUser.get());
+	}
 }
