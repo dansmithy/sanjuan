@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonView;
 
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -37,19 +40,21 @@ public class GovernorPhase {
 	}	
 	
 	public String getCurrentPlayer() {
-		return isComplete() ? null : getCurrentStepHidden().getPlayerName();
+		return isComplete() ? null : getCurrentStep().getPlayerName();
 	}
 	
 	public PlayState getState() {
 		return getCurrentStepIndex() == -1 ? PlayState.COMPLETED : PlayState.AWAITING_INPUT;
 	}
 	
-	public GovernorStep getCurrentStep() {
-		return isAuthenticatedPlayer() ? getCurrentStepHidden() : null;
+	@JsonProperty("currentStep")
+	@JsonView(GameViews.PlayersOwn.class)
+	public GovernorStep getCurrentStepIfOwner() {
+		return isAuthenticatedPlayer() ? getCurrentStep() : null;
 	}
-	
+
 	@JsonIgnore
-	public GovernorStep getCurrentStepHidden() {
+	public GovernorStep getCurrentStep() {
 		for (GovernorStep step : governorSteps) {
 			if (!step.isComplete()) {
 				return step;
@@ -58,7 +63,7 @@ public class GovernorPhase {
 		return null;
 	}
 	
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<GovernorStep> getGovernorSteps() {
 		return governorSteps;
 	}
@@ -67,10 +72,9 @@ public class GovernorPhase {
 		return getState().equals(PlayState.COMPLETED);
 	}
 	
-	@JsonIgnore
-	public boolean isAuthenticatedPlayer() {
+	private boolean isAuthenticatedPlayer() {
 		if (!isComplete()) {
-			return getCurrentStepHidden().getPlayerName().equals(AuthenticatedUser.get());
+			return getCurrentStep().getPlayerName().equals(AuthenticatedUser.get());
 		}
 		return false;
 	}

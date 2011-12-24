@@ -5,9 +5,10 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
-import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Phase {
@@ -32,7 +33,7 @@ public class Phase {
 		return role;
 	}
 	
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Play> getPlays() {
 		return plays;
 	}
@@ -75,8 +76,7 @@ public class Phase {
 		return getState().equals(PhaseState.COMPLETED);
 	}
 	
-	@JsonIgnore
-	public int getRequiredPlays() {
+	private int getRequiredPlays() {
 		return playerCount;
 	}
 
@@ -84,6 +84,7 @@ public class Phase {
 		return plays.size();
 	}
 	
+	@JsonView(GameViews.PlayersOwn.class)
 	public Play getCurrentPlay() {
 		return plays.isEmpty() ? null : plays.get(getPlayNumber() - 1);
 	}

@@ -219,7 +219,7 @@ public class DatastoreGameService implements GameService {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
 		}
 
-		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhaseHidden().getCurrentStepHidden();
+		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhase().getCurrentStep();
 		// cannot be null, cos wouldn't be GOVERNOR state (verified by previous check)
 		
  		if (!loggedInUser.equals(step.getPlayerName())) {

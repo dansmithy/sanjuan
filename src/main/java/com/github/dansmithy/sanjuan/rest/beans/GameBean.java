@@ -57,6 +57,12 @@ public class GameBean implements GameResource {
 	}
 	
 	@Override
+	public Game getFullGame(Long gameId) {
+		return getGame(gameId);
+	}
+	
+	
+	@Override
 	public List<Game> getGames(String playerName, String stateName) {
 		if (playerName == null && stateName == null) {
 			return gameDao.getGames();
@@ -159,5 +165,6 @@ public class GameBean implements GameResource {
 		// TODO verify game state		
 		return gameService.updateTariff(gameId, tariffOrder);
 	}
+
 
 }

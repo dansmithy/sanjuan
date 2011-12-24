@@ -1,6 +1,5 @@
 package com.github.dansmithy.sanjuan.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -41,7 +40,7 @@ public class Play {
 		return state;
 	}
 
-	@JsonView(GameViews.PlayDetail.class)
+	@JsonView(GameViews.Full.class)
 	public PlayChoice getPlayChoice() {
 		return playChoice;
 	}
@@ -65,8 +64,7 @@ public class Play {
 		return PlayState.COMPLETED.equals(state);
 	}
 
-	@JsonIgnore
-	public boolean isAuthenticatedPlayer() {
+	private boolean isAuthenticatedPlayer() {
 		return getPlayer().equals(AuthenticatedUser.get());
 	}
 }

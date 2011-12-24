@@ -15,7 +15,7 @@ public interface ViewsResource {
 	@GET
 	@Path("/filtered")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(GameViews.PlayDetail.class)
+	@JsonView(GameViews.PlayersOwn.class)
 	Data getFiltered();
 	
 	@GET

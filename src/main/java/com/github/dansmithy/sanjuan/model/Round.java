@@ -5,9 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Round {
@@ -37,7 +40,7 @@ public class Round {
 		return governor;
 	}
 
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Phase> getPhases() {
 		return phases;
 	}
@@ -46,20 +49,23 @@ public class Round {
 		return phases.size();
 	}
 	
-	@JsonIgnore
-	public GovernorPhase getGovernorPhaseHidden() {
+	@JsonProperty("governorPhaseFull")
+	@JsonView(GameViews.Full.class)
+	public GovernorPhase getGovernorPhase() {
 		return governorPhase;
 	}
 	
-	public GovernorPhase getGovernorPhase() {
+	@JsonView(GameViews.PlayersOwn.class)
+	@JsonProperty("governorPhase")
+	public GovernorPhase getGovernorPhaseIfActive() {
 		if (isGovernorPhase()) {
-			return getGovernorPhaseHidden();
+			return getGovernorPhase();
 		} else {
 			return null;
 		}
 	}
-	
 
+	@JsonView(GameViews.PlayersOwn.class)
 	public Phase getCurrentPhase() {
 		return phases.get(getPhaseNumber() - 1);
 	}
@@ -98,6 +104,7 @@ public class Round {
 		return count;		
 	}
 	
+	@JsonView(GameViews.PlayersOwn.class)
 	public List<Role> getRemainingRoles() {
 		List<Role> remainingRoles = new ArrayList<Role>(Arrays.asList(Role.values()));
 		remainingRoles.removeAll(getPlayedRoles());
@@ -105,6 +112,7 @@ public class Round {
 		return remainingRoles;
 	}
 	
+	@JsonView(GameViews.PlayersOwn.class)
 	public Role getCurrentRole() {
 		if (getState().equals(RoundState.GOVERNOR)) {
 			return Role.GOVERNOR;
@@ -115,6 +123,7 @@ public class Round {
 		return null;
 	}
 
+	@JsonView(GameViews.PlayersOwn.class)
 	public List<Role> getPlayedRoles() {
 		List<Role> playedRoles = new ArrayList<Role>();
 		if (!isGovernorPhase()) {

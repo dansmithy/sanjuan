@@ -8,6 +8,6 @@ public class GameViewsTest {
 	public void ensureCoverage() {
 		new GameViews();
 		new GameViews.Full();
-		new GameViews.PlayDetail();
+		new GameViews.PlayersOwn();
 	}
 }

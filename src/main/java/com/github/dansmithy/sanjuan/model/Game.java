@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.data.annotation.Id;
 
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -117,12 +118,12 @@ public class Game {
 		this.currentTariff = currentTariff;
 	}
 
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Tariff> getTariffs() {
 		return tariffs;
 	}
 
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Round> getRounds() {
 		return rounds;
 	}
@@ -158,6 +159,7 @@ public class Game {
 		return -1;
 	}
 
+	@JsonView(GameViews.PlayersOwn.class)
 	public Round getCurrentRound() {
 		return rounds.isEmpty() ? null : rounds.get(getRoundNumber()-1);
 	}

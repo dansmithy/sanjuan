@@ -29,7 +29,7 @@ public class ProspectorAT {
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : PROSPECTOR")),
 
-				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT', 'offered' : null } } } }")));
+				then(verifySuccessfulResponseContains("{ 'roundNumber' : 1, 'currentRound' : { 'state' : 'PLAYING', currentPhase : { 'state' : 'PLAYING', currentPlay : { 'state' : 'AWAITING_INPUT' } } } }")));
 	}
 
 	@Test

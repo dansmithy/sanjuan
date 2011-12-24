@@ -36,6 +36,7 @@ public interface GameResource {
 	@POST
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayersOwn.class)
 	Game createNewGame(String ownerName);
 	
 	@POST
@@ -49,12 +50,20 @@ public interface GameResource {
 	 */
 	Game getGame(Long gameId);
 	
+	
 	@GET
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(GameViews.Full.class)
+	@JsonView(GameViews.PlayersOwn.class)
 	Response getGame(@PathParam("gameId") Long gameId, @Context Request request);
-	
+
+	@GET
+	@Path("/fullGame/{gameId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.Full.class)
+	@RolesAllowed({ SanJuanRole.ADMIN })
+	Game getFullGame(@PathParam("gameId") Long gameId);
+
 	@DELETE
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -64,6 +73,7 @@ public interface GameResource {
 	@Path("{gameId}/state")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayersOwn.class)
 	Game startGame(@PathParam("gameId") Long gameId, String state);
 	
 	@GET
@@ -75,24 +85,27 @@ public interface GameResource {
 	@Path("{gameId}/rounds/{roundNumber}/phases/{phaseNumber}/role")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayersOwn.class)
 	Game chooseRole(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, RoleChoice choice);
 
 	@PUT
 	@Path("{gameId}/rounds/{roundNumber}/phases/{phaseNumber}/plays/{playNumber}/decision")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayersOwn.class)
 	Game makePlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber, PlayChoice playChoice);
 
 	@PUT
 	@Path("{gameId}/rounds/{roundNumber}/governorChoice")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(GameViews.PlayersOwn.class)
 	Game makeGovernorPlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, GovernorChoice governorChoice);
 
 	@GET
 	@Path("{gameId}/rounds/{roundNumber}/phases/{phaseNumber}/plays/{playNumber}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(GameViews.PlayDetail.class)
+	@JsonView(GameViews.Full.class)
 	Play getPlay(@PathParam("gameId") Long gameId, @PathParam("roundNumber") Integer roundNumber, @PathParam("phaseNumber") Integer phaseNumber, @PathParam("playNumber") Integer playNumber);
 	
 	@PUT

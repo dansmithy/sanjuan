@@ -8,9 +8,11 @@ import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
+import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -64,7 +66,7 @@ public class Player {
 	/**
 	 * Used for Java-code access to hand cards for any player
 	 */
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Integer> getHandCards() {
 		return hand;
 	}
@@ -91,7 +93,7 @@ public class Player {
 		return buildings;
 	}
 
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public Map<Integer, Integer> getGoods() {
 		return goods;
 	}
@@ -103,7 +105,7 @@ public class Player {
 		return getGoods().keySet();
 	}
 
-	@JsonIgnore
+	@JsonView(GameViews.Full.class)
 	public List<Integer> getChapelCards() {
 		return chapelCards;
 	}
@@ -132,8 +134,7 @@ public class Player {
 		return playerNumbers;
 	}
 	
-	@JsonIgnore
-	public boolean isAuthenticatedPlayer() {
+	private boolean isAuthenticatedPlayer() {
 		return name.equals(AuthenticatedUser.get());
 	}
 
