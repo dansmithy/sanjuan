@@ -1,4 +1,4 @@
-package com.github.dansmithy.start;
+package com.github.dansmithy.sanjuan;
 
 
 import org.eclipse.jetty.server.Server;
