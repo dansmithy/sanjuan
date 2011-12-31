@@ -147,7 +147,6 @@ angular.service("cardService", angular.extend(function($xhr) {
 
 angular.service("gameService", angular.extend(function($xhr, $defer, $log) {
 	
-	
 	var $defer = $defer;
 	var gameService = {
 		
@@ -155,13 +154,14 @@ angular.service("gameService", angular.extend(function($xhr, $defer, $log) {
 		gameId : -1,
 		version : -1,
 		gameCallback : angular.noop,
+		requestTrack : 0,
 		
 		poll : function() {
 			$defer(gameService.actionPoll, 2000);
 		},
 		
 		startGameUpdates : function(gameId, version, gameCallback) {
-
+			gameService.requestTrack = 0;
 			if (angular.isDefined(gameId)) {
 				gameService.doGameUpdates = true;
 				gameService.gameId = gameId;
@@ -173,14 +173,20 @@ angular.service("gameService", angular.extend(function($xhr, $defer, $log) {
 		
 		stopGameUpdates : function() {
 			gameService.doGameUpdates = false;
+			gameService.requestTrack = 0;
+			gameService.version = -1;
 		},
 			
 		updateGame : function(gameId, version, gameCallback) {
-			$xhr("GET", "ws/games/" + gameId, function(code, response) {
-				if (response.version !== version) {
-					gameCallback(code, response);
-				}
-			});
+			if (gameService.requestTrack < 2) {
+				gameService.requestTrack += 1;
+				$xhr("GET", "ws/games/" + gameId, function(code, response) {
+					gameService.requestTrack -= 1;
+					if (response.version !== version) {
+						gameCallback(code, response);
+					}
+				});
+			}
 		},
 		
 		actionPoll : function() {

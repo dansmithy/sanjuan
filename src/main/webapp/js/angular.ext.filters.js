@@ -17,6 +17,10 @@ angular.filter("undefined", function(value, valueIfUndefined) {
 	return angular.isDefined(value) ? value : valueIfUndefined;
 });
 
+angular.filter("repeated", function(count, char) {
+	return Array(count).join(char);
+});
+
 angular.filter("ternary", function(condition, valueIfTrue, valueIfFalse, valueIfUndefined) {
 	if (!angular.isDefined(condition)) {
 		return valueIfUndefined || '';
