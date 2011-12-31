@@ -13,7 +13,7 @@
         </div>        
                 
         <div class="row game-listing" ng:repeat="game in games">
-          <div class="span2" ng:show="game.state == 'PLAYING'"><h3><a ng:href="#/games/{{game.gameId}}">{{game.state | lowercase}}</a></h3></div>
+          <div class="span2" ng:show="game.state == 'PLAYING' || game.state == 'COMPLETED'"><h3><a ng:href="#/games/{{game.gameId}}">{{game.state | lowercase}}</a></h3></div>
           <div class="span2" ng:show="game.state == 'RECRUITING'"><h3>{{game.state | lowercase}}</h3></div>
           <div class="span3"><h2><small><span ng:repeat="player in game.players">{{player.name}} </span></small></h2></div>
           <div class="span2">&nbsp;<button ng:show="game.owner == userManager.user.username" class="btn danger" ng:click="deleteGame(game)">Delete</button></div>

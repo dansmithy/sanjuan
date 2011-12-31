@@ -133,7 +133,6 @@ GameController.prototype = {
 		},
 		
 		cardDescription : function(card) {
-			console.debug(this.cardMap);
 			return "nothing";
 //			return this.cardTypes[this.cardMap[card]].description;
 		},
@@ -164,7 +163,9 @@ GameController.prototype = {
 			game.$usedRoles = usedRoles;
 			game.$unusedRoles = unusedRoles;
 			
-			if (game.$round.state === "GOVERNOR") {
+			if (game.complete) {
+				this.responder = new CompletedGameResponder(game);
+			} else if (game.$round.state === "GOVERNOR") {
 				game.$currentRole = game.$round.currentRole.toLowerCase();
 				game.currentPlayerName = game.$round.governorPhase.currentPlayer;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
@@ -197,11 +198,15 @@ GameController.prototype = {
 				// not sure
 			}
 			
-			if (!this.isActivePlayer) {
-				this.responder = new InactivePlayerResponder(this.$xhr, game, this.gameCallback);
-				this.gameService.startGameUpdates(game.gameId, game.version, this.gameCallback);
+			if (!game.complete) {
+				if (!this.isActivePlayer) {
+					this.responder = new InactivePlayerResponder(this.$xhr, game, this.gameCallback);
+					this.gameService.startGameUpdates(game.gameId, game.version, this.gameCallback);
+				} else {
+					this.statusText = { "waiting" : false, "message" : "It's your turn!" };
+					this.gameService.stopGameUpdates();
+				}
 			} else {
-				this.statusText = { "waiting" : false, "message" : "It's your turn!" };
 				this.gameService.stopGameUpdates();
 			}
 		},
@@ -223,11 +228,11 @@ GameController.prototype = {
 		},
 		
 		isNameActivePlayer : function(playerName) {
-			return this.userManager.user.username === playerName;
+			return this.userManager.user && this.userManager.user.username === playerName;
 		},
 		
 		isSelf : function(playerName) {
-			return playerName === this.userManager.user.username;
+			return this.userManager.user && this.userManager.user.username === playerName;
 		},
 		
 		arrayContains : function(array, item) {
@@ -246,6 +251,13 @@ GameController.prototype = {
 //		},
 
 		
+};
+
+
+function CompletedGameResponder(game) {
+	this.game = game;
+	this.mode = "do_something";
+	this.template = "partials/completed.html";
 };
 
 function GovernorChoiceResponse($xhr, game, gameCallback) {

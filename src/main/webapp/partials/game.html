@@ -11,7 +11,7 @@
           <div class="span5"><h1><small>Supply</small> {{responder.game.deck.supplyCount}} <small>Discard</small> <small>{{responder.game.deck.discardCount}}</small></h1></div>
         </div>
 
-        <div class="row">
+        <div class="row" ng:show="!responder.game.complete">
             <p>&nbsp;</p>
             <div class="span16">
                 <div class="alert-message {{statusText.waiting | ternary:'warning':'success'}}">
@@ -40,7 +40,7 @@
                             <h2 class="light">{{player.name}} <span ng:show="isSelf(player.name)" class="smaller">(you)</span></h2>
                         </div>
                         <div class="span2">
-                            <h1 ng:hide="isSelf(player.name)"><small>{{player.handCount}} in hand</small></h1>
+                            <h1><small>{{player.handCount}} in hand</small></h1>
                             &nbsp;
                         </div>
                         <div class="span2">
@@ -77,4 +77,7 @@
                 <p>&nbsp;</p>
             </div>   
         </div>  
+     <footer>
+       <p><small>Version: {{gameService.version}} {{gameService.doGameUpdates | ternary:'Updating':'Not updating'}} {{gameService.requestTrack | repeated:'*'}}</small></p>
+     </footer>     
     </div>
