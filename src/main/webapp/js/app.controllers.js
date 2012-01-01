@@ -258,6 +258,7 @@ function CompletedGameResponder(game) {
 	this.game = game;
 	this.mode = "do_something";
 	this.template = "partials/completed.html";
+	this.isWinner = (game.players[0].name === game.winner);
 };
 
 function GovernorChoiceResponse($xhr, game, gameCallback) {

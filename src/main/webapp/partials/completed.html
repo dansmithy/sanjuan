@@ -1,8 +1,11 @@
         <div class="row">
             <p>&nbsp;</p>
             <div class="span16">
-                <div class="alert-message info">
-                    <p>Game over! Congratulations {{responder.game.winner}}, you won!</p>
+                <div ng:show="responder.isWinner" class="alert-message info">
+                    <p>Congratulations {{responder.game.winner}}, you won!</p>
+                </div>
+                <div ng:hide="responder.isWinner" class="alert-message error">
+                    <p>That's it! You lost! The winner of this game was {{responder.game.winner}}.</p>
                 </div>
             </div>
         </div>
