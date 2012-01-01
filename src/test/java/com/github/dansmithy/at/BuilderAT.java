@@ -240,6 +240,45 @@ public class BuilderAT {
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 4 } ], 'roundNumber' : 2 }")));
 	}
+	
+	@Test
+	public void testDiscountGoesBelowZeroCanPayNothing() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 1; play : 1",
+								"{ skip : true }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 1; play : 2",
+								"{ build : '#smithy', payment : [ '#indigoplant6' ] }"))
+						.and(roleChosenBy("#bob", "round : 1; phase : 2",
+								"role : PRODUCER"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 2; play : 1",
+								"{ skip : true }"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 2; play : 2",
+								"{ skip : true }"))
+						.and(roleChosenBy("#alice", "round : 1; phase : 3",
+								"role : TRADER"))
+						.and(userPlays("#alice",
+								"round : 1; phase : 3; play : 1",
+								"{ skip : true }"))
+						.and(userPlays("#bob",
+								"round : 1; phase : 3; play : 2",
+								"{ skip : true }"))
+						.and(roleChosenBy("#bob", "round : 2; phase : 1",
+								"role : BUILDER")),
+
+				when(userPlays("#bob", "round : 2; phase : 1; play : 1",
+						"{ build : '#indigoplant7', payment : [ ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1 }, { 'name' : '#bob', victoryPoints: 3 } ], 'roundNumber' : 2 }")));
+	}	
 
 	@Test
 	public void testQuarryGivesVioletDiscount() {

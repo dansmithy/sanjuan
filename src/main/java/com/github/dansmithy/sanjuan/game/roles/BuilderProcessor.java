@@ -142,7 +142,8 @@ public class BuilderProcessor implements RoleProcessor {
 	private int calculateCost(Integer build, PlayOffered offered) {
 		int defaultCost = cardFactory.getBuildingType(build).getBuildingCost();
 		int discount = cardFactory.getBuildingType(build).isVioletBuilding() ? offered.getBuilderDiscountOnViolet() : offered.getBuilderDiscountOnProduction();
-		return defaultCost - discount;
+		int cost = defaultCost - discount;
+		return cost < 0 ? 0 : cost;
 	}
 
 
