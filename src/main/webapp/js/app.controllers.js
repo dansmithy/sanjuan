@@ -683,7 +683,11 @@ function GamesController($xhr, $location, userManager) {
 	this.$xhr = $xhr;
 	this.$location = $location;
 	this.userManager = userManager;
-	this.games = [];
+	this.confirmAbandonId = undefined;
+	this.gamesInProgress = [];
+	this.gamesCompleted = [];
+	this.gamesAbandoned = [];
+	this.gamesCreated = [];
 	this.openGames = [];
 	
 	this.$watch("userManager.user", function(username) {
@@ -703,7 +707,10 @@ GamesController.prototype = {
 	},
 	
 	gamesCallback : function(code, response) {
-		this.games = response;
+		this.gamesInProgress = angular.Array.filter(response, { "state" : "PLAYING" });
+		this.gamesCompleted = angular.Array.filter(response, { "state" : "COMPLETED" });
+		this.gamesCreated = angular.Array.filter(response, { "state" : "RECRUITING" });
+		this.gamesAbandoned = angular.Array.filter(response, { "state" : "ABANDONED" });
 	},
 	
 	openGamesCallback : function(code, response) {
@@ -717,6 +724,23 @@ GamesController.prototype = {
 			});
 			return include;
 		});
+	},
+	
+	otherPlayers : function(game) {
+		var otherPlayerNames = [];
+		var delimiter = "";
+		var otherPlayerTextList = "";
+		var authenticatedPlayer = this.userManager.user.username;  
+		angular.forEach(game.players, function(player) {
+			if (player.name !== authenticatedPlayer) {
+				otherPlayerNames.push(player.name);
+			}
+		});
+		for (var i=0; i<otherPlayerNames.length; i++) {
+			otherPlayerTextList += delimiter + otherPlayerNames[i];
+			delimiter = i === otherPlayerNames.length-2 ? " and " : ", ";
+		}
+		return otherPlayerTextList;
 	},
 	
 	createGame : function() {
@@ -738,6 +762,10 @@ GamesController.prototype = {
 		this.$xhr("PUT", "ws/games/" + game.gameId + "/state", "PLAYING", function(code, response) {
 			self.$location.updateHash("/games/" + response.gameId);
 		});
+	},
+	
+	requestAbandon : function(game) {
+		this.confirmAbandonId = game.gameId;
 	},
 	
 	deleteGame : function(game) {

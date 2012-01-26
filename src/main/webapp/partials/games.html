@@ -1,48 +1,90 @@
     <div class="container">
     
-        <div class="row">
-            <a href="" ng:click="createGame()">Create new game</a>
-        </div>
-        
-        <div class="row">
-            <p>&nbsp;</p>
-        </div>
-        
-        <div class="row">
-            <h2>my games</h2>
+        <div class="game-listing-section">        
+            <div class="row">
+                <h2>games i'm playing</h2>
+            </div>        
+                    
+            <div class="row game-listing" ng:repeat="game in gamesInProgress">
+              <div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
+              <div class="span10">playing with {{otherPlayers(game)}}</div>
+              <div class="span3">
+                <a class="link danger" ng:show="confirmAbandonId != game.gameId" ng:click="requestAbandon(game)">Abandon game</a>
+                <a class="link danger" ng:show="confirmAbandonId == game.gameId" ng:click="deleteGame(game)">I'm sure, abandon game</a>
+              </div>
+            </div>
+            
+            <div ng:hide="gamesInProgress" class="row">
+                <h4><small>You are not participating in any games right now. Either create a new one, or join somebody elses.</small></h4>
+            </div>         
+    
         </div>        
-                
-        <div class="row game-listing" ng:repeat="game in games">
-          <div class="span2" ng:show="game.state == 'PLAYING' || game.state == 'COMPLETED'"><h3><a ng:href="#/games/{{game.gameId}}">{{game.state | lowercase}}</a></h3></div>
-          <div class="span2" ng:show="game.state == 'RECRUITING'"><h3>{{game.state | lowercase}}</h3></div>
-          <div class="span3"><h2><small><span ng:repeat="player in game.players">{{player.name}} </span></small></h2></div>
-          <div class="span2">&nbsp;<button ng:show="game.owner == userManager.user.username" class="btn danger" ng:click="deleteGame(game)">Delete</button></div>
-          <div ng:show="game.state == 'RECRUITING'">
-            <div class="span8"><button ng:show="game.owner == userManager.user.username" ng:disabled="game.players.length < 2" class="btn success" ng:click="startGame(game)">Start game</button></div>
-          </div>
-        </div>
-        
-        <div ng:hide="games" class="row">
-            <h4><small>You are not participating in any games right now. Either create a new one, or join somebody elses.</small></h4>
-        </div>         
 
-        <div class="row">
-            <p>&nbsp;</p>
+        <div class="game-listing-section">
+            <div class="row">
+                <h2>games i'm signed up for</h2>
+            </div>        
+            <div class="row" ng:show="gamesCreated">
+                <h4><small>You can also <a href="" ng:click="createGame()">create a totally new game</a>. You'll have to get at least one other player to join, mind.</small></h4>      
+            </div>                    
+            <div class="row game-listing" ng:repeat="game in gamesCreated">
+              <div class="span3"><h3>game #{{game.gameId}}</h3></div>
+              <div class="span8" ng:show="game.players.length >= 2">so far {{otherPlayers(game)}} <span ng:show="game.players.length == 2">is</span><span ng:show="game.players.length > 2">are</span> also signed up</div>
+              <div class="span8" ng:show="game.players.length < 2">need a second player before you can start this game.</div>
+              <div class="span2">&nbsp;<button ng:show="game.owner == userManager.user.username" ng:disabled="game.players.length < 2" class="btn success" ng:click="startGame(game)">Start game</button></div>
+              <div class="span3" ng:show="game.owner == userManager.user.username">
+                <a class="link danger" ng:show="confirmAbandonId != game.gameId" ng:click="requestAbandon(game)">Remove game</a>
+                <a class="link danger" ng:show="confirmAbandonId == game.gameId" ng:click="deleteGame(game)">I'm sure, remove game</a>
+              </div>
+              <div class="span3" ng:show="game.owner != userManager.user.username">
+                <a class="link danger" ng:show="confirmAbandonId != game.gameId" ng:click="requestAbandon(game)">Don't play after all</a>
+                <a class="link danger" ng:show="confirmAbandonId == game.gameId" ng:click="deleteGame(game)">I'm sure, leave game</a>
+              </div>
+            </div>   
+
+            <div ng:hide="gamesCreated" class="row">
+                <h4><small>Remember, you can <a href="" ng:click="createGame()">create a totally new game</a>. You'll have to get at least one other player to join, mind.</small></h4>
+            </div>   
         </div>
         
-        <div class="row">
-            <h2>games to join</h2>
-        </div>        
-                
-        <div class="row game-listing" ng:repeat="game in openGames">
-          <div class="span2" ng:show="game.state == 'PLAYING'"><h3><a ng:href="#/games/{{game.gameId}}">{{game.state | lowercase}}</a></h3></div>
-          <div class="span2" ng:show="game.state == 'RECRUITING'"><h3>{{game.state | lowercase}}</h3></div>
-          <div class="span3"><h2><small><span ng:repeat="player in game.players">{{player.name}} </span></small></h2></div>
-          <div class="span8"><button class="btn success" ng:click="joinGame(game)">Join game</button></div>
+        <div class="game-listing-section">
+            <div class="row">
+                <h2>games i can join</h2>
+            </div>        
+                    
+            <div class="row game-listing" ng:repeat="game in openGames">
+              <div class="span3"><h3>game #{{game.gameId}}</h3></div>
+              <div class="span8" ng:show="game.players.length > 1">{{otherPlayers(game)}} joined so far</div>
+              <div class="span8" ng:show="game.players.length == 1">game created by {{otherPlayers(game)}}, and no players joined so far</div>
+              <div class="span2"><button class="btn success" ng:click="joinGame(game)">Join game</button></div>
+            </div>   
+              
+            <div ng:hide="openGames" class="row">
+                <h4><small>There aren't any games you can join right now</small></h4>
+            </div>   
+        </div>
+        
+        <div class="game-listing-section" ng:show="gamesCompleted">
+            <div class="row">
+                <h2>games i've finished</h2>
+            </div>        
+                    
+            <div class="row game-listing" ng:repeat="game in gamesCompleted">
+              <div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
+              <div class="span10">played with {{otherPlayers(game)}}, won by {{game.winner == userManager.user.username | ternary:'you':game.winner}}</div>
+            </div>   
         </div>     
         
-        <div ng:hide="openGames" class="row">
-            <h4><small>There are no games you can join at the moment. Why don't you create your own?</small></h4>
-        </div>   
+        <div class="game-listing-section" ng:show="gamesAbandoned">
+            <div class="row">
+                <h2>games that were abandoned and never finished</h2>
+            </div>        
+                    
+            <div class="row game-listing" ng:repeat="game in gamesAbandoned">
+              <div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
+              <div class="span10">played with {{otherPlayers(game)}}, abandoned by {{game.abandonedBy == userManager.user.username | ternary:'you':game.abandonedBy}}</div>
+            </div>   
+        </div>                    
+                
         
     </div>

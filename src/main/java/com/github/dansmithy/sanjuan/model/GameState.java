@@ -2,5 +2,5 @@ package com.github.dansmithy.sanjuan.model;
 
 public enum GameState {
 
-	RECRUITING, PLAYING, COMPLETED;
+	RECRUITING, PLAYING, COMPLETED, ABANDONED;
 }

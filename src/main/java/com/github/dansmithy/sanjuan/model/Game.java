@@ -32,6 +32,8 @@ public class Game {
 	private List<Round> rounds = new ArrayList<Round>();
 	private Long version;
 	private String winner;
+	private String abandonedBy;
+	
 	@Id
 	private ObjectId id;
 	
@@ -116,6 +118,10 @@ public class Game {
 
 	public void setCurrentTariff(int currentTariff) {
 		this.currentTariff = currentTariff;
+	}
+
+	public String getAbandonedBy() {
+		return abandonedBy;
 	}
 
 	@JsonView(GameViews.Full.class)
