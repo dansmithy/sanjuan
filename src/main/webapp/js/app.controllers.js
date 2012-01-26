@@ -297,7 +297,7 @@ GovernorPhaseResponse.prototype = {
 	
 	handCardSelectedType : function(handCard) {
 		if (this.isDiscardCard(handCard)) {
-			return "hand-to-build";
+			return "primary-selection";
 		}
 	},
 	
@@ -381,13 +381,13 @@ CouncillorResponder.prototype = {
 	
 	handCardSelectedType : function(handCard) {
 		if (this.isDiscardCard(handCard)) {
-			return "hand-to-build";
+			return "primary-selection";
 		}
 	},	
 	
 	councilCardSelectedType : function(councilCard) {
 		if (this.isDiscardCard(councilCard)) {
-			return "hand-to-build";
+			return "primary-selection";
 		}
 	},
 	
@@ -461,9 +461,9 @@ BuilderResponder.prototype = {
 	
 	handCardSelectedType : function(handCard) {
 		if (handCard === this.response.build) {
-			return "hand-to-build";
+			return "primary-selection";
 		} else if (this.isPaymentCard(handCard)) {
-			return "hand-payment";
+			return "secondary-selection";
 		}
 	},
 	
@@ -570,7 +570,7 @@ ProducerResponder.prototype = {
 	
 	buildingCardSelectedType : function(buildingCard) {
 		if (this.isChosenFactory(buildingCard)) {
-			return "hand-to-build";
+			return "primary-selection";
 		}
 	}
 	
@@ -646,7 +646,7 @@ TraderResponder.prototype = {
 	
 	buildingCardSelectedType : function(buildingCard) {
 		if (this.isChosenFactory(buildingCard)) {
-			return "hand-to-build";
+			return "primary-selection";
 		}
 	},
 	
@@ -737,7 +737,7 @@ GamesController.prototype = {
 			}
 		});
 		for (var i=0; i<otherPlayerNames.length; i++) {
-			otherPlayerTextList += delimiter + otherPlayerNames[i];
+			otherPlayerTextList += delimiter + "<strong>" + otherPlayerNames[i] + "</strong>";
 			delimiter = i === otherPlayerNames.length-2 ? " and " : ", ";
 		}
 		return otherPlayerTextList;

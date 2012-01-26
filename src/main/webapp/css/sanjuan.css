@@ -1,30 +1,6 @@
-.game-listing-section {
-	margin-bottom: 20px;		
-}
+/* type general */
 
-span.progress {
-	width: 39px;
-	height: 16px;
-	display: inline-block;
-	padding: 5px 14px 6px;
-	font-size: 13px;
-}
-
-.topbar span.text {
-	color: #BFBFBF;
-}
-
-.card { 
-	background: #CCCCCC; 
-	height: 70px; 
-	border-radius: 5px;
-}
-
-.phase-empty {
-	background: #EEEEEE;
-}
-
-.light {
+.light-text {
 	font-weight: normal;
 }
 
@@ -32,61 +8,7 @@ span.progress {
 	font-size: 0.8em;
 }
 
-.player {
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	background: rgb(238, 220, 148);
-	background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
-	background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
-	background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
-	background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
-	background-image: linear-gradient(top, #fceec1, #eedc94);
-	background-image: -o-linear-gradient(top, #fceec1, #eedc94);
-	border-color: rgb(238, 220, 148) rgb(238, 220, 148) rgb(228, 198, 82);
-	border-width: 1px;
-	border-style: solid;
-	height: 40px;
-	margin-bottom: 10px;
-}
-
-.self-true {
-/* 	background: #AAAAAA; */
-}
-
-.player-middle {
-/* 	padding-top: 8px; */
-}
-
-.player-inner {
-	padding: 10px;
-}
-
-.game-listing {
-	background: #CCCCCC; 
-	border-radius: 5px;
-}
-
-.selectable-card {
-	border: 2px solid white;
-}
-
-.cardimage {
-	border: 2px solid white;	
-}
-
-.selected-true, .hand-to-build {
-	border: 2px solid red;
-}
-
-.selected-current {
-	border: 2px solid green;
-}
-
-.hand-payment {
-	border: 2px solid green;
-}
+/* login bar */
 
 form.input-errors-true input {
 	background: #FF0000;
@@ -103,22 +25,61 @@ form.input-errors-true input:focus, form.input-errors-true input.focused {
 	color: black;
 }
 
-.produced {
-	background: url(../images/good.png) no-repeat;
-	position: absolute;
-	width: 57px;
-	height: 80px;
-	z-index: 0;	
+span.login-processing {
+	width: 39px;
+	height: 16px;
+	display: inline-block;
+	padding: 5px 14px 6px;
+	font-size: 13px;
 }
 
-.not-produced {
-	position: absolute;
-	width: 57px;
-	height: 80px;
-	z-index: 0;	
+.topbar span.login-status-text {
+	color: #BFBFBF;
 }
 
-.hide-role {
+/* game listing view */
+
+.game-listing-section {
+	margin-bottom: 20px;	
+}
+
+.game-listing {
+	background: #CCCCCC; 
+	padding-top: 12px;
+	color: #555555;
+}
+
+.game-listing p {
+	color: #888888;	
+}
+
+.game-listing-section .even-row {
+	background: #DDDDDD;
+}
+
+/* game view */
+
+div.card { 
+	background: #CCCCCC; 
+	height: 70px; 
+	border-radius: 5px;
+}
+
+img.selectable-card {
+	border: 2px solid white;
+}
+
+div.selected-role-true,
+img.primary-selection {
+	border: 2px solid red;
+}
+
+img.current-role,
+img.secondary-selection {
+	border: 2px solid green;
+}
+
+div.used-role {
 	background-color: white;
 	opacity:0.5;
 	position: absolute;
@@ -126,3 +87,41 @@ form.input-errors-true input:focus, form.input-errors-true input.focused {
 	height: 75px;
 	z-index: 0;	
 }
+
+div.production-good {
+	position: absolute;
+	width: 57px;
+	height: 80px;
+	z-index: 0;	
+}
+
+div.produced {
+	background: url(../images/good.png) no-repeat;
+}
+
+/* players */
+
+.player {
+	border-radius: 5px;
+	border-color: rgb(238, 220, 148) rgb(238, 220, 148) rgb(228, 198, 82);
+	border-width: 1px;
+	border-style: solid;
+	height: 40px;
+	margin-bottom: 10px;
+	
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	background: rgb(238, 220, 148);
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
+	background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
+	background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
+	background-image: linear-gradient(top, #fceec1, #eedc94);
+	background-image: -o-linear-gradient(top, #fceec1, #eedc94);
+}
+
+.self-true { /* for player div that is current player */
+/* 	background: #AAAAAA; */
+}
+
