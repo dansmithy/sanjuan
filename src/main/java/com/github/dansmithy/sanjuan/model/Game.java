@@ -1,6 +1,7 @@
 package com.github.dansmithy.sanjuan.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -13,6 +14,7 @@ import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
+import com.github.dansmithy.sanjuan.rest.serialize.Iso8601CustomDateSerializer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -33,6 +35,9 @@ public class Game {
 	private Long version;
 	private String winner;
 	private String abandonedBy;
+	private Date created;
+	private Date started;
+	private Date ended;
 	
 	@Id
 	private ObjectId id;
@@ -40,6 +45,7 @@ public class Game {
 	public Game(Player owner) {
 		this.owner = owner.getName();
 		players.add(owner);
+		created = new Date();
 	}
 	
 	public Game() {
@@ -144,6 +150,33 @@ public class Game {
 	
 	public void setVersion(Long version) {
 		this.version = version;
+	}
+
+	@JsonSerialize(using = Iso8601CustomDateSerializer.class)
+	public Date getCreated() {
+		return copyOf(created);
+	}
+
+	@JsonSerialize(using = Iso8601CustomDateSerializer.class)
+	public Date getStarted() {
+		return copyOf(started);
+	}
+
+	@JsonSerialize(using = Iso8601CustomDateSerializer.class)
+	public Date getEnded() {
+		return copyOf(ended);
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setStarted(Date started) {
+		this.started = started;
+	}
+
+	public void setEnded(Date ended) {
+		this.ended = ended;
 	}
 
 	public void addPlayer(Player player) {
@@ -258,6 +291,10 @@ public class Game {
 			governorSteps.add(new GovernorStep(player.getName(), cardsToDiscard, chapelOwner));
 		}
 	}
-	
+
+	private static Date copyOf(Date date) {
+		return date == null ? null : new Date(date.getTime());
+	}
+
 }
 	

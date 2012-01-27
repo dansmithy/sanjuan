@@ -1,23 +1,15 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.GivenBddParts.given;
-import static com.github.dansmithy.bdd.BddHelper.then;
-import static com.github.dansmithy.bdd.BddHelper.when;
-import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.gameCreatedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByContains;
-import static com.github.dansmithy.driver.BddPartProvider.gameOwnedByJoinedBy;
-import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
-import static com.github.dansmithy.driver.BddPartProvider.userExistsAndAuthenticated;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
-import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
-import static java.net.HttpURLConnection.HTTP_CONFLICT;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+import static com.github.dansmithy.bdd.BddHelper.*;
+import static com.github.dansmithy.bdd.GivenBddParts.*;
+import static com.github.dansmithy.driver.BddPartProvider.*;
+import static java.net.HttpURLConnection.*;
+import static org.hamcrest.Matchers.*;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.GameDriver;
@@ -176,4 +168,17 @@ public class GameCreationAT {
 
 				then(verifyResponseCodeIs(HTTP_OK)));
 	}
+	
+	@Test
+	public void testCreatedDateIsNotEmpty() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice")),
+
+				when(gameCreatedBy("#alice")),
+
+				then(verifyJsonPath("$.created", is(not(nullValue())))));
+	}
+
 }

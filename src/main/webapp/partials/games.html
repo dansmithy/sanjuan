@@ -11,7 +11,7 @@
                 </div>
                 <div class="span10">
                     <span>playing with {{otherPlayers(game) | html}}</span>
-                    <p>started 5 days ago</p>
+                    <p ng:show="game.started">started {{game.started | prettyDate}}</p>
                 </div>
                 <div class="span3">
                     <a class="danger" ng:show="confirmAbandonId != game.gameId" ng:click="requestAbandon(game)">abandon game</a>
@@ -37,7 +37,7 @@
                 <div class="span8">
                     <span ng:show="game.players.length >= 2">{{otherPlayers(game) | html}} <span ng:show="game.players.length == 2">is</span><span ng:show="game.players.length > 2">are</span> also signed up</span>
                     <span ng:show="game.players.length < 2">need a second player before you can start this game.</span>
-                    <p>created 10 minutes ago</p>
+                    <p ng:show="game.created">created {{game.created | prettyDate}}</p>
                 </div>
                 <div class="span2">&nbsp;<button ng:show="game.owner == userManager.user.username" ng:disabled="game.players.length < 2" class="btn success" ng:click="startGame(game)">Start game</button></div>
                 <div class="span3">
@@ -61,7 +61,7 @@
                 <div class="span8">
                     <span ng:show="game.players.length > 1">{{otherPlayers(game) | html}} joined so far</span>
                     <span ng:show="game.players.length == 1">game created by {{otherPlayers(game) | html}}, and no players joined so far</span>
-                    <p>created 2 hours ago</p>
+                    <p ng:show="game.created">created {{game.created | prettyDate}}</p>
                 </div>
                 <div class="span2"><button class="btn success" ng:click="joinGame(game)">&nbsp;Join game&nbsp;</button></div>
             </div>   
@@ -79,7 +79,7 @@
                 <div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
                 <div class="span10">
                     <span>played with {{otherPlayers(game) | html}}, won by <strong>{{game.winner == userManager.user.username | ternary:'you':game.winner}}</strong></span>
-                    <p>finished game 4 weeks ago</p>
+                    <p ng:show="game.ended">finished game {{game.ended | prettyDate}}</p>
                 </div>        
             </div>   
         </div>     
@@ -93,7 +93,7 @@
             	<div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
             	<div class="span10">
                     <span>played with {{otherPlayers(game) | html}}, abandoned by <strong>{{game.abandonedBy == userManager.user.username | ternary:'you':game.abandonedBy}}</strong></span>
-                    <p>abandoned game 6 months ago</p>
+                    <p ng:show="game.ended">abandoned game {{game.ended | prettyDate}}</p>
                 </div>
             </div>   
         </div>                    

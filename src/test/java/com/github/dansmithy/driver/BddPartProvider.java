@@ -8,10 +8,12 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.SimpleBddParts;
+import com.github.restdriver.serverdriver.Matchers;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.jayway.jsonpath.JsonPath;
 
@@ -69,6 +71,16 @@ public class BddPartProvider {
 			}
 		};
 	}
+	
+
+	public static BddPart<GameDriver> verifyJsonPath(final String jsonPath, final Matcher<Object> matcher) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Assert.assertThat(context.getLastResponse().asJson(), Matchers.hasJsonPath(jsonPath, matcher));
+			}
+		};
+	}		
 
 	public static BddPart<GameDriver> userExists(final String username) {
 		return new BddPart<GameDriver>() {
