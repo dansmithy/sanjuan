@@ -3,6 +3,7 @@ package com.github.dansmithy.at;
 import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.bdd.GivenBddParts.given;
+import static com.github.dansmithy.driver.BddPartProvider.*;
 import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
 import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
 import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
@@ -11,6 +12,7 @@ import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
 import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -214,6 +216,19 @@ public class ExtendedPlayAT {
 				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
 						verifyResponseContains("{ code : 'NOT_PLAYING' }")));
 	}
+	
+	@Test
+	public void testEndedDateIsNotEmpty() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						gameAlmostCompleted()),
+
+				when(finalLosingMove()),
+
+				then(verifyJsonPath("$.ended", is(not(nullValue())))));
+	}	
 
 	private BddPart<GameDriver> gameCompleted() {
 		return new GivenBddParts(gameAlmostCompleted()).and(finalLosingMove());

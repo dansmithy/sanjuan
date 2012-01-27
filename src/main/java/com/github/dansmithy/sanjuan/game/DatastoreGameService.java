@@ -1,5 +1,6 @@
 package com.github.dansmithy.sanjuan.game;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -310,9 +311,11 @@ public class DatastoreGameService implements GameService {
 	private void handleGameCompletion(Game game, GameUpdater gameUpdater) {
 		game.markCompleted();
 		game.calculateWinner();
+		game.setEnded(new Date());
 		
 		gameUpdater.updateWinner();			
 		gameUpdater.updatePlayers();
+		gameUpdater.updateEndedDate();
 		gameUpdater.updateGameState();
 	}		
 	

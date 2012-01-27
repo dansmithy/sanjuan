@@ -88,6 +88,13 @@ public class GameUpdater {
 	/**
 	 * For completion only
 	 */
+	public void updateEndedDate() {
+		updates.put("ended", new PartialUpdate("ended", game.getEnded()));
+	}		
+	
+	/**
+	 * For completion only
+	 */
 	public void updatePlayers() {
 		updates.remove("player");
 		updates.put("players", new PartialUpdate("players", game.getPlayers()));
