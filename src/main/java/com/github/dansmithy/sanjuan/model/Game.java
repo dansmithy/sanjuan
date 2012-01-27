@@ -66,6 +66,7 @@ public class Game {
 		}
 		
 		state = GameState.PLAYING;
+		started = new Date();
 		startNewRound(0);
 	}
 

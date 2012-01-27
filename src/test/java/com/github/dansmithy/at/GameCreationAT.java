@@ -181,4 +181,16 @@ public class GameCreationAT {
 				then(verifyJsonPath("$.created", is(not(nullValue())))));
 	}
 
+	@Test
+	public void testStartedDateIsNotEmpty() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				
+				when(gameStartedBy("#alice")),
+
+				then(verifyJsonPath("$.started", is(not(nullValue())))));
+	}
+	
 }
