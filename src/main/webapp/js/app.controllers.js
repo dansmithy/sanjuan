@@ -764,16 +764,30 @@ GamesController.prototype = {
 		});
 	},
 	
-	requestAbandon : function(game) {
+	requestQuit : function(game) {
 		this.confirmAbandonId = game.gameId;
 	},
 	
-	deleteGame : function(game) {
+	abandonGame : function(game) {
 		var self = this;
-		this.$xhr("DELETE", "ws/games/" + game.gameId, function(code, response) {
+		this.confirmAbandonId = undefined;
+		this.$xhr("PUT", "ws/games/" + game.gameId + "/state", "ABANDONED", function(code, response) {
 			self.refresh();
 		});
-		
+	},
+	
+	deleteOrQuitGame : function(game, isDelete) {
+		var self = this;
+		this.confirmAbandonId = undefined;
+		if (isDelete) {
+			this.$xhr("DELETE", "ws/games/" + game.gameId, function(code, response) {
+				self.refresh();
+			});
+		} else {
+			this.$xhr("DELETE", "ws/games/" + game.gameId + "/players/" + this.userManager.user.username, function(code, response) {
+				self.refresh();
+			});				
+		}
 	}
 		
 };
