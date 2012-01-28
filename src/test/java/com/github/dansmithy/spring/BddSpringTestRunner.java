@@ -56,6 +56,18 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 			context.setLastResponse(new SpringResponse(response.getEntity(), response.getStatus())); 
 		}
 	}
+
+	@Override
+	protected void doOutcome(BddPart<GameDriver> outcome, GameDriver context) {
+		try {
+			super.doOutcome(outcome, context);
+		} catch (SanJuanException e) {
+			Response response = EXCEPTION_MAPPER.toResponse(e);
+			context.setLastResponse(new SpringResponse(response.getEntity(), response.getStatus())); 
+		}
+	}
+	
+	
 	
 	
 

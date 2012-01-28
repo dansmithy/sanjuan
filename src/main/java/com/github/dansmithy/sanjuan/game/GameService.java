@@ -25,7 +25,11 @@ public interface GameService {
 
 	Player addPlayerToGame(Long gameId, String playerName);
 
+	void removePlayerFromGame(Long gameId, String playerName);
+	
 	Game startGame(Long gameId);
+	
+	Game abandonGame(Long gameId);
 
 	Game selectRole(PlayCoords playCoords, RoleChoice choice);
 
@@ -33,7 +37,7 @@ public interface GameService {
 
 	Game governorDiscard(PlayCoords playCoords, GovernorChoice governorChoice);
 	
-	void deleteGame(Long gameId);
+	void deleteGame(Long gameId, boolean isAdminUser);
 
 	Deck updateDeckOrder(Long gameId, List<Integer> deckOrder);
 
@@ -41,6 +45,8 @@ public interface GameService {
 			Integer playNumber);
 
 	List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder);
+
+
 
 
 }

@@ -240,8 +240,13 @@ public class Game {
 		state = GameState.COMPLETED;
 	}
 
+	public void markAbandoned(String abandonedByUsername) {
+		state = GameState.ABANDONED;
+		abandonedBy = abandonedByUsername;
+	}
+
 	public boolean isComplete() {
-		return state.equals(GameState.COMPLETED);
+		return state.equals(GameState.COMPLETED) || state.equals(GameState.ABANDONED);
 	}
 
 	public String getWinner() {

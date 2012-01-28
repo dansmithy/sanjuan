@@ -39,6 +39,8 @@ public class RestExceptionMapper implements ExceptionMapper<SanJuanException> {
 			return Status.CONFLICT;
 		} else if (e instanceof PlayChoiceInvalidException) {
 			return Status.BAD_REQUEST;
+		} else if (e instanceof RequestInvalidException) {
+			return Status.BAD_REQUEST;
 		} else {
 			return Status.INTERNAL_SERVER_ERROR;
 		}

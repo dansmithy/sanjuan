@@ -1,5 +1,7 @@
 package com.github.dansmithy.spring;
 
+import static org.hamcrest.Matchers.*;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +10,13 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.junit.Assert;
+
 import com.github.dansmithy.driver.DefaultValues;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.TranslatedValues;
 import com.github.dansmithy.json.JsonHashTranslator;
-import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
-import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.User;
@@ -117,7 +119,7 @@ public class GameSpringDriverSession implements GameDriverSession {
 
 	@Override
 	public Response startGame() {
-		return new SpringResponse(gameResource.startGame(gameId, "PLAYING"));
+		return new SpringResponse(gameResource.changeGameState(gameId, "PLAYING"));
 	}
 
 	@Override
@@ -168,22 +170,27 @@ public class GameSpringDriverSession implements GameDriverSession {
 
 	@Override
 	public String getGameId() {
-		return gameId.toString();
+		return gameId == null ? null : gameId.toString();
 	}
 
 	@Override
-	public void deleteAnyGame() {
-		if (gameId != null) {
-			try {
-				gameResource.deleteGame(Long.valueOf(gameId));
-			} catch (ResourceNotFoundException e) {
-				// do nothing! only for spring implementaiton
-			} catch (NotResourceOwnerAccessException e) {
-				// do nothing! only for spring implementaiton
-			}
-			
-		}		
+	public Response deleteGame(String gameId) {
+		gameResource.deleteGame(Long.valueOf(gameId));
+		return new SpringResponse(null);
 	}
+	
+
+	@Override
+	public Response quitGame(String username) {
+		Assert.assertThat("No gameId set so cannot quit game.", gameId, is(not(nullValue())));
+		gameResource.quitDuringRecruitment(Long.valueOf(gameId), translatedValues.get(username));
+		return new SpringResponse(null);
+	}
+	
+	@Override
+	public Response abandonGame() {
+		return new SpringResponse(gameResource.changeGameState(gameId, "ABANDONED"));
+	}	
 
 	@Override
 	public void addTranslatedValues(String data) {

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public abstract class SkeletonGameDriver implements GameDriver {
@@ -26,7 +28,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	}
 
 	protected void createAdminSession() {
-		GameDriverSession adminSession = login(adminUsername, adminPassword);
+		GameDriverSession adminSession = login(adminUsername, adminPassword, true);
 		playerSessions.put(adminUsername, adminSession);
 	}
 
@@ -51,7 +53,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 		return playerSessions.get(username);
 	}	
 	
-	protected abstract GameDriverSession login(String username, String password);
+	protected abstract GameDriverSession login(String username, String password, boolean isAdmin);
 	
 
 	@Override
@@ -70,7 +72,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	
 	@Override
 	public void loginUser(String username, String password) {
-		GameDriverSession sessionPlayer = login(username, password);
+		GameDriverSession sessionPlayer = login(username, password, false);
 		playerSessions.put(username, sessionPlayer);
 	}
 		
@@ -83,7 +85,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 		for (String user : players) {
 			if (!user.equals(adminUsername)) {
 				if (playerSessions.containsKey(user)) {
-					deleteGameForUser(user);
+					deleteGame(playerSessions.get(user).getGameId());
 				}
 				getAdminSession().deleteUser(String.format("username : %s", user));
 			}
@@ -91,11 +93,16 @@ public abstract class SkeletonGameDriver implements GameDriver {
 		getAdminSession().logout();
 	}
 
-	private void deleteGameForUser(String user) {
-		GameDriverSession session = getSession(user);
-		if (session != null) {
-			session.deleteAnyGame();
-		}		
+	private void deleteGame(String gameId) {
+		if (gameId != null) {
+			try {
+				getAdminSession().deleteGame(gameId);
+			} catch (ResourceNotFoundException e) {
+				// do nothing! only for spring implementaiton
+			} catch (NotResourceOwnerAccessException e) {
+				// do nothing! only for spring implementaiton
+			}
+		}
 	}
 
 	/* (non-Javadoc)

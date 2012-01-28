@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.AuthenticatedUserDoesNotMatchSubmittedData;
+import com.github.dansmithy.sanjuan.exception.RequestInvalidException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -24,6 +25,7 @@ import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
+import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
 
 @Named
 public class GameBean implements GameResource {
@@ -103,20 +105,39 @@ public class GameBean implements GameResource {
 		return gameService.addPlayerToGame(gameId, playerName);
 
 	}
+	
+	@Override
+	public void quitDuringRecruitment(Long gameId, String playerName) {
+
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		if (!playerName.equals(loggedInUser)) {
+			throw new AuthenticatedUserDoesNotMatchSubmittedData(String.format("Unable to quit game as authenticated user is not %s", playerName));
+		}
+
+		gameService.removePlayerFromGame(gameId, playerName);
+	}	
 
 	@Override
-	public Game startGame(Long gameId, String stateName) {
+	public Game changeGameState(Long gameId, String stateName) {
 		
 		GameState gameState = GameState.valueOf(stateName);
 		
-		// TODO gameState is not a valid value
-		
 		if (GameState.PLAYING.equals(gameState)) {
-			return gameService.startGame(gameId);
+			return startPlaying(gameId);
+		} else if (GameState.ABANDONED.equals(gameState)) {
+			return abandonGame(gameId);
 		} else {
-			// TODO throw client
-			return null;
+			throw new RequestInvalidException(String.format("Cannot change game to %s state", gameState));
 		}
+		
+	}
+
+	private Game abandonGame(Long gameId) {
+		return gameService.abandonGame(gameId);
+	}
+
+	private Game startPlaying(Long gameId) {
+		return gameService.startGame(gameId);
 	}
 
 	@Override
@@ -145,7 +166,7 @@ public class GameBean implements GameResource {
 	
 	@Override
 	public void deleteGame(Long gameId) {
-		gameService.deleteGame(gameId);
+		gameService.deleteGame(gameId, SanJuanRole.isAdminUser(userProvider.getUserDetails()));
 	}
 
 	@Override
@@ -165,6 +186,4 @@ public class GameBean implements GameResource {
 		// TODO verify game state		
 		return gameService.updateTariff(gameId, tariffOrder);
 	}
-
-
 }

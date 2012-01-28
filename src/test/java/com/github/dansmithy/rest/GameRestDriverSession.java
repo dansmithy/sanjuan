@@ -1,10 +1,13 @@
 package com.github.dansmithy.rest;
 
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.Assert;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONException;
@@ -255,14 +258,19 @@ public class GameRestDriverSession implements GameDriverSession {
 		return gameId;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.driver.GameDriverSession#deleteAnyGame()
-	 */
 	@Override
-	public void deleteAnyGame() {
-		if (gameId != null) {
-			delete(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
-		}
+	public Response deleteGame(String gameId) {
+		return delete(wsBaseUri + "/games/" + gameId, ACCEPT_JSON_HEADER, createSessionHeader());
+	}	
+
+	public Response quitGame(String username) {
+		Assert.assertThat("No gameId set so cannot quit game.", gameId, is(not(nullValue())));
+		return delete(wsBaseUri + "/games/" + gameId + "/players/" + translatedValues.get(username), ACCEPT_JSON_HEADER, createSessionHeader());
+	}
+
+	public Response abandonGame() {
+		Assert.assertThat("No gameId set so cannot abandon game.", gameId, is(not(nullValue())));
+		return put(wsBaseUri + "/games/" + gameId + "/state", body("ABANDONED", JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
 	/* (non-Javadoc)
@@ -275,4 +283,6 @@ public class GameRestDriverSession implements GameDriverSession {
 			getTranslatedValues().add(entry.getKey(), entry.getValue());
 		}
 	}
+
+
 }

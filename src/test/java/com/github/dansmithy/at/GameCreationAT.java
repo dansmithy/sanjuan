@@ -6,10 +6,10 @@ import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.Matchers.*;
 
-import org.hamcrest.Matcher;
+import java.net.HttpURLConnection;
+
 import org.junit.Test;
 
-import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.GameDriver;
@@ -90,12 +90,12 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-		given(userExistsAndAuthenticated("#alice"))
-				.and(gameCreatedBy("#alice")),
-
-		when(gameOwnedByJoinedBy("#alice", "#alice")),
-
-		then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'ALREADY_PLAYER' }")));
+			given(userExistsAndAuthenticated("#alice"))
+					.and(gameCreatedBy("#alice")),
+	
+			when(gameOwnedByJoinedBy("#alice", "#alice")),
+	
+			then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'ALREADY_PLAYER' }")));
 	}
 
 	@Test
@@ -192,5 +192,116 @@ public class GameCreationAT {
 
 				then(verifyJsonPath("$.started", is(not(nullValue())))));
 	}
+
+	@Test
+	public void testOwnerCanDeleteGameInRecruitingMode() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+					.and(userExistsAndAuthenticated("#bob"))
+					.and(gameCreatedBy("#alice"))
+					.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
+
+				when(gameDeletedBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_NO_CONTENT)).and(gameOwnedByContains("#alice", "{ code : 'NOT_FOUND' }")));
+	}
+
+	@Test
+	public void testOwnerCannotDeleteGameWhenNotInRecruitingMode() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(gameDeletedBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
+						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }"))
+						.and(gameOwnedByContains("#alice",
+								"{ state : 'PLAYING' }")));
+	}
+
+	@Test
+	public void testOtherUserCanQuitGameDuringRecruitment() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+					.and(userExistsAndAuthenticated("#bob"))
+					.and(gameCreatedBy("#alice"))
+					.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
+				when(gameQuitBy("#bob")),
+
+				then(verifyResponseCodeIs(HTTP_NO_CONTENT)).and(gameOwnedByContains("#alice", "{ players.size : 1 }")));
+	}
 	
+	@Test
+	public void testOtherUserCannotQuitGameDuringPlay() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(gameQuitBy("#bob")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_RECRUITING' }")).and(gameOwnedByContains("#alice", "{ players.size : 2 }")));
+	}
+	
+	@Test
+	public void testGameOwnerCannotQuitGameDuringRecruitment() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+					.and(userExistsAndAuthenticated("#bob"))
+					.and(gameCreatedBy("#alice"))
+					.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
+				when(gameQuitBy("#alice")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'OWNER_CANNOT_QUIT' }")).and(gameOwnedByContains("#alice", "{ players.size : 2 }")));
+	}	
+	
+	@Test
+	public void testOwnerCanAbandonInProgressGame() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(gameAbandonedBy("#alice")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'ABANDONED', 'abandonedBy' : '#alice' }")));
+	}
+	
+	@Test
+	public void testNotOnlyOwnerCanAbandonInProgressGame() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+
+				when(gameAbandonedBy("#bob")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'ABANDONED', 'abandonedBy' : '#bob' }")));
+	}	
+	
+	@Test
+	public void testCannotAbandonGameInRecruitment() {
+
+		bdd.runTest(
+
+				given(userExistsAndAuthenticated("#alice"))
+					.and(userExistsAndAuthenticated("#bob"))
+					.and(gameCreatedBy("#alice"))
+					.and(gameOwnedByJoinedBy("#alice", "#bob")),
+
+				when(gameAbandonedBy("#bob")),
+
+				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(verifyResponseContains("{ code : 'NOT_ACTIVE_STATE' }")).and(gameOwnedByContains("#alice", "{ players.size : 2 }")));
+	}		
 }

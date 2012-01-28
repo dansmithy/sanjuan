@@ -250,8 +250,8 @@ public class BddPartProvider {
 			public void execute(GameDriver context) {
 				context.getAdminSession().addTranslatedValues(
 						DeckOrder.deckShorthand());
-				context.getAdminSession().orderDeck(
-						context.getSession(username).getGameId(), order);
+				String gameId = context.getSession(username).getGameId();
+				context.getAdminSession().orderDeck(gameId, order);
 			}
 		};
 	}
@@ -261,8 +261,8 @@ public class BddPartProvider {
 		return new BddPart<GameDriver>() {
 			@Override
 			public void execute(GameDriver context) {
-				context.getAdminSession().orderTariff(
-						context.getSession(username).getGameId(), order);
+				String gameId = context.getSession(username).getGameId();
+				context.getAdminSession().orderTariff(gameId, order);
 			}
 		};
 	}
@@ -316,7 +316,7 @@ public class BddPartProvider {
 			}
 		};
 	}
-
+	
 	public static BddPart<GameDriver> gameBegunWithTwoPlayers(
 			final String player, final String player2) {
 		return gameBegunWithTwoPlayers(player, player2, DeckOrder.Order1);
@@ -334,6 +334,40 @@ public class BddPartProvider {
 				.and(gameStartedBy(player));
 	}
 
+	public static BddPart<GameDriver> gameDeletedBy(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response actualResponse = context.getSession(username)
+						.deleteGame(context.getSession(username).getGameId());
+				context.setLastResponse(actualResponse);
+			}
+		};
+	}
+	
+	public static BddPart<GameDriver> gameQuitBy(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response actualResponse = context.getSession(username)
+						.quitGame(username);
+				context.setLastResponse(actualResponse);
+			}
+		};
+	}	
+
+	
+	public static BddPart<GameDriver> gameAbandonedBy(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response actualResponse = context.getSession(username)
+						.abandonGame();
+				context.setLastResponse(actualResponse);
+			}
+		};
+	}
+	
 	public static List<Integer> withDeck(List<Integer> deckOrder) {
 		return deckOrder;
 	}

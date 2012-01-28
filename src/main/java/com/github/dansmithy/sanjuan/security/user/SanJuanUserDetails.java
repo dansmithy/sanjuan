@@ -70,5 +70,5 @@ public class SanJuanUserDetails implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
+	
 }

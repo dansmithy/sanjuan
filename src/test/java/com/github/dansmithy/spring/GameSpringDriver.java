@@ -33,12 +33,13 @@ public class GameSpringDriver extends SkeletonGameDriver {
 	}
 
 	@Override
-	protected GameDriverSession login(String username, String password) {
+	protected GameDriverSession login(String username, String password, boolean isAdmin) {
 		RequestValues requestValues = createTranslatedUserRequest(username, password);
 		User user = new User();
 		user.setPassword(requestValues.get("password"));
 		user.setUsername(requestValues.get("username"));
-		user.setRoles(new String[] { "player", "admin" });
+		String[] roles = isAdmin ? new String[] { "player", "admin" } : new String[] { "player" };
+		user.setRoles(roles);
 		sessionProvider.addUser(user);
 		users.put(username, user);
 		return new GameSpringDriverSession(getTranslatedValues(), gameResource, userResource);

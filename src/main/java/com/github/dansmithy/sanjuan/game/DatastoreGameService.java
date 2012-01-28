@@ -120,6 +120,23 @@ public class DatastoreGameService implements GameService {
 		return player;
 	}
 
+
+	@Override
+	public void removePlayerFromGame(Long gameId, String playerName) {
+		
+		Game game = getGame(gameId);
+		
+		if (!game.getState().equals(GameState.RECRUITING)) {
+			throw new IllegalGameStateException(String.format("Cannot leave a game when in a %s state.", game.getState().toString()), IllegalGameStateException.NOT_RECRUITING);
+		}
+		
+		if (playerName.equals(game.getOwner())) {
+			throw new IllegalGameStateException(String.format("Game owner cannot quit game, but can delete it.", game.getState().toString()), IllegalGameStateException.OWNER_CANNOT_QUIT);
+		}
+		
+		game.getPlayers().remove(game.getPlayerIndex(playerName));
+		gameDao.saveGame(game);
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#startGame(java.lang.Long)
@@ -145,6 +162,27 @@ public class DatastoreGameService implements GameService {
 		game.startPlaying(cardFactory, tariffBuilder);
 		gameDao.saveGame(game);
 		return game;
+	}
+	
+	@Override
+	public Game abandonGame(Long gameId) {
+		Game game = gameDao.getGame(gameId);
+		
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		
+		if (!game.hasPlayer(loggedInUser)) {
+			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser));
+		}
+		
+		if (!game.getState().equals(GameState.PLAYING)) {
+			throw new IllegalGameStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.ABANDONED), IllegalGameStateException.NOT_ACTIVE_STATE);
+		}
+
+		GameUpdater gameUpdater = new GameUpdater(game);
+		game.markAbandoned(loggedInUser);
+		gameUpdater.updateGameState();
+		gameUpdater.updateAbandonedBy();
+		return gameDao.gameUpdate(gameId, gameUpdater);		
 	}
 	
 	/* (non-Javadoc)
@@ -323,16 +361,19 @@ public class DatastoreGameService implements GameService {
 	 * @see com.github.dansmithy.sanjuan.game.GameService#deleteGame(java.lang.Long)
 	 */
 	@Override
-	public void deleteGame(Long gameId) {
+	public void deleteGame(Long gameId, boolean isAdminUser) {
 		Game game = gameDao.getGame(gameId);
 		
-		// TODO restrict to recruiting games.
-		
-		// TODO introduce "abandoned" state for games: any player can abandon a game and is marked as such.
-		
-		String loggedInUser = userProvider.getAuthenticatedUsername();
-		if (!loggedInUser.equals(game.getOwner())) {
-			throw new NotResourceOwnerAccessException(String.format("Must be game owner to delete game."));
+		if (!isAdminUser) {
+			String loggedInUser = userProvider.getAuthenticatedUsername();
+			
+			if (loggedInUser.equals(game.getOwner())) {
+				if (!GameState.RECRUITING.equals(game.getState())) {
+					throw new NotResourceOwnerAccessException(String.format("Must have not started game yet in order to delete."));
+				}
+			} else {
+				throw new NotResourceOwnerAccessException(String.format("Must be game owner to delete game."));
+			}
 		}
 		
 		gameDao.deleteGame(gameId);
@@ -363,5 +404,6 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.updateTariffs(tariffs);
 		return gameDao.gameUpdate(gameId, gameUpdater).getTariffs();
 	}
+
 
 }

@@ -26,7 +26,7 @@ public class SpringResponse implements Response {
 	}
 	
 	public SpringResponse(Object responseObject) {
-		this(responseObject, 200);
+		this(responseObject, responseObject == null ? 204 : 200);
 	}
 
 	@Override

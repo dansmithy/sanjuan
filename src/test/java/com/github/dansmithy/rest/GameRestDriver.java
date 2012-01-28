@@ -29,7 +29,7 @@ public class GameRestDriver extends SkeletonGameDriver {
 	}
 
 	@Override
-	protected GameDriverSession login(String username, String password) {
+	protected GameDriverSession login(String username, String password, boolean isAdmin) {
 		RequestValues requestValues = createTranslatedUserRequest(username, password);
 		Response response = null;
 		// Assume this loop is required because Mongo has not yet written the created user to disk, but have not proved this

@@ -38,8 +38,12 @@ public interface GameDriverSession {
 
 	String getGameId();
 
-	void deleteAnyGame();
+	Response deleteGame(String gameId);
 
+	Response quitGame(String username);
+	
+	Response abandonGame();
+	
 	void addTranslatedValues(String data);
 
 	Response getGetGamesFor(String username);
@@ -47,6 +51,9 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
+
+
+
 
 
 }

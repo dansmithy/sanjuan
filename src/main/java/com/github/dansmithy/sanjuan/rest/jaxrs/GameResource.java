@@ -44,6 +44,13 @@ public interface GameResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	Player joinGame(@PathParam("gameId") Long gameId, String playerName);
+
+	/**
+	 * Must be player trying to delete, game must be in RECRUITING state
+	 */
+	@DELETE
+	@Path("{gameId}/players/{playerName}")
+	void quitDuringRecruitment(@PathParam("gameId") Long gameId, @PathParam("playerName") String playerName);
 	
 	/**
 	 * For testing
@@ -64,6 +71,9 @@ public interface GameResource {
 	@RolesAllowed({ SanJuanRole.ADMIN })
 	Game getFullGame(@PathParam("gameId") Long gameId);
 
+	/**
+	 * Must either be a) administrator, or b) owner and in "recruiting" mode
+	 */
 	@DELETE
 	@Path("{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,7 +84,7 @@ public interface GameResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(GameViews.PlayersOwn.class)
-	Game startGame(@PathParam("gameId") Long gameId, String state);
+	Game changeGameState(@PathParam("gameId") Long gameId, String state);
 	
 	@GET
 	@Path("/")
