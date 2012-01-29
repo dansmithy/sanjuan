@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns:ng="http://angularjs.org"> 
   <head> 
     <title>San Juan</title> 
@@ -30,17 +30,19 @@
         <div class="container">
             <a class="brand" href="#/games">San Juan</a>
  
-          
-          <form ng:submit="login()" action="" class="pull-right input-errors-{{userManager.hasErrors()}}">
-	            <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
-	            <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
-	            <button ng:show="userManager.isUnauthenticated()" class="btn" type="submit">Sign in</button>
-          		<span class="login-status-text" ng:show="userManager.isVerifying()">Checking user </span>
+            <form class="pull-right input-errors-{{userManager.hasErrors()}}" ng:submit="login()" action="">
+                <span class="lefthand-label danger" ng:show="userManager.hasErrors()">invalid username/password</span>
+                <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
+                <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
+                <button ng:show="userManager.isUnauthenticated()" class="btn" type="submit">Sign in</button>
+            	<span class="label-text" ng:show="userManager.isVerifying()">Checking user </span>
             	<span class="login-processing" ng:show="userManager.isProcessing()"><img src="images/ajax-loader.gif" /></span>
-          </form>                         
-        
-          <p ng:show="userManager.isAuthenticated()" class="pull-right" ng:click="logout()"><a href="#">Logout</a></p>
-          <p ng:show="userManager.isAuthenticated()" class="pull-right">Logged in as <a href="#">{{userManager.user.username}}</a></p>
+            </form>                         
+            
+            <p class="pull-right">
+                <span ng:show="userManager.isAuthenticated()" class="lefthand-label label-text">Logged in as <span class="username-text">{{userManager.user.username}}</span></span>
+                <span ng:show="userManager.isAuthenticated()" ng:click="logout()"><a class="logout" href="#">logout</a></span>
+            </p>
         </div>
       </div>
     </div>
