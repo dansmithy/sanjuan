@@ -6,8 +6,6 @@ import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.Matchers.*;
 
-import java.net.HttpURLConnection;
-
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
@@ -127,6 +125,18 @@ public class GameCreationAT {
 
 				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 	}
+	
+	@Test 
+	public void testCannotGetAGameYouAreNotInvolvedWith() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(userExistsAndAuthenticated("#charlie")),
+
+				when(getGameOwnedBySomebodyElse("#charlie", "#alice")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
+	}	
 
 	@Test
 	public void testCanStartGame() {

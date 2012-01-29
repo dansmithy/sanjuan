@@ -61,6 +61,7 @@ public class DatastoreGameService implements GameService {
 	 */
 	@Override
 	public Game getGame(Long gameId) {
+
 		return gameDao.getGame(gameId);
 	}
 	

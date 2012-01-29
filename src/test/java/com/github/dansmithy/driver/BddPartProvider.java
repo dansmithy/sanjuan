@@ -291,6 +291,18 @@ public class BddPartProvider {
 			}
 		};
 	}
+	
+	public static BddPart<GameDriver> getGameOwnedBySomebodyElse(final String username, final String owner) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				String gameId = context.getSession(owner).getGameId();
+				Response actualResponse = context.getSession(username)
+						.getGame(Long.valueOf(gameId));
+				context.setLastResponse(actualResponse);
+			}
+		};
+	}	
 
 	public static BddPart<GameDriver> gameOwnedByJoinedBy(final String owner,
 			final String joiner) {

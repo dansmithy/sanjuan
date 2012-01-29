@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.AuthenticatedUserDoesNotMatchSubmittedData;
+import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
 import com.github.dansmithy.sanjuan.exception.RequestInvalidException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -55,7 +56,13 @@ public class GameBean implements GameResource {
 	}	
 	
 	public Game getGame(Long gameId) {
-		return gameService.getGame(gameId);	
+		String loggedInUser = userProvider.getAuthenticatedUsername();
+		Game game = gameService.getGame(gameId);
+		
+		if (!game.hasPlayer(loggedInUser)) {
+			throw new NotResourceOwnerAccessException(String.format("You are not a player in this game."));
+		}
+		return game;
 	}
 	
 	@Override
