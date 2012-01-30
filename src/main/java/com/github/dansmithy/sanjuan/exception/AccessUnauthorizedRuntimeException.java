@@ -9,9 +9,7 @@ public class AccessUnauthorizedRuntimeException extends SanJuanRuntimeException 
 	public static final String NOT_YOUR_GAME = "NOT_YOUR_GAME";
 	public static final String NOT_MATCHING_PLAYER = "NOT_MATCHING_PLAYER";
 	
-	private static final String DEFAULT_TYPE = "ACCESS_DENIED";
-
-	private String type = DEFAULT_TYPE;
+	private String type;
 	
 	public AccessUnauthorizedRuntimeException(String message, String type) {
 		super(message);

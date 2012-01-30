@@ -818,7 +818,10 @@ AdminController.prototype = {
 		},
 		
 		update : function(user) {
-			this.$xhr("PUT", "ws/users/" + user.username, user, this.getUsers);
+			var updatedUser = angular.Object.copy(user);
+			var username = updatedUser.username;
+			delete updatedUser.username;
+			this.$xhr("PUT", "ws/users/" + user.username, updatedUser, this.getUsers);
 		},
 		
 		create : function(user) {

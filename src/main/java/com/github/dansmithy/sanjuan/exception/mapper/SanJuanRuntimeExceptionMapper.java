@@ -9,7 +9,6 @@ import javax.ws.rs.ext.Provider;
 
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
-import com.github.dansmithy.sanjuan.exception.ImmutableDataRuntimeException;
 import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.exception.RequestInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundRuntimeException;
@@ -43,8 +42,6 @@ public class SanJuanRuntimeExceptionMapper implements ExceptionMapper<SanJuanRun
 		} else if (e instanceof ResourceNotFoundRuntimeException) {
 			return Status.NOT_FOUND;
 		} else if (e instanceof IllegalGameStateRuntimeException) {
-			return Status.CONFLICT;
-		} else if (e instanceof ImmutableDataRuntimeException) {
 			return Status.CONFLICT;
 		} else if (e instanceof PlayChoiceInvalidRuntimeException) {
 			return Status.BAD_REQUEST;

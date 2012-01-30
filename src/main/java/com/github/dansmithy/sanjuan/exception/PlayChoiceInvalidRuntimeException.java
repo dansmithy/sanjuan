@@ -21,9 +21,7 @@ public class PlayChoiceInvalidRuntimeException extends SanJuanRuntimeException {
 	public static final String DUPLICATE_CHOICE = "DUPLICATE_CHOICE";
 	public static final String INVALID_ROLE = "INVALID_ROLE";
 	
-	private static final String DEFAULT_TYPE = "INVALID_CHOICE";
-	
-	private String type = DEFAULT_TYPE;
+	private String type;
 	
 	public PlayChoiceInvalidRuntimeException(String message, String type) {
 		super(message);

@@ -18,9 +18,7 @@ public class IllegalGameStateRuntimeException extends SanJuanRuntimeException {
 	public static final String ROLE_ALREADY_TAKEN = "ROLE_ALREADY_TAKEN";
 	public static final String BUILDING_ALREADY_BUILT = "BUILDING_ALREADY_BUILT";
 	
-	private static final String DEFAULT_TYPE = "ILLEGALSTATE";
-
-	private String type = DEFAULT_TYPE;
+	private String type;
 
 	public IllegalGameStateRuntimeException(String message, String type) {
 		super(message);

@@ -39,8 +39,8 @@ public class UserAT {
 				when(updateUser("#alice",
 						"{ 'username' : 'other', 'password' : 'changedPassword' }")),
 
-				then(verifyResponseCodeIs(HTTP_CONFLICT))
-						.and(verifyResponseContains("{ code : 'IMMUTABLE' }")));
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'INVALID_REQUEST' }")));
 	}
 
 	@Test
