@@ -280,7 +280,7 @@ public class DatastoreGameService implements GameService {
 		
 		Player player = game.getPlayer(loggedInUser);
 
-		int cardsShouldDiscardCount = player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold();
+		int cardsShouldDiscardCount = Math.max(0, player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold());
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
  		
  		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
@@ -295,7 +295,13 @@ public class DatastoreGameService implements GameService {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  		}
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
+		if (governorChoice.getChapelCard() != null) {
+			step.setChapelCard(governorChoice.getChapelCard());
+			player.addChapelCard(governorChoice.getChapelCard());
+			player.removeHandCard(governorChoice.getChapelCard());
+		}
 		step.setState(PlayState.COMPLETED);
+		
 		
 		player.removeHandCards(governorChoice.getCardsToDiscard());
 		game.getDeck().discard(governorChoice.getCardsToDiscard());

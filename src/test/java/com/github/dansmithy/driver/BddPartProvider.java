@@ -266,6 +266,16 @@ public class BddPartProvider {
 			}
 		};
 	}
+	
+	public static BddPart<GameDriver> getGameFor(final String owner) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getSession(owner).getGame();
+				context.setLastResponse(response);
+			}
+		};
+	}
 
 	public static BddPart<GameDriver> gameOwnedByContains(final String owner,
 			final String gameJson) {
@@ -313,6 +323,8 @@ public class BddPartProvider {
 			}
 		};
 	}	
+	
+	
 
 	public static BddPart<GameDriver> gameOwnedByJoinedBy(final String owner,
 			final String joiner) {

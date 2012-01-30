@@ -9,6 +9,7 @@ public class GovernorStep {
 	private int numberOfCardsToDiscard;
 	private List<Integer> cardsToDiscard;
 	private boolean chapelOwner;
+	private Integer chapelCard;
 	
 	public GovernorStep() {
 		super();
@@ -52,6 +53,14 @@ public class GovernorStep {
 
 	public void setCardsToDiscard(List<Integer> cardsToDiscard) {
 		this.cardsToDiscard = cardsToDiscard;
+	}
+
+	public void setChapelCard(Integer chapelCard) {
+		this.chapelCard = chapelCard;
+	}
+
+	public Integer getChapelCard() {
+		return chapelCard;
 	}
 	
 }

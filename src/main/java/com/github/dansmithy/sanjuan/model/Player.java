@@ -51,13 +51,17 @@ public class Player {
 		}
 	}
 	
-	private void removeHandCard(Integer cardId) {
+	public void removeHandCard(Integer cardId) {
 		hand.remove(cardId);
 	}
 	
 	public void addGood(Integer factory, Integer good) {
 		goods.put(factory, good);
 	}	
+
+	public void addChapelCard(Integer chapelCard) {
+		chapelCards.add(chapelCard);
+	}
 
 	public String getName() {
 		return name;
