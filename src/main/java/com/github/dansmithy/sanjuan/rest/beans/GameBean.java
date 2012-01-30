@@ -60,7 +60,7 @@ public class GameBean implements GameResource {
 		Game game = gameService.getGame(gameId);
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("You are not a player in this game."));
+			throw new NotResourceOwnerAccessException(String.format("You are not a player in this game."), NotResourceOwnerAccessException.NOT_YOUR_GAME);
 		}
 		return game;
 	}

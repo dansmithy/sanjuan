@@ -135,7 +135,7 @@ public class GameCreationAT {
 
 				when(getGameOwnedBySomebodyElse("#charlie", "#alice")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_YOUR_GAME' }")));
 	}	
 
 	@Test
@@ -228,8 +228,8 @@ public class GameCreationAT {
 
 				when(gameDeletedBy("#alice")),
 
-				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
-						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }"))
+				then(verifyResponseCodeIs(HTTP_CONFLICT))
+						.and(verifyResponseContains("{ code : 'NOT_RECRUITING' }"))
 						.and(gameOwnedByContains("#alice",
 								"{ state : 'PLAYING' }")));
 	}

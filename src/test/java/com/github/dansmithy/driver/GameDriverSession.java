@@ -37,6 +37,8 @@ public interface GameDriverSession {
 	void logout();
 
 	String getGameId();
+	
+	void setGameId(String gameId);
 
 	Response deleteGame(String gameId);
 
@@ -51,6 +53,7 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
+
 
 
 

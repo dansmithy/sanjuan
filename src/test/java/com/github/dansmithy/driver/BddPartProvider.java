@@ -292,6 +292,16 @@ public class BddPartProvider {
 		};
 	}
 	
+	public static BddPart<GameDriver> copyGameIdBetweenUsers(final String existingPlayer, final String otherUser) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				String gameId = context.getSession(existingPlayer).getGameId();
+				context.getSession(otherUser).setGameId(gameId);
+			}
+		};
+	}
+	
 	public static BddPart<GameDriver> getGameOwnedBySomebodyElse(final String username, final String owner) {
 		return new BddPart<GameDriver>() {
 			@Override

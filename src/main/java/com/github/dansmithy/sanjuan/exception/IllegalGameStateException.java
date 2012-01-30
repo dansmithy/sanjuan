@@ -18,7 +18,6 @@ public class IllegalGameStateException extends SanJuanException {
 	
 	private static final String DEFAULT_TYPE = "ILLEGALSTATE";
 
-	
 	private String type = DEFAULT_TYPE;
 
 	public IllegalGameStateException(String message, String type) {

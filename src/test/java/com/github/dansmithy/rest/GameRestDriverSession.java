@@ -257,6 +257,11 @@ public class GameRestDriverSession implements GameDriverSession {
 	public String getGameId() {
 		return gameId;
 	}
+	
+	@Override
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
+	}
 
 	@Override
 	public Response deleteGame(String gameId) {
@@ -283,6 +288,7 @@ public class GameRestDriverSession implements GameDriverSession {
 			getTranslatedValues().add(entry.getKey(), entry.getValue());
 		}
 	}
+
 
 
 }

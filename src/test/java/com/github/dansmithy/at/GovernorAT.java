@@ -83,7 +83,20 @@ public class GovernorAT {
 				then(verifyResponseCodeIs(HTTP_CONFLICT))
 						.and(verifyResponseContains("{ code : 'ROLE_ALREADY_TAKEN' }")));
 	}
+	
+	@Test
+	public void testCannotChooseRoleWhenNotAPlayerInTheGame() {
 
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
+
+				when(roleChosenBy("#charlie", "round : 1; phase : 1",
+						"role : BUILDER")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_YOUR_GAME' }")));
+	}
+	
 	@Test
 	public void testForcedToDiscardCardsIfHaveMoreThanSeven() {
 		bdd.runTest(

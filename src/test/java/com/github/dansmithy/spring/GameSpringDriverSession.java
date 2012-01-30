@@ -172,6 +172,11 @@ public class GameSpringDriverSession implements GameDriverSession {
 	public String getGameId() {
 		return gameId == null ? null : gameId.toString();
 	}
+	
+	@Override
+	public void setGameId(String gameId) {
+		this.gameId = Long.valueOf(gameId);
+	}
 
 	@Override
 	public Response deleteGame(String gameId) {
@@ -210,5 +215,6 @@ public class GameSpringDriverSession implements GameDriverSession {
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
 		return translatedValues.translateRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
 	}
+
 
 }
