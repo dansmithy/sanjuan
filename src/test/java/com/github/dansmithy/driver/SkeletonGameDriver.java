@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -99,7 +99,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 				getAdminSession().deleteGame(gameId);
 			} catch (ResourceNotFoundException e) {
 				// do nothing! only for spring implementaiton
-			} catch (NotResourceOwnerAccessException e) {
+			} catch (AccessUnauthorizedRuntimeException e) {
 				// do nothing! only for spring implementaiton
 			}
 		}

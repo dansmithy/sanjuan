@@ -29,7 +29,7 @@ public class RestExceptionMapper implements ExceptionMapper<SanJuanException> {
 	}
 
 	private Status convertToStatus(SanJuanException e) {
-		if (e instanceof AccessException) {
+		if (e instanceof AccessUnauthorizedRuntimeException) {
 			return Status.UNAUTHORIZED;
 		} else if (e instanceof ResourceNotFoundException) {
 			return Status.NOT_FOUND;

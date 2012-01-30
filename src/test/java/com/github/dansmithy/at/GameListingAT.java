@@ -5,7 +5,6 @@ import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 
-import org.aspectj.weaver.ast.And;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
@@ -71,7 +70,7 @@ public class GameListingAT {
 				when(getGamesFor("#alice", loggedInAs("#bob"))),
 
 				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED))
-						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
+						.and(verifyResponseContains("{ code : 'NOT_MATCHING_PLAYER' }")));
 	}
 
 	@Test

@@ -10,8 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
-import com.github.dansmithy.sanjuan.exception.AuthenticatedUserDoesNotMatchSubmittedData;
-import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.RequestInvalidException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -60,7 +59,7 @@ public class GameBean implements GameResource {
 		Game game = gameService.getGame(gameId);
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("You are not a player in this game."), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+			throw new AccessUnauthorizedRuntimeException(String.format("You are not a player in this game."), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
 		return game;
 	}
@@ -81,7 +80,7 @@ public class GameBean implements GameResource {
 			
 			String loggedInUser = userProvider.getAuthenticatedUsername();
 			if (!playerName.equals(loggedInUser)) {
-				throw new AuthenticatedUserDoesNotMatchSubmittedData(String.format("Unable to get games as authenticated user is not %s", playerName));
+				throw new AccessUnauthorizedRuntimeException(String.format("Unable to get games as authenticated user is not %s", playerName), AccessUnauthorizedRuntimeException.NOT_MATCHING_PLAYER);
 			}
 			return gameService.getGamesForPlayer(playerName);
 		} else {
@@ -95,7 +94,7 @@ public class GameBean implements GameResource {
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!ownerName.equals(loggedInUser)) {
-			throw new AuthenticatedUserDoesNotMatchSubmittedData(String.format("Unable to create game as authenticated user is not %s", ownerName));
+			throw new AccessUnauthorizedRuntimeException(String.format("Unable to create game as authenticated user is not %s", ownerName), AccessUnauthorizedRuntimeException.NOT_MATCHING_PLAYER);
 		}
 		
 		return gameService.createNewGame(ownerName);
@@ -106,7 +105,7 @@ public class GameBean implements GameResource {
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!playerName.equals(loggedInUser)) {
-			throw new AuthenticatedUserDoesNotMatchSubmittedData(String.format("Unable to join game as authenticated user is not %s", playerName));
+			throw new AccessUnauthorizedRuntimeException(String.format("Unable to join game as authenticated user is not %s", playerName), AccessUnauthorizedRuntimeException.NOT_MATCHING_PLAYER);
 		}
 
 		return gameService.addPlayerToGame(gameId, playerName);
@@ -118,7 +117,7 @@ public class GameBean implements GameResource {
 
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!playerName.equals(loggedInUser)) {
-			throw new AuthenticatedUserDoesNotMatchSubmittedData(String.format("Unable to quit game as authenticated user is not %s", playerName));
+			throw new AccessUnauthorizedRuntimeException(String.format("Unable to quit game as authenticated user is not %s", playerName), AccessUnauthorizedRuntimeException.NOT_MATCHING_PLAYER);
 		}
 
 		gameService.removePlayerFromGame(gameId, playerName);

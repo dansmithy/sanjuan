@@ -8,7 +8,7 @@ import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
-import com.github.dansmithy.sanjuan.exception.NotResourceOwnerAccessException;
+import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -148,7 +148,7 @@ public class DatastoreGameService implements GameService {
 		
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		if (!loggedInUser.equals(game.getOwner())) {
-			throw new NotResourceOwnerAccessException(String.format("Must be game owner to start game."), NotResourceOwnerAccessException.NOT_CORRECT_USER);
+			throw new AccessUnauthorizedRuntimeException(String.format("Must be game owner to start game."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 		}
 		
 		if (game.getState().equals(GameState.PLAYING)) {
@@ -171,7 +171,7 @@ public class DatastoreGameService implements GameService {
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
@@ -195,7 +195,7 @@ public class DatastoreGameService implements GameService {
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
@@ -218,7 +218,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
-			throw new NotResourceOwnerAccessException(String.format("It is not your turn to choose role."), NotResourceOwnerAccessException.NOT_CORRECT_USER);
+			throw new AccessUnauthorizedRuntimeException(String.format("It is not your turn to choose role."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 		}
 		
 
@@ -248,7 +248,7 @@ public class DatastoreGameService implements GameService {
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
@@ -271,7 +271,7 @@ public class DatastoreGameService implements GameService {
 		// cannot be null, cos wouldn't be GOVERNOR state (verified by previous check)
 		
  		if (!loggedInUser.equals(step.getPlayerName())) {
-			throw new NotResourceOwnerAccessException(String.format("Not your turn to make Governor phase choices."), NotResourceOwnerAccessException.NOT_CORRECT_USER);
+			throw new AccessUnauthorizedRuntimeException(String.format("Not your turn to make Governor phase choices."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
  		}
 
 		if (CollectionUtils.hasDuplicates(governorChoice.getCardsToDiscard())) {
@@ -319,7 +319,7 @@ public class DatastoreGameService implements GameService {
 		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!game.hasPlayer(loggedInUser)) {
-			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
@@ -335,7 +335,7 @@ public class DatastoreGameService implements GameService {
 		}		
 		
 		if (!loggedInUser.equals(gameUpdater.getCurrentPlayer().getName())) {
-			throw new NotResourceOwnerAccessException("It is not your turn to play.", NotResourceOwnerAccessException.NOT_CORRECT_USER);
+			throw new AccessUnauthorizedRuntimeException("It is not your turn to play.", AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 		}
 		
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
@@ -386,7 +386,7 @@ public class DatastoreGameService implements GameService {
 					throw new IllegalGameStateException(String.format("Game must be still recruiting in order to delete."), IllegalGameStateException.NOT_RECRUITING);
 				}
 			} else {
-				throw new NotResourceOwnerAccessException(String.format("Must be game owner to delete game."), NotResourceOwnerAccessException.NOT_CORRECT_USER);
+				throw new AccessUnauthorizedRuntimeException(String.format("Must be game owner to delete game."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 			}
 		}
 		

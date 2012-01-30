@@ -1,6 +1,9 @@
 package com.github.dansmithy.sanjuan.exception;
 
-
+/**
+ * Results in an HTTP_CONFLICT (409) response code.
+ *
+ */
 public class IllegalGameStateException extends SanJuanException {
 
 	public static final String NOT_AWAITING_ROLE_CHOICE = "NOT_AWAITING_ROLE_CHOICE";
