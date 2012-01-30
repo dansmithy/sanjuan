@@ -2,7 +2,6 @@ package com.github.dansmithy.sanjuan.exception;
 
 /**
  * Results in an HTTP_CONFLICT (409) response code.
- *
  */
 public class IllegalGameStateRuntimeException extends SanJuanRuntimeException {
 

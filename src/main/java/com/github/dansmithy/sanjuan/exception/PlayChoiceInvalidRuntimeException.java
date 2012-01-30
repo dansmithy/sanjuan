@@ -1,5 +1,8 @@
 package com.github.dansmithy.sanjuan.exception;
 
+/**
+ * Results in an HTTP_BAD_REQUEST (400) response code.
+ */
 public class PlayChoiceInvalidRuntimeException extends SanJuanRuntimeException {
 
 	public static final String UNDERPAID = "UNDERPAID";

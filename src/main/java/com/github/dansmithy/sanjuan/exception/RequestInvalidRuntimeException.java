@@ -1,5 +1,8 @@
 package com.github.dansmithy.sanjuan.exception;
 
+/**
+ * Results in an HTTP_BAD_REQUEST (400) response code.
+ */
 public class RequestInvalidRuntimeException extends SanJuanRuntimeException {
 
 	private static final String DEFAULT_TYPE = "INVALID_REQUEST";
