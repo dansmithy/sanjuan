@@ -1,6 +1,6 @@
 package com.github.dansmithy.sanjuan.exception;
 
-public class PlayChoiceInvalidException extends SanJuanException {
+public class PlayChoiceInvalidRuntimeException extends SanJuanRuntimeException {
 
 	public static final String UNDERPAID = "UNDERPAID";
 	public static final String OVERPAID = "OVERPAID";
@@ -22,7 +22,7 @@ public class PlayChoiceInvalidException extends SanJuanException {
 	
 	private String type = DEFAULT_TYPE;
 	
-	public PlayChoiceInvalidException(String message, String type) {
+	public PlayChoiceInvalidRuntimeException(String message, String type) {
 		super(message);
 		this.type = type;
 	}

@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.BuildingType;
@@ -103,23 +103,23 @@ public class BuilderProcessor implements RoleProcessor {
 
 	private void verifyPlay(Player player, Play play, PlayChoice playChoice) {
 		if (!player.getHandCards().contains(playChoice.getBuild())) {
-			throw new PlayChoiceInvalidException("Cannot build as build choice is not one you own.", PlayChoiceInvalidException.NOT_OWNED_BUILD_CHOICE);
+			throw new PlayChoiceInvalidRuntimeException("Cannot build as build choice is not one you own.", PlayChoiceInvalidRuntimeException.NOT_OWNED_BUILD_CHOICE);
 		}
 		
 		for (Integer paymentCard : playChoice.getPayment()) {
 			if (!player.getHandCards().contains(paymentCard)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot pay with card %d as is not one you own.", paymentCard), PlayChoiceInvalidException.NOT_OWNED_PAYMENT);
+				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot pay with card %d as is not one you own.", paymentCard), PlayChoiceInvalidRuntimeException.NOT_OWNED_PAYMENT);
 			}
 		}
 		
 		int cost = calculateCost(playChoice.getBuild(), play.getOffered());
 		if (playChoice.getPayment().size() != cost) {
-			String exceptionType = playChoice.getPayment().size() < cost ? PlayChoiceInvalidException.UNDERPAID : PlayChoiceInvalidException.OVERPAID;
-			throw new PlayChoiceInvalidException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()), exceptionType);
+			String exceptionType = playChoice.getPayment().size() < cost ? PlayChoiceInvalidRuntimeException.UNDERPAID : PlayChoiceInvalidRuntimeException.OVERPAID;
+			throw new PlayChoiceInvalidRuntimeException(String.format("Cost is %d, but %d cards have been offered as payment.", cost, playChoice.getPayment().size()), exceptionType);
 		}
 		
 		if (isAlreadyBuiltVioletBuilding(playChoice.getBuild(), player.getBuildings())) {
-			throw new IllegalGameStateException(String.format("Cannot build as already have that violet building in your buildings."), IllegalGameStateException.BUILDING_ALREADY_BUILT);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot build as already have that violet building in your buildings."), IllegalGameStateRuntimeException.BUILDING_ALREADY_BUILT);
 		}
 	}
 	

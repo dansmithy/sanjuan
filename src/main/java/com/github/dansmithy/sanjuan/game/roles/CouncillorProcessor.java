@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -61,14 +61,14 @@ public class CouncillorProcessor implements RoleProcessor {
 		int numberCardsMustDiscard = numbers.getTotalCouncillorOfferedCards(withPrivilege) - numbers.getCouncillorRetainCards();
 		int numberCardsDiscarded = playChoice.getCouncilDiscarded().size();
 		if (numberCardsDiscarded < numberCardsMustDiscard) {
-			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but must discard %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidException.UNDER_DISCARD);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but must discard %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidRuntimeException.UNDER_DISCARD);
 		}
 		if (numberCardsDiscarded > numberCardsMustDiscard) {
-			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but must discard only %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidException.OVER_DISCARD);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but must discard only %d.", numberCardsDiscarded, numberCardsMustDiscard), PlayChoiceInvalidRuntimeException.OVER_DISCARD);
 		}
 		
 		if (CollectionUtils.hasDuplicates(playChoice.getCouncilDiscarded())) {
-			throw new PlayChoiceInvalidException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidRuntimeException.DUPLICATE_CHOICE);
 		}
 		
 		List<Integer> offered = play.getOffered().getCouncilOffered();
@@ -77,12 +77,12 @@ public class CouncillorProcessor implements RoleProcessor {
 				offered.remove(discardedCard);
 			} else if (player.getHandCards().contains(discardedCard)) {
 				if (!gameUpdater.getCurrentPlayer().getPlayerNumbers().isCouncillorCanDiscardHandCards()) {
-					throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidException.NOT_OWNED_COUNCIL_DISCARD);
+					throw new PlayChoiceInvalidRuntimeException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidRuntimeException.NOT_OWNED_COUNCIL_DISCARD);
 				}
 				player.getHandCards().remove(discardedCard);
 				deck.discard(discardedCard);
 			} else {
-				throw new PlayChoiceInvalidException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidException.NOT_OWNED_COUNCIL_DISCARD);
+				throw new PlayChoiceInvalidRuntimeException(String.format("Card %d is not a possible choice to discard", discardedCard), PlayChoiceInvalidRuntimeException.NOT_OWNED_COUNCIL_DISCARD);
 			}
 		}
 		player.addToHand(offered);

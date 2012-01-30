@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
-import com.github.dansmithy.sanjuan.exception.RequestInvalidException;
+import com.github.dansmithy.sanjuan.exception.RequestInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.GameService;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -133,7 +133,7 @@ public class GameBean implements GameResource {
 		} else if (GameState.ABANDONED.equals(gameState)) {
 			return abandonGame(gameId);
 		} else {
-			throw new RequestInvalidException(String.format("Cannot change game to %s state", gameState));
+			throw new RequestInvalidRuntimeException(String.format("Cannot change game to %s state", gameState));
 		}
 		
 	}

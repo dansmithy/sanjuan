@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.github.dansmithy.sanjuan.dao.util.MongoHelper;
-import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
+import com.github.dansmithy.sanjuan.exception.ResourceNotFoundRuntimeException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
@@ -59,7 +59,7 @@ public class MongoGameDao implements GameDao {
 		if (response != null) {
 			return response;
 		} else {
-			throw new ResourceNotFoundException(String.format("Unable to locate %s with id %s.", type, id));
+			throw new ResourceNotFoundRuntimeException(String.format("Unable to locate %s with id %s.", type, id));
 		}
 	}
 	

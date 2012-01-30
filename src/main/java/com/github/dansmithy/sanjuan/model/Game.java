@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.data.annotation.Id;
 
-import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.update.PlayerCycle;
@@ -55,7 +55,7 @@ public class Game {
 	public void startPlaying(CardFactory cardFactory, TariffBuilder tariffBuilder) {
 		
 		if (players.size() < 2) {
-			throw new IllegalGameStateException("Not enough players to start a game.", IllegalGameStateException.NOT_ENOUGH_PLAYERS);
+			throw new IllegalGameStateRuntimeException("Not enough players to start a game.", IllegalGameStateRuntimeException.NOT_ENOUGH_PLAYERS);
 		}
 		
 		initiateDeck(cardFactory);

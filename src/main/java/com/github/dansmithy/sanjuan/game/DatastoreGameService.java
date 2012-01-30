@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
-import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
@@ -106,13 +106,13 @@ public class DatastoreGameService implements GameService {
 		// numbers should do that ok!
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
-			throw new IllegalGameStateException(String.format("Cannot join a game when in a %s state.", game.getState().toString()), IllegalGameStateException.NOT_RECRUITING);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot join a game when in a %s state.", game.getState().toString()), IllegalGameStateRuntimeException.NOT_RECRUITING);
 		}
 		if (game.getPlayers().size() == MAXIMUM_PLAYER_COUNT) {
-			throw new IllegalGameStateException(String.format("This game already has the maximum number of players (%d)", MAXIMUM_PLAYER_COUNT), IllegalGameStateException.TOO_MANY_PLAYERS);
+			throw new IllegalGameStateRuntimeException(String.format("This game already has the maximum number of players (%d)", MAXIMUM_PLAYER_COUNT), IllegalGameStateRuntimeException.TOO_MANY_PLAYERS);
 		}		
 		if (game.hasPlayer(playerName)) {
-			throw new IllegalGameStateException(String.format("%s is already a player for this game.", playerName), IllegalGameStateException.ALREADY_PLAYER);
+			throw new IllegalGameStateRuntimeException(String.format("%s is already a player for this game.", playerName), IllegalGameStateRuntimeException.ALREADY_PLAYER);
 		}
 		Player player = new Player(playerName);
 		game.addPlayer(player);
@@ -127,11 +127,11 @@ public class DatastoreGameService implements GameService {
 		Game game = getGame(gameId);
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
-			throw new IllegalGameStateException(String.format("Cannot leave a game when in a %s state.", game.getState().toString()), IllegalGameStateException.NOT_RECRUITING);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot leave a game when in a %s state.", game.getState().toString()), IllegalGameStateRuntimeException.NOT_RECRUITING);
 		}
 		
 		if (playerName.equals(game.getOwner())) {
-			throw new IllegalGameStateException(String.format("Game owner cannot quit game, but can delete it.", game.getState().toString()), IllegalGameStateException.OWNER_CANNOT_QUIT);
+			throw new IllegalGameStateRuntimeException(String.format("Game owner cannot quit game, but can delete it.", game.getState().toString()), IllegalGameStateRuntimeException.OWNER_CANNOT_QUIT);
 		}
 		
 		game.getPlayers().remove(game.getPlayerIndex(playerName));
@@ -156,7 +156,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.RECRUITING)) {
-			throw new IllegalGameStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.PLAYING), IllegalGameStateException.NOT_RECRUITING);
+			throw new IllegalGameStateRuntimeException(String.format("Can't change state from %s to %s.", game.getState(), GameState.PLAYING), IllegalGameStateRuntimeException.NOT_RECRUITING);
 		}
 
 		game.startPlaying(cardFactory, tariffBuilder);
@@ -175,7 +175,7 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
-			throw new IllegalGameStateException(String.format("Can't change state from %s to %s.", game.getState(), GameState.ABANDONED), IllegalGameStateException.NOT_ACTIVE_STATE);
+			throw new IllegalGameStateRuntimeException(String.format("Can't change state from %s to %s.", game.getState(), GameState.ABANDONED), IllegalGameStateRuntimeException.NOT_ACTIVE_STATE);
 		}
 
 		GameUpdater gameUpdater = new GameUpdater(game);
@@ -199,22 +199,22 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
-			throw new IllegalGameStateException(String.format("Game not active, so cannot choose a role now."), IllegalGameStateException.NOT_PLAYING);
+			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot choose a role now."), IllegalGameStateRuntimeException.NOT_PLAYING);
 		}
 		
 		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!gameUpdater.matchesCoords(playCoords)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d, phase %d as not the current phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}
 
 		if (gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d as still in governor phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d, phase %d as still in governor phase.", playCoords.getRoundNumber(), playCoords.getPhaseNumber()), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}
 
 		Phase phase = gameUpdater.getCurrentPhase();
 		if (!phase.getState().equals(PhaseState.AWAITING_ROLE_CHOICE)) {
-			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.NOT_AWAITING_ROLE_CHOICE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot choose role at this point in the game."), IllegalGameStateRuntimeException.NOT_AWAITING_ROLE_CHOICE);
 		}
 		
 		if (!loggedInUser.equals(phase.getLeadPlayer())) {
@@ -224,11 +224,11 @@ public class DatastoreGameService implements GameService {
 
 		Role role = choice.getRole();
 		if (role.equals(Role.GOVERNOR)) {
-			throw new IllegalGameStateException(String.format("Cannot choose the Governor role."), PlayChoiceInvalidException.INVALID_ROLE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot choose the Governor role."), PlayChoiceInvalidRuntimeException.INVALID_ROLE);
 		}
 		
 		if (!gameUpdater.getCurrentRound().getRemainingRoles().contains(role)) {
-			throw new IllegalGameStateException(String.format("Cannot choose role at this point in the game."), IllegalGameStateException.ROLE_ALREADY_TAKEN);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot choose role at this point in the game."), IllegalGameStateRuntimeException.ROLE_ALREADY_TAKEN);
 		}
 		
 		phase.selectRole(role);
@@ -252,19 +252,19 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
-			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
+			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.NOT_PLAYING);
 		}
 		
 		if (!gameUpdater.matchesCoords(playCoords)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d", playCoords.getRoundNumber()), IllegalGameStateException.PHASE_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d", playCoords.getRoundNumber()), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}		
 		
 		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
-			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}
 
 		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
-			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.PHASE_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}
 
 		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhase().getCurrentStep();
@@ -275,7 +275,7 @@ public class DatastoreGameService implements GameService {
  		}
 
 		if (CollectionUtils.hasDuplicates(governorChoice.getCardsToDiscard())) {
-			throw new PlayChoiceInvalidException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidRuntimeException.DUPLICATE_CHOICE);
 		}
 		
 		Player player = game.getPlayer(loggedInUser);
@@ -284,15 +284,15 @@ public class DatastoreGameService implements GameService {
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
  		
  		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
- 			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but only need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidException.OVER_DISCARD);
+ 			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but only need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidRuntimeException.OVER_DISCARD);
  		}
 
  		if (cardsRequestedToDiscardCount < cardsShouldDiscardCount) {
- 			throw new PlayChoiceInvalidException(String.format("Chosen to discard %d cards, but need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidException.UNDER_DISCARD);
+ 			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidRuntimeException.UNDER_DISCARD);
  		}
  		
  		if (!player.getHandCards().containsAll(governorChoice.getCardsToDiscard())) {
- 			throw new PlayChoiceInvalidException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidException.NOT_OWNED_HAND_CARD);
+ 			throw new PlayChoiceInvalidRuntimeException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  		}
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
@@ -323,15 +323,15 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
-			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
+			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.NOT_PLAYING);
 		}
 		
 		if (!gameUpdater.matchesCoords(coords)) {
-			throw new IllegalGameStateException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()), IllegalGameStateException.PLAY_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()), IllegalGameStateRuntimeException.PLAY_NOT_ACTIVE);
 		}
 		
 		if (!gameUpdater.getCurrentPlay().getState().equals(PlayState.AWAITING_INPUT)) {
-			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."), IllegalGameStateException.PLAY_NOT_ACTIVE);
+			throw new IllegalGameStateRuntimeException(String.format("Cannot make play at this point in the game."), IllegalGameStateRuntimeException.PLAY_NOT_ACTIVE);
 		}		
 		
 		if (!loggedInUser.equals(gameUpdater.getCurrentPlayer().getName())) {
@@ -383,7 +383,7 @@ public class DatastoreGameService implements GameService {
 			
 			if (loggedInUser.equals(game.getOwner())) {
 				if (!GameState.RECRUITING.equals(game.getState())) {
-					throw new IllegalGameStateException(String.format("Game must be still recruiting in order to delete."), IllegalGameStateException.NOT_RECRUITING);
+					throw new IllegalGameStateRuntimeException(String.format("Game must be still recruiting in order to delete."), IllegalGameStateRuntimeException.NOT_RECRUITING);
 				}
 			} else {
 				throw new AccessUnauthorizedRuntimeException(String.format("Must be game owner to delete game."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);

@@ -6,9 +6,9 @@ package com.github.dansmithy.sanjuan.exception;
  * Caused by an attempt to change a value that cannot be changed.
  *
  */
-public class ImmutableDataException extends SanJuanException {
+public class ImmutableDataRuntimeException extends SanJuanRuntimeException {
 
-	public ImmutableDataException(String message) {
+	public ImmutableDataRuntimeException(String message) {
 		super(message);
 	}
 

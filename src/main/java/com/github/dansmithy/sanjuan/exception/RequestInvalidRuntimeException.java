@@ -1,16 +1,16 @@
 package com.github.dansmithy.sanjuan.exception;
 
-public class RequestInvalidException extends SanJuanException {
+public class RequestInvalidRuntimeException extends SanJuanRuntimeException {
 
 	private static final String DEFAULT_TYPE = "INVALID_REQUEST";
 	
 	private String type = DEFAULT_TYPE;
 	
-	public RequestInvalidException(String message) {
+	public RequestInvalidRuntimeException(String message) {
 		this(message, DEFAULT_TYPE);
 	}
 	
-	public RequestInvalidException(String message, String type) {
+	public RequestInvalidRuntimeException(String message, String type) {
 		super(message);
 		this.type = type;
 	}

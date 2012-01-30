@@ -8,8 +8,8 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.github.dansmithy.bdd.BddPart;
 import com.github.dansmithy.bdd.SkeletonBddTestRunner;
 import com.github.dansmithy.driver.GameDriver;
-import com.github.dansmithy.sanjuan.exception.SanJuanException;
-import com.github.dansmithy.sanjuan.exception.mapper.RestExceptionMapper;
+import com.github.dansmithy.sanjuan.exception.SanJuanRuntimeException;
+import com.github.dansmithy.sanjuan.exception.mapper.SanJuanRuntimeExceptionMapper;
 import com.github.dansmithy.sanjuan.rest.jaxrs.CardResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
@@ -17,7 +17,7 @@ import com.github.dansmithy.sanjuan.security.SecurityContextAuthenticatedSession
 
 public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 
-	private static final RestExceptionMapper EXCEPTION_MAPPER = new RestExceptionMapper();
+	private static final SanJuanRuntimeExceptionMapper EXCEPTION_MAPPER = new SanJuanRuntimeExceptionMapper();
 	
 	private final GameResource gameResource;
 	private final UserResource userResource;
@@ -51,7 +51,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	protected void doEvent(BddPart<GameDriver> given, GameDriver context) {
 		try {
 			super.doGiven(given, context);
-		} catch (SanJuanException e) {
+		} catch (SanJuanRuntimeException e) {
 			Response response = EXCEPTION_MAPPER.toResponse(e);
 			context.setLastResponse(new SpringResponse(response.getEntity(), response.getStatus())); 
 		}
@@ -61,7 +61,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	protected void doOutcome(BddPart<GameDriver> outcome, GameDriver context) {
 		try {
 			super.doOutcome(outcome, context);
-		} catch (SanJuanException e) {
+		} catch (SanJuanRuntimeException e) {
 			Response response = EXCEPTION_MAPPER.toResponse(e);
 			context.setLastResponse(new SpringResponse(response.getEntity(), response.getStatus())); 
 		}

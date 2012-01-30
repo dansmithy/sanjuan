@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -79,20 +79,20 @@ public class TraderProcessor implements RoleProcessor {
 		
 		boolean withPrivilege = play.isHasPrivilige();
 		if (playChoice.getProductionFactories().size() > numbers.getTotalGoodsCanTrade(withPrivilege)) {
-			throw new PlayChoiceInvalidException(String.format("Can only trade a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanTrade(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidException.OVER_TRADE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Can only trade a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanTrade(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidRuntimeException.OVER_TRADE);
 		}
 		
 		if (CollectionUtils.hasDuplicates(playChoice.getProductionFactories())) {
-			throw new PlayChoiceInvalidException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidRuntimeException.DUPLICATE_CHOICE);
 		}		
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			
 			if (!player.getBuildings().contains(chosenFactory)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot trade on factory %d as is not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
+				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot trade on factory %d as is not one of your buildings.", chosenFactory), PlayChoiceInvalidRuntimeException.NOT_OWNED_FACTORY);
 			}
 			if (!player.getGoods().containsKey(chosenFactory)) {
-				throw new PlayChoiceInvalidException(String.format("There is not a good to trade on card %d.", chosenFactory), PlayChoiceInvalidException.NOT_FULL_FACTORY);
+				throw new PlayChoiceInvalidRuntimeException(String.format("There is not a good to trade on card %d.", chosenFactory), PlayChoiceInvalidRuntimeException.NOT_FULL_FACTORY);
 			}
 			int price = calculatePrice(chosenFactory, gameUpdater.getCurrentPhase().getTariff());
 			Integer good = player.getGoods().remove(chosenFactory);

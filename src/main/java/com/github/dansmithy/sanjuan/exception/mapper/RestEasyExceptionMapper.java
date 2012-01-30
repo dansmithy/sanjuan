@@ -14,7 +14,7 @@ import com.github.dansmithy.sanjuan.exception.model.JsonError;
 
 @Provider
 @Named
-public class RestEasyRestExceptionMapper implements ExceptionMapper<LoggableFailure> {
+public class RestEasyExceptionMapper implements ExceptionMapper<LoggableFailure> {
 
 	/**
 	 */

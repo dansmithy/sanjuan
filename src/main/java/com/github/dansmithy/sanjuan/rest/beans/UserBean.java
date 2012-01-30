@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.dao.UserDao;
-import com.github.dansmithy.sanjuan.exception.ImmutableDataException;
+import com.github.dansmithy.sanjuan.exception.ImmutableDataRuntimeException;
 import com.github.dansmithy.sanjuan.model.User;
 import com.github.dansmithy.sanjuan.model.output.Users;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
@@ -34,7 +34,7 @@ public class UserBean implements UserResource {
 	@Override
 	public User updateUser(String username, User user) {
 		if (!username.equals(user.getUsername())) {
-			throw new ImmutableDataException(String.format("Cannot change username for user %s", username));
+			throw new ImmutableDataRuntimeException(String.format("Cannot change username for user %s", username));
 		}
 		userDao.updateUser(user);
 		return user;

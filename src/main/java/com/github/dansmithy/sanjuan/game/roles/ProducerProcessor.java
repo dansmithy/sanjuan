@@ -6,7 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
 import com.github.dansmithy.sanjuan.model.BuildingType;
@@ -77,21 +77,21 @@ public class ProducerProcessor implements RoleProcessor {
 
 		boolean withPrivilege = play.isHasPrivilige();
 		if (playChoice.getProductionFactories().size() > numbers.getTotalGoodsCanProduce(withPrivilege)) {
-			throw new PlayChoiceInvalidException(String.format("Can only produce a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanProduce(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidException.OVER_PRODUCE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("Can only produce a maximum of %d goods, but have chosen %d.", numbers.getTotalGoodsCanProduce(withPrivilege), playChoice.getProductionFactories().size()), PlayChoiceInvalidRuntimeException.OVER_PRODUCE);
 		}
 		
 		if (CollectionUtils.hasDuplicates(playChoice.getProductionFactories())) {
-			throw new PlayChoiceInvalidException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidException.DUPLICATE_CHOICE);
+			throw new PlayChoiceInvalidRuntimeException(String.format("List of factories contains duplicates, not allowed."), PlayChoiceInvalidRuntimeException.DUPLICATE_CHOICE);
 		}
 		
 		for (Integer chosenFactory : playChoice.getProductionFactories()) {
 			
 			if (!player.getBuildings().contains(chosenFactory)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory), PlayChoiceInvalidException.NOT_OWNED_FACTORY);
+				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot produce with factory %d as not one of your buildings.", chosenFactory), PlayChoiceInvalidRuntimeException.NOT_OWNED_FACTORY);
 			}
 			
 			if (player.getGoods().containsKey(chosenFactory)) {
-				throw new PlayChoiceInvalidException(String.format("Cannot produce with factory %d as already has a good.", chosenFactory), PlayChoiceInvalidException.NOT_EMPTY_FACTORY);
+				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot produce with factory %d as already has a good.", chosenFactory), PlayChoiceInvalidRuntimeException.NOT_EMPTY_FACTORY);
 			}
 			
 			Integer good = deck.takeOne();
