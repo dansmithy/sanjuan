@@ -247,6 +247,10 @@ public class DatastoreGameService implements GameService {
 		GameUpdater gameUpdater = new GameUpdater(game);
 		String loggedInUser = userProvider.getAuthenticatedUsername();
 		
+		if (!game.hasPlayer(loggedInUser)) {
+			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+		}
+		
 		if (!game.getState().equals(GameState.PLAYING)) {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
 		}
@@ -311,7 +315,12 @@ public class DatastoreGameService implements GameService {
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
 		
 		Game game = getGame(coords.getGameId());
+		String loggedInUser = userProvider.getAuthenticatedUsername();
 		GameUpdater gameUpdater = new GameUpdater(game);
+		
+		if (!game.hasPlayer(loggedInUser)) {
+			throw new NotResourceOwnerAccessException(String.format("%s is not a player in this game.", loggedInUser), NotResourceOwnerAccessException.NOT_YOUR_GAME);
+		}
 		
 		if (!game.getState().equals(GameState.PLAYING)) {
 			throw new IllegalGameStateException(String.format("Game not active, so cannot play now."), IllegalGameStateException.NOT_PLAYING);
@@ -325,7 +334,7 @@ public class DatastoreGameService implements GameService {
 			throw new IllegalGameStateException(String.format("Cannot make play at this point in the game."), IllegalGameStateException.PLAY_NOT_ACTIVE);
 		}		
 		
-		if (!userProvider.getAuthenticatedUsername().equals(gameUpdater.getCurrentPlayer().getName())) {
+		if (!loggedInUser.equals(gameUpdater.getCurrentPlayer().getName())) {
 			throw new NotResourceOwnerAccessException("It is not your turn to play.", NotResourceOwnerAccessException.NOT_CORRECT_USER);
 		}
 		

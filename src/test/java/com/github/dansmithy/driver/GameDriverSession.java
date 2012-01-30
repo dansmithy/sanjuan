@@ -53,10 +53,4 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
-
-
-
-
-
-
 }

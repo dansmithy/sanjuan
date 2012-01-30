@@ -85,7 +85,7 @@ public class GovernorAT {
 	}
 	
 	@Test
-	public void testCannotChooseRoleWhenNotAPlayerInTheGame() {
+	public void testCannotChooseRoleWhenNotPlayerInGame() {
 
 		bdd.runTest(
 
@@ -187,6 +187,24 @@ public class GovernorAT {
 						.and(verifyResponseContains("{ code : 'NOT_CORRECT_USER' }")));
 
 	}
+	
+
+	@Test
+	public void testCannotDiscardCardsWhenNotPlayerInGame() {
+		
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						bothPlayersAccrueEightCards()).and(
+						initiateGovernorPhase()).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
+
+				when(userMakesGovernorPlay("#charlie", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_YOUR_GAME' }")));
+
+	}	
 
 	@Test
 	public void testCannotMakeGovernorChoiceWhenStillGovernorPhaseButChoiceAlreadyMade() {

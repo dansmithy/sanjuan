@@ -1,20 +1,11 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.BddHelper.then;
-import static com.github.dansmithy.bdd.BddHelper.when;
-import static com.github.dansmithy.bdd.GivenBddParts.given;
+import static com.github.dansmithy.bdd.BddHelper.*;
+import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
-import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.gameStartedBy;
-import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.driver.BddPartProvider.userPlays;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
-import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
-import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddPart;
@@ -43,6 +34,22 @@ public class ExtendedPlayAT {
 				then(verifyResponseCodeIs(HTTP_CONFLICT)).and(
 						verifyResponseContains("{ code : 'PLAY_NOT_ACTIVE' }")));
 	}
+	
+	@Test
+	public void testCannotMakePlayIfNotPlayerInGame() {
+
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						roleChosenBy("#alice", "round : 1; phase : 1",
+								"role : BUILDER")).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
+
+				when(userPlays("#charlie", "round : 1; phase : 1; play : 1",
+						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_UNAUTHORIZED)).and(verifyResponseContains("{ code : 'NOT_YOUR_GAME' }")));
+	}
+	
 
 	@Test
 	public void testCompletePhase() {
