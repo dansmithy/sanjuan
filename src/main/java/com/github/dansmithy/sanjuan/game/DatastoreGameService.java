@@ -294,15 +294,18 @@ public class DatastoreGameService implements GameService {
  		if (!player.getHandCards().containsAll(governorChoice.getCardsToDiscard())) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  		}
-		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
+ 		
 		if (governorChoice.getChapelCard() != null) {
+			if (!player.getHandCards().contains(governorChoice.getChapelCard())) {
+				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
+			}
 			step.setChapelCard(governorChoice.getChapelCard());
 			player.addChapelCard(governorChoice.getChapelCard());
 			player.removeHandCard(governorChoice.getChapelCard());
 		}
+ 		
+		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
-		
-		
 		player.removeHandCards(governorChoice.getCardsToDiscard());
 		game.getDeck().discard(governorChoice.getCardsToDiscard());
 		

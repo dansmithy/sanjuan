@@ -327,7 +327,7 @@ public class GovernorAT {
 	}
 	
 	@Test
-	public void testChapelOwnerCanDiscardCard() {
+	public void testChapelOwnerCanAddCardToChapel() {
 		bdd.runTest(
 
 				given(governorPhaseInitiatedWithAliceHavingBuiltChapel()),
@@ -337,6 +337,19 @@ public class GovernorAT {
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 4, handCount: 2 } ], 'currentRound' : { state : 'PLAYING' } }")));
 	}
+	
+	@Test
+	public void testChapelOwnerCannotAddCardDoNotOwnToChapel() {
+		bdd.runTest(
+
+				given(governorPhaseInitiatedWithAliceHavingBuiltChapel()),
+
+				when(userMakesGovernorPlay("#alice", "round : 2",
+						"{ 'chapelCard' : '#sugarmill'  }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
+	}	
 
 	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
 		return new GivenBddParts(bothPlayersAccrueEightCards())
