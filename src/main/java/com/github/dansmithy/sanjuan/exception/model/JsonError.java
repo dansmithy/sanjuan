@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan.exception;
+package com.github.dansmithy.sanjuan.exception.model;
 
 public class JsonError {
 

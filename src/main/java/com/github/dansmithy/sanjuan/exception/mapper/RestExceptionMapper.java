@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan.exception;
+package com.github.dansmithy.sanjuan.exception.mapper;
 
 import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
@@ -6,6 +6,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateException;
+import com.github.dansmithy.sanjuan.exception.ImmutableDataException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidException;
+import com.github.dansmithy.sanjuan.exception.RequestInvalidException;
+import com.github.dansmithy.sanjuan.exception.ResourceNotFoundException;
+import com.github.dansmithy.sanjuan.exception.SanJuanException;
+import com.github.dansmithy.sanjuan.exception.model.JsonError;
 
 
 @Provider

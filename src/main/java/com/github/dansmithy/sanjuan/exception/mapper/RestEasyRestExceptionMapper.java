@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan.exception;
+package com.github.dansmithy.sanjuan.exception.mapper;
 
 import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
@@ -8,6 +8,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.spi.LoggableFailure;
 import org.jboss.resteasy.spi.UnauthorizedException;
+
+import com.github.dansmithy.sanjuan.exception.model.JsonError;
 
 
 @Provider
