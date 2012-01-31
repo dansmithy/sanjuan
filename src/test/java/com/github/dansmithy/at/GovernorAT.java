@@ -102,9 +102,9 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()),
+						playRoundsOneAndTwoExceptFinalMove()),
 
-				when(initiateGovernorPhase()),
+				when(playRoundTwoFinalMove()),
 
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 1, handCount : 8 }, { 'name' : '#bob', victoryPoints: 1, handCount : 8 } ], 'roundNumber' : 3, 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 1 } } } }")));
 	}
@@ -114,7 +114,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						playUpToGovernorDiscardCardPhase()),
+						playFullRoundsOneAndTwo()),
 
 				when(roleChosenBy("#alice", "round : 3; phase : 1",
 						"role : BUILDER")),
@@ -129,8 +129,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -144,8 +144,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(bothPlayersAccrueEightCards())
-						.and(initiateGovernorPhase())
+						.and(playRoundsOneAndTwoExceptFinalMove())
+						.and(playRoundTwoFinalMove())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
 						.and(userMakesGovernorPlay("#bob", "round : 3",
@@ -177,8 +177,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay("#bob", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -196,8 +196,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
 
 				when(userMakesGovernorPlay("#charlie", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -211,8 +211,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
-						.and(bothPlayersAccrueEightCards())
-						.and(initiateGovernorPhase())
+						.and(playRoundsOneAndTwoExceptFinalMove())
+						.and(playRoundTwoFinalMove())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
 								"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
 
@@ -228,8 +228,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay(
 						"#alice",
@@ -245,8 +245,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ ] }")),
@@ -260,8 +260,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay("#alice", "round : 3",
 						"{ 'cardsToDiscard' : [ '#sugarmill3' ] }")),
@@ -275,8 +275,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						bothPlayersAccrueEightCards()).and(
-						initiateGovernorPhase()),
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
 
 				when(userMakesGovernorPlay("#alice", "round : 2",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -291,8 +291,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						playUpToGovernorDiscardCardPhase()).and(
-						discardThenAccrueOverEightCards()),
+						playFullRoundsOneAndTwo()).and(
+						playFullRound3()),
 
 				when(userMakesGovernorPlay("#bob", "round : 4",
 						"{ 'cardsToDiscard' : [ '#indigoplant8' ] }")),
@@ -305,8 +305,8 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						playUpToGovernorDiscardCardPhase()).and(
-						discardThenAccrueOverEightCards()),
+						playFullRoundsOneAndTwo()).and(
+						playFullRound3()),
 
 				when(userMakesGovernorPlay("#bob", "round : 4",
 						"{ 'cardsToDiscard' : [ '#indigoplant7', '#indigoplant7' ] }")),
@@ -319,7 +319,7 @@ public class GovernorAT {
 	public void testChapelOwnerHasChapelOwnerSetToTrue() {
 		bdd.runTest(
 
-				given(governorPhaseInitiatedWithAliceHavingBuiltChapel()),
+				given(playRoundOneAndBuildChapel()),
 
 				when(getGameFor("#alice")),
 
@@ -330,7 +330,7 @@ public class GovernorAT {
 	public void testChapelOwnerCanAddCardToChapel() {
 		bdd.runTest(
 
-				given(governorPhaseInitiatedWithAliceHavingBuiltChapel()),
+				given(playRoundOneAndBuildChapel()),
 
 				when(userMakesGovernorPlay("#alice", "round : 2",
 						"{ 'chapelCard' : '#quarry'  }")),
@@ -338,11 +338,24 @@ public class GovernorAT {
 				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 4, handCount: 2 } ], 'currentRound' : { state : 'PLAYING' } }")));
 	}
 	
+	
+	@Test
+	public void testChapelOwnerCanChooseNotToAddToChapel() {
+		bdd.runTest(
+
+				given(playRoundOneAndBuildChapel()),
+
+				when(userMakesGovernorPlay("#alice", "round : 2",
+						"{ }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3, handCount: 3 } ], 'currentRound' : { state : 'PLAYING' } }")));
+	}
+	
 	@Test
 	public void testChapelOwnerCannotAddCardDoNotOwnToChapel() {
 		bdd.runTest(
 
-				given(governorPhaseInitiatedWithAliceHavingBuiltChapel()),
+				given(playRoundOneAndBuildChapel()),
 
 				when(userMakesGovernorPlay("#alice", "round : 2",
 						"{ 'chapelCard' : '#sugarmill'  }")),
@@ -351,12 +364,197 @@ public class GovernorAT {
 						.and(verifyResponseContains("{ code : 'NOT_OWNED_HAND_CARD' }")));
 	}	
 
-	private BddPart<GameDriver> playUpToGovernorDiscardCardPhase() {
-		return new GivenBddParts(bothPlayersAccrueEightCards())
-				.and(initiateGovernorPhase());
+	@Test
+	public void testCanDiscardCardsPlusAddCardToChapel() {
+		bdd.runTest(
+
+				given(playRoundOneAndBuildChapel())
+					.and(userMakesGovernorPlay("#alice", "round : 2", "{ }"))
+					.and(playRoundTwoExceptFinalMove())
+					.and(playRoundTwoFinalMove())
+					.and(roundThreeGovernorPhaseWithChapel())
+					.and(playRoundThree())
+					.and(playRoundFour()),
+
+				when(userMakesGovernorPlay("#alice", "round : 5",
+				"{ 'cardsToDiscard' : [ '#quarry' ], chapelCard : '#carpenter' }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 4, handCount: 7 } ], 'currentRound' : { state : 'GOVERNOR' } }")));
+
+	}	
+
+	@Test
+	public void testCanDiscardTwoCardsInsteadOfAddingCardToChapel() {
+		bdd.runTest(
+
+				given(playRoundOneAndBuildChapel())
+					.and(userMakesGovernorPlay("#alice", "round : 2", "{ }"))
+					.and(playRoundTwoExceptFinalMove())
+					.and(playRoundTwoFinalMove())
+					.and(roundThreeGovernorPhaseWithChapel())
+					.and(playRoundThree())
+					.and(playRoundFour()),
+
+				when(userMakesGovernorPlay("#alice", "round : 5",
+				"{ 'cardsToDiscard' : [ '#quarry', '#carpenter' ] }")),
+
+				then(verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 3, handCount: 7 } ], 'currentRound' : { state : 'GOVERNOR' } }")));
+
+	}	
+	
+	@Test
+	public void testMustDiscardFullAmountIfDoNotAddCardToChapel() {
+		bdd.runTest(
+
+				given(playRoundOneAndBuildChapel())
+					.and(userMakesGovernorPlay("#alice", "round : 2", "{ }"))
+					.and(playRoundTwoExceptFinalMove())
+					.and(playRoundTwoFinalMove())
+					.and(roundThreeGovernorPhaseWithChapel())
+					.and(playRoundThree())
+					.and(playRoundFour()),
+
+				when(userMakesGovernorPlay("#alice", "round : 5",
+				"{ 'cardsToDiscard' : [ '#quarry' ] }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST)).and(
+						verifyResponseContains("{ code : 'UNDER_DISCARD' }")));
+
+	}		
+
+	
+	@Test
+	public void testCannotSpecifyChapelCardIfNotChapelOwner() {
+		bdd.runTest(
+
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+						playRoundsOneAndTwoExceptFinalMove()).and(
+						playRoundTwoFinalMove()),
+
+				when(userMakesGovernorPlay("#alice", "round : 3",
+						"{ 'chapelCard' : '#indigoplant3' }")),
+
+				then(verifyResponseCodeIs(HTTP_BAD_REQUEST))
+						.and(verifyResponseContains("{ code : 'NOT_OWNED_BUILDING' }")));
+
+	}	
+
+	private BddPart<GameDriver> playFullRoundsOneAndTwo() {
+		return new GivenBddParts(playRoundsOneAndTwoExceptFinalMove())
+				.and(playRoundTwoFinalMove());
+	}
+
+	private BddPart<GameDriver> playRoundsOneAndTwoExceptFinalMove() {
+		return new GivenBddParts(playRoundOne()).and(playRoundTwoExceptFinalMove());
 	}
 	
-	private BddPart<GameDriver> governorPhaseInitiatedWithAliceHavingBuiltChapel() {
+	
+	private BddPart<GameDriver> playFullRound3() {
+		return new GivenBddParts(roundThreeGovernorPhase()).and(playRoundThree());
+	}
+	
+	
+	/**
+	 * At end of this alice has 7 cards and bob has 6 cards.
+	 */
+	private BddPart<GameDriver> playRoundOne() {
+		return new GivenBddParts(roleChosenBy("#alice", "round : 1; phase : 1",
+				"role : PROSPECTOR"))
+				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
+						"{ }"))
+				.and(userPlays("#bob", "round : 1; phase : 1; play : 2",
+						"{ skip : true }"))
+				.and(roleChosenBy("#bob", "round : 1; phase : 2",
+						"role : COUNCILLOR"))
+				.and(userPlays(
+						"#bob",
+						"round : 1; phase : 2; play : 1",
+						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
+				.and(userPlays("#alice", "round : 1; phase : 2; play : 2",
+						"{ councilDiscarded : [ '#sugarmill4' ] }"))
+				.and(roleChosenBy("#alice", "round : 1; phase : 3",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 1; phase : 3; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 1; phase : 3; play : 2",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+
+		;
+	}
+	
+	/**
+	 * At end of this alice has 8 cards and bob has 8 cards.
+	 */
+	private BddPart<GameDriver> playRoundTwoExceptFinalMove() {
+		return new GivenBddParts(roleChosenBy("#bob", "round : 2; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#bob", "round : 2; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(userPlays("#alice", "round : 2; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 2; phase : 2",
+						"role : PRODUCER"))
+				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 2; phase : 2; play : 2",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(roleChosenBy("#bob", "round : 2; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#bob", "round : 2; phase : 3; play : 1", "{  }"))
+
+		;
+	}
+	
+	private BddPart<GameDriver> playRoundTwoFinalMove() {
+		return userPlays("#alice", "round : 2; phase : 3; play : 2",
+				"{ skip : true }");
+	}
+	
+	/**
+	 * Both players discard one card to bring down to 7
+	 */
+	private BddPart<GameDriver> roundThreeGovernorPhase() {
+		return new GivenBddParts(userMakesGovernorPlay("#alice", "round : 3",
+				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
+				.and(userMakesGovernorPlay("#bob", "round : 3",
+						"{ 'cardsToDiscard' : [ '#indigoplant7' ] }"))
+		;
+	}
+	
+	/**
+	 * At end of round alice has 9 cards and bob has 8 cards.
+	 * 
+	 * If used with chapel, then alice has 6 cards and bob has 8 cards
+	 */
+	private BddPart<GameDriver> playRoundThree() {
+		return new GivenBddParts(roleChosenBy("#alice", "round : 3; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#alice", "round : 3; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(userPlays("#bob", "round : 3; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(roleChosenBy("#bob", "round : 3; phase : 2",
+						"role : PRODUCER"))
+				.and(userPlays("#bob", "round : 3; phase : 2; play : 1",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(userPlays("#alice", "round : 3; phase : 2; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 3",
+						"role : PROSPECTOR"))
+				.and(userPlays("#alice", "round : 3; phase : 3; play : 1",
+						"{  }"))
+				.and(userPlays("#bob", "round : 3; phase : 3; play : 2",
+						"{ skip : true }"))
+		;
+	}
+		
+	
+	/**
+	 * Round 1 where alice builds chapel.
+	 * 
+	 * At end of round, alice has 4 cards and bob has 8 cards  
+	 */
+	private BddPart<GameDriver> playRoundOneAndBuildChapel() {
 		return new GivenBddParts(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order3)).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER"))
@@ -378,77 +576,47 @@ public class GovernorAT {
 								"{ productionFactories : [ '#indigoplant' ] }"))
 						.and(userPlays("#bob", "round : 1; phase : 3; play : 2",
 								"{ productionFactories : [ '#indigoplant2' ] }"));
-	}
-
-	private BddPart<GameDriver> discardThenAccrueOverEightCards() {
+	}	
+	
+	/**
+	 * After bob discarding one, alice has 4 cards and bob has 7 cards
+	 */
+	private BddPart<GameDriver> roundThreeGovernorPhaseWithChapel() {
 		return new GivenBddParts(userMakesGovernorPlay("#alice", "round : 3",
-				"{ 'cardsToDiscard' : [ '#indigoplant3' ] }"))
+				"{ }"))
 				.and(userMakesGovernorPlay("#bob", "round : 3",
 						"{ 'cardsToDiscard' : [ '#indigoplant7' ] }"))
-				.and(roleChosenBy("#alice", "round : 3; phase : 1",
-						"role : TRADER"))
-				.and(userPlays("#alice", "round : 3; phase : 1; play : 1",
-						"{ productionFactories : [ '#indigoplant' ] }"))
-				.and(userPlays("#bob", "round : 3; phase : 1; play : 2",
-						"{ productionFactories : [ '#indigoplant2' ] }"))
-				.and(roleChosenBy("#bob", "round : 3; phase : 2",
-						"role : PRODUCER"))
-				.and(userPlays("#bob", "round : 3; phase : 2; play : 1",
-						"{ productionFactories : [ '#indigoplant2' ] }"))
-				.and(userPlays("#alice", "round : 3; phase : 2; play : 2",
-						"{ productionFactories : [ '#indigoplant' ] }"))
-				.and(roleChosenBy("#alice", "round : 3; phase : 3",
-						"role : PROSPECTOR"))
-				.and(userPlays("#alice", "round : 3; phase : 3; play : 1",
-						"{  }"))
-				.and(userPlays("#bob", "round : 3; phase : 3; play : 2",
-						"{ skip : true }"))
-
 		;
 	}
-
-	private BddPart<GameDriver> initiateGovernorPhase() {
-		return userPlays("#alice", "round : 2; phase : 3; play : 2",
-				"{ skip : true }");
-	}
-
-	private BddPart<GameDriver> bothPlayersAccrueEightCards() {
-		return new GivenBddParts(roleChosenBy("#alice", "round : 1; phase : 1",
-				"role : PROSPECTOR"))
-				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
+	
+	/**
+	 * At end of round alice has 8 cards and bob has 9 cards (when alice has chapel)
+	 */
+	private BddPart<GameDriver> playRoundFour() {
+		return new GivenBddParts(userMakesGovernorPlay("#bob", "round : 4",
+				"{ 'cardsToDiscard' : [ '#tobaccostorage4' ] }"))
+				.and(userMakesGovernorPlay("#alice", "round : 4", "{ }"))
+				.and(roleChosenBy("#bob", "round : 4; phase : 1",
+						"role : TRADER"))
+				.and(userPlays("#bob", "round : 4; phase : 1; play : 1",
+						"{ productionFactories : [ '#indigoplant2' ] }"))
+				.and(userPlays("#alice", "round : 4; phase : 1; play : 2",
+						"{ productionFactories : [ '#indigoplant' ] }"))
+				.and(roleChosenBy("#alice", "round : 4; phase : 2",
+						"role : PROSPECTOR"))
+				.and(userPlays("#alice", "round : 4; phase : 2; play : 1",
 						"{ }"))
-				.and(userPlays("#bob", "round : 1; phase : 1; play : 2",
+				.and(userPlays("#bob", "round : 4; phase : 2; play : 2",
 						"{ skip : true }"))
-				.and(roleChosenBy("#bob", "round : 1; phase : 2",
+				.and(roleChosenBy("#bob", "round : 4; phase : 3",
 						"role : COUNCILLOR"))
 				.and(userPlays(
 						"#bob",
-						"round : 1; phase : 2; play : 1",
-						"{ councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ] }"))
-				.and(userPlays("#alice", "round : 1; phase : 2; play : 2",
-						"{ councilDiscarded : [ '#sugarmill4' ] }"))
-				.and(roleChosenBy("#alice", "round : 1; phase : 3",
-						"role : PRODUCER"))
-				.and(userPlays("#alice", "round : 1; phase : 3; play : 1",
-						"{ productionFactories : [ '#indigoplant' ] }"))
-				.and(userPlays("#bob", "round : 1; phase : 3; play : 2",
-						"{ productionFactories : [ '#indigoplant2' ] }"))
-				.and(roleChosenBy("#bob", "round : 2; phase : 1",
-						"role : TRADER"))
-				.and(userPlays("#bob", "round : 2; phase : 1; play : 1",
-						"{ productionFactories : [ '#indigoplant2' ] }"))
-				.and(userPlays("#alice", "round : 2; phase : 1; play : 2",
-						"{ productionFactories : [ '#indigoplant' ] }"))
-				.and(roleChosenBy("#alice", "round : 2; phase : 2",
-						"role : PRODUCER"))
-				.and(userPlays("#alice", "round : 2; phase : 2; play : 1",
-						"{ productionFactories : [ '#indigoplant' ] }"))
-				.and(userPlays("#bob", "round : 2; phase : 2; play : 2",
-						"{ productionFactories : [ '#indigoplant2' ] }"))
-				.and(roleChosenBy("#bob", "round : 2; phase : 3",
-						"role : PROSPECTOR"))
-				.and(userPlays("#bob", "round : 2; phase : 3; play : 1", "{  }"))
-
-		;
-	}
+						"round : 4; phase : 3; play : 1",
+						"{ councilDiscarded : [ '#coffeeroaster5', '#coffeeroaster6', '#coffeeroaster7', '#coffeeroaster8' ] }"))
+				.and(userPlays("#alice", "round : 4; phase : 3; play : 2",
+						"{ councilDiscarded : [ '#silversmelter' ] }"))
+				
+				;
+	}	
 }

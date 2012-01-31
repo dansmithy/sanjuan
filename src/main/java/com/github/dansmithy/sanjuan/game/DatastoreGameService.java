@@ -283,6 +283,21 @@ public class DatastoreGameService implements GameService {
 		int cardsShouldDiscardCount = Math.max(0, player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold());
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
  		
+ 		if (governorChoice.getChapelCard() != null) {
+ 			
+ 			if (!step.isChapelOwner()) {
+ 				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as you have not built a chapel"), PlayChoiceInvalidRuntimeException.NOT_OWNED_BUILDING);
+ 			}
+ 			
+ 			if (!player.getHandCards().contains(governorChoice.getChapelCard())) {
+ 				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
+ 			}
+ 			step.setChapelCard(governorChoice.getChapelCard());
+ 			player.addChapelCard(governorChoice.getChapelCard());
+ 			player.removeHandCard(governorChoice.getChapelCard());
+ 			cardsShouldDiscardCount = Math.max(0, cardsShouldDiscardCount - 1);
+ 		}
+ 		
  		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but only need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidRuntimeException.OVER_DISCARD);
  		}
@@ -294,15 +309,6 @@ public class DatastoreGameService implements GameService {
  		if (!player.getHandCards().containsAll(governorChoice.getCardsToDiscard())) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  		}
- 		
-		if (governorChoice.getChapelCard() != null) {
-			if (!player.getHandCards().contains(governorChoice.getChapelCard())) {
-				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
-			}
-			step.setChapelCard(governorChoice.getChapelCard());
-			player.addChapelCard(governorChoice.getChapelCard());
-			player.removeHandCard(governorChoice.getChapelCard());
-		}
  		
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
