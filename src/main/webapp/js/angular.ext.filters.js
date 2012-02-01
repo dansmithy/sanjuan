@@ -28,6 +28,17 @@ angular.filter("ternary", function(condition, valueIfTrue, valueIfFalse, valueIf
 	return condition ? valueIfTrue : valueIfFalse;
 });
 
+angular.filter("join", function(array, delimiter, finalDelimiter) {
+	var arrayCopy = angular.Object.copy(array);
+	var lastItem = arrayCopy.pop();
+	var strList = arrayCopy.join(delimiter);
+	if (arrayCopy.length >= 1) {
+		strList += finalDelimiter;
+	}
+	strList += lastItem;
+	return strList;
+});
+
 angular.filter("prettyDate", function(time) {
 	
 	var prettyDate = function(date){
