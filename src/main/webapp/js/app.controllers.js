@@ -308,29 +308,33 @@ GovernorPhaseResponse.prototype = {
 	},
 	
 	clickHandCard : function(handCard) {
-		if (this.isDiscardCard(handCard)) {
-			if (this.options.chapelOwner) {
-				this.response.chapelCard = handCard;
+		
+		if (this.response.chapelCard === handCard) {
+			delete this.response.chapelCard;
+			if (this.needToDiscardCards()) {
+				this.response.cardsToDiscard.push(handCard);
 			}
+		} else if (this.isDiscardCard(handCard)) {
 			angular.Array.remove(this.response.cardsToDiscard, handCard);
 		} else {
-			if (this.response.chapelCard === handCard) {
-				delete this.response.chapelCard;
-			} else {
-				if (this.options.numberOfCardsToDiscard > 0) {
-					if (this.choicesMade()) {
-						if (this.response.cardsToDiscard.length > 0) {
-							this.response.cardsToDiscard.pop();
-						} else if (angular.isDefined(this.response.chapelCard)) {
-							delete this.response.chapelCard;
-						}
-					}
-					this.response.cardsToDiscard.push(handCard);
-				} else if (this.options.chapelOwner) {
+			if (this.choicesMade()) {
+				if (angular.isDefined(this.response.chapelCard)) {
+					delete this.response.chapelCard;
 					this.response.chapelCard = handCard;
+				} else {
+					this.response.cardsToDiscard.pop();
+					this.response.cardsToDiscard.push(handCard);
 				}
+			} else if (this.options.chapelOwner) {
+				this.response.chapelCard = handCard;
+			} else {
+				this.response.cardsToDiscard.push(handCard);
 			}
 		}
+	},
+	
+	needToDiscardCards : function() {
+		 return this.options.numberOfCardsToDiscard > 0;
 	},
 	
 	choicesMade : function() {
