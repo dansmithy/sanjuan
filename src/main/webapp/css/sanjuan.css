@@ -86,7 +86,7 @@ img.selectable-card {
 	border: 2px solid white;
 }
 
-div.selected-role-true,
+img.selected-role-true,
 img.primary-selection {
 	border: 2px solid red;
 }
