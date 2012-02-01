@@ -1,7 +1,56 @@
+
         <div class="row">
-            <div class="span12"><h3>You have too many cards in your hand. Please choose which {{responder.options.numberOfCardsToDiscard}} card(s) to discard?</h3></div>
+            <div class="span16" ng:show="false">
+                <pre>response={{responder.response}}</pre>
+            </div>
+            <div class="span13">
+                <div class="row">
+                    <div class="span13" ng:show="responder.options.chapelOwner">
+                        <p ng:show="responder.options.numberOfCardsToDiscard == 1">
+                            <span>You have too many hand cards and need to discard one.</span>
+                            <span>As you have built a Chapel, you can instead add this card to it for an extra victory point.</span>
+                            <span>A green border indicates add to Chapel, while a red border indicates to be discarded.</span>
+                        </p>
+                        <p ng:show="responder.options.numberOfCardsToDiscard > 1">
+                            <span>You have too many hand cards and need to discard {{responder.options.numberOfCardsToDiscard}} card(s) in total.</span>
+                            <span>As you have built a Chapel, one of these cards can be put under it for an extra victory point.</span>
+                            <span>A green border indicates add to Chapel, while a red border indicates to be discarded.</span>
+                        </p>
+                        <p ng:show="responder.options.numberOfCardsToDiscard == 0">
+                            <span>As you have built a Chapel, you can choose to put a card under it for an extra victory point.</span>
+                            <span>If so, select a card to add to your Chapel.</span>
+                        </p>
+                    </div>
+                    <div class="span13" ng:hide="responder.options.chapelOwner">
+                        <p>
+                            <span>You have too many hand cards and need to discard {{responder.options.numberOfCardsToDiscard}} card(s).</span>
+                        </p>
+                    </div>   
+                    
+                    <div class="span13" ng:show="responder.options.chapelOwner">
+                        <p ng:show="responder.options.numberOfCardsToDiscard == 1">
+                            <span ng:hide="responder.response.chapelCard || responder.response.cardsToDiscard"><strong>You still need to select a card.</strong></span>
+                            <span ng:show="responder.response.cardsToDiscard"><strong>Choosing to discad a {{cardService.cardMap[responder.response.cardsToDiscard[0]]}}.</strong></span>
+                            <span ng:show="responder.response.chapelCard"><strong>Choosing to put a {{cardService.cardMap[responder.response.chapelCard]}} under your Chapel.</strong></span>
+                        </p>
+                        <p ng:show="responder.options.numberOfCardsToDiscard > 1">
+                            <span>TBD</span>
+                        </p>
+                        <p ng:show="responder.options.numberOfCardsToDiscard == 0">
+                            <span ng:show="responder.response.chapelCard"><strong>Choosing to put a {{cardService.cardMap[responder.response.chapelCard]}} under your Chapel.</strong></span>
+                            <span ng:hide="responder.response.chapelCard"><strong>Choosing not to put a card under your Chapel.</strong></span>
+                        </p>
+                    </div>
+                    <div class="span13" ng:hide="responder.options.chapelOwner">
+                        <p>
+                            <span ng:show="responder.response.cardsToDiscard"><strong>You are choosing to discard XXX</strong></span>
+                            <span ng:hide="responder.response.cardsToDiscard"><strong>You still need to select {{responder.options.numberOfCardsToDiscard}} card(s) to discard</strong></span>
+                        </p>
+                    </div>                                
+                </div>
+            </div>
             <div class="span3">
-                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Discard</button>
+                <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Make choice</button>
             </div>
         </div>
   

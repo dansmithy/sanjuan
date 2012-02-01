@@ -298,6 +298,8 @@ GovernorPhaseResponse.prototype = {
 	handCardSelectedType : function(handCard) {
 		if (this.isDiscardCard(handCard)) {
 			return "primary-selection";
+		} else if (handCard === this.response.chapelCard) {
+			return "secondary-selection";
 		}
 	},
 	
@@ -307,17 +309,36 @@ GovernorPhaseResponse.prototype = {
 	
 	clickHandCard : function(handCard) {
 		if (this.isDiscardCard(handCard)) {
+			if (this.options.chapelOwner) {
+				this.response.chapelCard = handCard;
+			}
 			angular.Array.remove(this.response.cardsToDiscard, handCard);
 		} else {
-			if (this.choicesMade()) {
-				this.response.cardsToDiscard.pop();
+			if (this.response.chapelCard === handCard) {
+				delete this.response.chapelCard;
+			} else {
+				if (this.options.numberOfCardsToDiscard > 0) {
+					if (this.choicesMade()) {
+						if (this.response.cardsToDiscard.length > 0) {
+							this.response.cardsToDiscard.pop();
+						} else if (angular.isDefined(this.response.chapelCard)) {
+							delete this.response.chapelCard;
+						}
+					}
+					this.response.cardsToDiscard.push(handCard);
+				} else if (this.options.chapelOwner) {
+					this.response.chapelCard = handCard;
+				}
 			}
-			this.response.cardsToDiscard.push(handCard);
 		}
 	},
 	
 	choicesMade : function() {
-		return this.response.cardsToDiscard.length === this.options.numberOfCardsToDiscard;
+		var cardsDiscarded = this.response.cardsToDiscard.length;
+		if (angular.isDefined(this.response.chapelCard)) {
+			cardsDiscarded += 1;
+		}
+		return cardsDiscarded === this.options.numberOfCardsToDiscard;
 	}
 
 };
