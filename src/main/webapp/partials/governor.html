@@ -34,7 +34,11 @@
                             <span ng:show="responder.response.chapelCard"><strong>Choosing to put a {{cardService.cardMap[responder.response.chapelCard]}} under your Chapel.</strong></span>
                         </p>
                         <p ng:show="responder.options.numberOfCardsToDiscard > 1">
-                            <span>TBD</span>
+                            <span ng:hide="responder.response.chapelCard || responder.response.cardsToDiscard"><strong>You still need to select {{responder.options.numberOfCardsToDiscard}} card(s)</strong></span>
+                            <span ng:show="responder.response.chapelCard || responder.response.cardsToDiscard"><strong>Choosing </strong></span>
+                            <span ng:show="responder.response.chapelCard"><strong>to put a {{cardService.cardMap[responder.response.chapelCard]}} under your Chapel</strong></span>
+                            <span ng:show="responder.response.chapelCard && responder.response.cardsToDiscard"><strong> and choosing </strong></span>
+                            <span ng:show="responder.response.cardsToDiscard"><strong>to discard {{cardService.cardList(responder.response.cardsToDiscard)}}</strong></span>
                         </p>
                         <p ng:show="responder.options.numberOfCardsToDiscard == 0">
                             <span ng:show="responder.response.chapelCard"><strong>Choosing to put a {{cardService.cardMap[responder.response.chapelCard]}} under your Chapel.</strong></span>
@@ -43,7 +47,7 @@
                     </div>
                     <div class="span13" ng:hide="responder.options.chapelOwner">
                         <p>
-                            <span ng:show="responder.response.cardsToDiscard"><strong>You are choosing to discard XXX</strong></span>
+                            <span ng:show="responder.response.cardsToDiscard"><strong>You are choosing to discard {{cardService.cardList(responder.response.cardsToDiscard)}}</strong></span>
                             <span ng:hide="responder.response.cardsToDiscard"><strong>You still need to select {{responder.options.numberOfCardsToDiscard}} card(s) to discard</strong></span>
                         </p>
                     </div>                                

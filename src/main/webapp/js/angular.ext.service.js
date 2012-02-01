@@ -130,6 +130,22 @@ angular.service("cardService", angular.extend(function($xhr) {
 		
 		cardTypesCallback : function(code, response) {
 			cardService.cardTypes = response;
+		},
+		
+		cardList : function(cardArray) {
+			var arrayCopy = angular.Object.copy(cardArray);
+			var nameArray = [];
+			for (var i=0; i<cardArray.length; i++) {
+				nameArray.push(this.cardMap[cardArray[i]]);
+			}
+			var lastItem = nameArray.pop();
+			var strList = nameArray.join(", ");
+			if (nameArray.length >= 1) {
+				strList += " and ";
+			}
+			strList += lastItem;
+			return strList;
+			
 		}
 		
 

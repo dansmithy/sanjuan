@@ -320,12 +320,11 @@ GovernorPhaseResponse.prototype = {
 			if (this.choicesMade()) {
 				if (angular.isDefined(this.response.chapelCard)) {
 					delete this.response.chapelCard;
-					this.response.chapelCard = handCard;
 				} else {
 					this.response.cardsToDiscard.pop();
-					this.response.cardsToDiscard.push(handCard);
 				}
-			} else if (this.options.chapelOwner) {
+			}
+			if (this.options.chapelOwner && !angular.isDefined(this.response.chapelCard)) {
 				this.response.chapelCard = handCard;
 			} else {
 				this.response.cardsToDiscard.push(handCard);
