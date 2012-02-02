@@ -47,7 +47,8 @@
                     </div>
                     <div class="span13" ng:hide="responder.options.chapelOwner">
                         <p>
-                            <span ng:show="responder.response.cardsToDiscard"><strong>You are choosing to discard {{cardService.cardList(responder.response.cardsToDiscard)}}</strong></span>
+                            <span ng:show="responder.response.cardsToDiscard"><strong>You are choosing to discard {{cardService.cardList(responder.response.cardsToDiscard)}}. </strong></span>
+                            <span ng:show="responder.response.cardsToDiscard.length > 0 && responder.response.cardsToDiscard.length < responder.options.numberOfCardsToDiscard"><strong>You still need to select {{responder.options.numberOfCardsToDiscard - responder.response.cardsToDiscard.length}} more card(s) to discard.</strong></span>
                             <span ng:hide="responder.response.cardsToDiscard"><strong>You still need to select {{responder.options.numberOfCardsToDiscard}} card(s) to discard</strong></span>
                         </p>
                     </div>                                
