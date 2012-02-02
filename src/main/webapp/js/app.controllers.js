@@ -171,7 +171,7 @@ GameController.prototype = {
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
 					game.$round.$governorStep = game.$round.governorPhase.currentStep;
-					this.responder = new GovernorPhaseResponse(this.$xhr, game, this.gameCallback);
+					this.responder = new GovernorPhaseResponse(this.$xhr, game, this.gameCallback, this.cardService);
 				} else {
 					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to make their choice for the Governor phase" };
 				}
@@ -279,7 +279,7 @@ GovernorChoiceResponse.prototype = {
 	}
 };
 
-function GovernorPhaseResponse($xhr, game, gameCallback) {
+function GovernorPhaseResponse($xhr, game, gameCallback, cardService) {
 	this.$xhr = $xhr;
 	this.options = game.$round.$governorStep;
 	this.response = { "cardsToDiscard" : [ ] };
@@ -287,10 +287,89 @@ function GovernorPhaseResponse($xhr, game, gameCallback) {
 	this.template = "partials/governor.html";
 	this.game = game;
 	this.gameCallback = gameCallback;
+	this.cardService = cardService;
+	
+	this.messages = {
+		"intro" : {
+			"discard" : {
+				"c0" : "",
+				"c1" : "You have too many hand cards and need to discard one. ",
+				"c2" : "You have too many hand cards and need to discard %todiscard% cards. "
+			},
+			"chapel" : {
+				"c0" : "As you have built a Chapel, you can choose to put a card under it for an extra victory point.",
+				"c1" : "As you have built a Chapel, you can instead add this card to it for an extra victory point",
+				"c2" : "As you have built a Chapel, one of these cards can be put under it for an extra victory point."
+			}
+		},
+		"action" : {
+			"chosen" : {
+				"c0chapel" : "Choosing not to put a card under Chapel.",
+				"start" : "Choosing ",
+				"chapel" : "to put a %chapelCard% under your Chapel",
+				"join" : " and choosing ",
+				"discard" : "to discard %discardCards%",
+				"end" : "."
+			},
+			"remain" : {
+				"r0" : "",
+				"r1" : "Still one card to select.",
+				"r2" : "Still %remain% cards to select."
+			}
+		}
+	};
+	
+	this.introductionMessage = this.buildIntroMessage();
+	this.actionMessage = this.buildActionMessage();
+	
+
+
 };
 
 GovernorPhaseResponse.prototype = {
 	
+	buildIntroMessage : function() {
+		var discardKey = "c" + Math.min(2, this.options.numberOfCardsToDiscard);
+		var message = this.messages.intro.discard[discardKey].replace("%todiscard%", this.options.numberOfCardsToDiscard);
+		if (this.options.chapelOwner) {
+			message += this.messages.intro.chapel[discardKey];
+		}
+		return message;
+	},
+	
+	buildActionMessage : function() {
+		var chapelOwner = this.options.chapelOwner;
+		var chosenChapel = angular.isDefined(this.response.chapelCard);
+		var chosenAnyCards = this.response.cardsToDiscard.length > 0;
+		var chapelCard = chosenChapel ? 1 : 0; 
+		var remaining = this.options.numberOfCardsToDiscard - this.response.cardsToDiscard.length - chapelCard;
+		var discardKey = "c" + Math.min(2, this.options.numberOfCardsToDiscard);
+		var remainKey = "r" + Math.min(2, remaining);
+		
+		var messageArray = [];
+		if (discardKey === "c0" && chapelOwner) {
+			messageArray.push(this.messages.action.chosen.none);
+		}
+		if (chosenChapel || chosenAnyCards) {
+			messageArray.push(this.messages.action.chosen.start);
+		}
+		if (chosenChapel) {
+			messageArray.push(this.messages.action.chosen.chapel.replace("%chapelCard%", this.cardService.cardMap[this.response.chapelCard]));
+		}
+		if (chosenChapel && chosenAnyCards) {
+			messageArray.push(this.messages.action.chosen.join);
+		}
+		if (chosenAnyCards) {
+			messageArray.push(this.messages.action.chosen.discard.replace("%discardCards%", this.cardService.cardList(this.response.cardsToDiscard)));
+		}
+		if (chosenChapel || chosenAnyCards) {
+			messageArray.push(this.messages.action.chosen.end);
+			messageArray.push(" ");
+			messageArray.push(this.messages.action.remain[remainKey].replace("%remain%", remaining));
+		}
+		return messageArray.join("");
+	},
+		
 	sendResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/governorChoice", this.response, this.gameCallback);
 	},
@@ -330,6 +409,7 @@ GovernorPhaseResponse.prototype = {
 				this.response.cardsToDiscard.push(handCard);
 			}
 		}
+		this.actionMessage = this.buildActionMessage();
 	},
 	
 	needToDiscardCards : function() {
