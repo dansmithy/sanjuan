@@ -105,15 +105,23 @@ div.used-role {
 	z-index: 0;	
 }
 
-div.production-good {
+div.building-overlay {
 	position: absolute;
 	width: 57px;
 	height: 80px;
 	z-index: 0;	
 }
 
-div.produced {
+div.production-good {
 	background: url(../images/good.png) no-repeat;
+}
+
+div.chapel-cards {
+	font-size: 30px;;
+	font-weight: bold;
+	text-align: center;
+	padding-top: 50px;
+	color: #555555;
 }
 
 /* players */

@@ -80,7 +80,8 @@
                     </h1>
                 </div>
                 <div class="span1 card" ng:twipsy title="{{cardService.cardType(building).description}}" ng:repeat="building in player.buildings" ng:click="getResponder(player.name).clickBuildingCard(building)">
-                    <div class="production-good {{arrayContains(player.producedFactories, building) | ternary:'produced':''}}">&nbsp;</div>
+                    <div class="building-overlay {{arrayContains(player.producedFactories, building) | ternary:'production-good':''}}">&nbsp;</div>
+                    <div ng:show="player.chapelCardCount && cardService.isChapel(building)" class="building-overlay chapel-cards">{{player.chapelCardCount}}</div>
                     <img class="selectable-card {{responder.buildingCardSelectedType(building)}}" ng:src="{{cardService.cardImageUrl(building)}}" width="55" height="80" />
                 </div>
             </div>
