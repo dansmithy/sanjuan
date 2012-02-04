@@ -545,7 +545,7 @@ function BuilderResponder($xhr, cardService, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.cardService = cardService;
 	this.offered = game.$round.$phase.$play.offered;
-	this.response = { "build" : -1, "payment" : [] };
+	this.response = { "payment" : [] };
 	this.unableToBuildReason = undefined;
 	this.currentBuildCost = -1;
 	this.emptyResponse = { "skip" : true };
@@ -566,14 +566,14 @@ BuilderResponder.prototype = {
 	},
 	
 	choicesMade : function() {
-		return angular.isUndefined(this.unableToBuildReason) && this.response.build != -1 && this.response.payment.length === this.currentBuildCost;
+		return angular.isUndefined(this.unableToBuildReason) && angular.isDefined(this.response.build) && this.response.payment.length === this.currentBuildCost;
 	},
 	
 	handCardSelectedType : function(handCard) {
 		if (handCard === this.response.build) {
-			return "primary-selection";
-		} else if (this.isPaymentCard(handCard)) {
 			return "secondary-selection";
+		} else if (this.isPaymentCard(handCard)) {
+			return "primary-selection";
 		}
 	},
 	
@@ -586,7 +586,7 @@ BuilderResponder.prototype = {
 	},
 	
 	clearToBuild : function() {
-		this.response.build = -1;
+		delete this.response.build;
 		this.currentBuildCost = -1;
 	},
 	
@@ -604,7 +604,7 @@ BuilderResponder.prototype = {
 		if (handCard === this.response.build) {
 			this.clearToBuild();
 		} else {
-			if (this.response.build === -1) {
+			if (angular.isUndefined(this.response.build)) {
 				if (this.isPaymentCard(handCard)) {
 					this.removePayment(handCard);
 				}
