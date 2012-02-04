@@ -1,4 +1,7 @@
         <div class="row">
-            <div class="span5"><h3>Choose the {{responder.response.role}} role</h3></div>
-            <div class="span3"><button ng:disabled="!responder.response.role" class="btn success" ng:click="responder.sendResponse()">Choose role</button></div>
+            <div class="span14">
+                <p>It's your turn to choose which role you'd like for this phase (above)</p>
+                <p><strong>Choosing the {{responder.response.role}} role</strong></p>
+            </div>
+            <div class="span2"><button ng:disabled="!responder.response.role" class="btn success" ng:click="responder.sendResponse()">Choose role</button></div>
         </div>

@@ -1,17 +1,40 @@
+
+
         <div class="row">
-            <div class="span2">&nbsp;</div>
-            <div class="span2"><h1><small>Tariff</small></h1></div>
-            <div class="span1" ng:repeat="price in responder.prices"><h1>{{price}}</h1></div>
-        </div>
-                
-        <div class="row">
-            <div class="span8"><h3>Choose up to {{responder.offered.goodsCanTrade}} goods to trade.</h3></div>
-            <div class="span4">
+            <div class="span13">
+                <div class="row">
+                    <div class="span13">
+                        <p>
+                            <span>Choose up to {{responder.offered.goodsCanTrade}} goods to trade.</span>
+                        </p>
+                    </div>
+                </div>                   
+                <div class="row">
+                    <div class="span2">&nbsp;</div>
+                    <div class="span2"><h1><small>Tariff</small></h1></div>
+                    <div class="span1" ng:repeat="price in responder.prices"><h1>{{price}}</h1></div>
+                </div>
+                <div class="row">
+                    <div class="span15">
+                        <p>
+                            <strong>
+                                <span ng:hide="responder.response.productionFactories">Chosen no factories so far.</span>
+                                <span ng:show="responder.response.productionFactories">
+                                    Choosing to sell goods from {{cardService.cardList(responder.response.productionFactories)}} factories.
+                                    Current selection will earn you {{responder.calculatePayment()}} card(s).
+                                </span>
+                                
+                            </strong>
+                        </p>
+                    </div>
+                </div>                   
+            </div>
+            <div class="span3">
                 <button ng:disabled="!responder.choicesMade()" class="btn success" ng:click="responder.sendResponse()">Trade</button>
                 <button class="btn" ng:click="responder.commitSkipResponse()">Skip trade</button>
             </div>
         </div>
-        <div class="row">
-            <div class="span8"><h3>Current selection will earn you {{responder.calculatePayment()}} cards.</h3></div>
-        </div>
+                
+        
+
         

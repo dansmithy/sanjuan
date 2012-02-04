@@ -321,9 +321,6 @@ function GovernorPhaseResponse($xhr, game, gameCallback, cardService) {
 	
 	this.introductionMessage = this.buildIntroMessage();
 	this.actionMessage = this.buildActionMessage();
-	
-
-
 };
 
 GovernorPhaseResponse.prototype = {
@@ -342,13 +339,13 @@ GovernorPhaseResponse.prototype = {
 		var chosenChapel = angular.isDefined(this.response.chapelCard);
 		var chosenAnyCards = this.response.cardsToDiscard.length > 0;
 		var chapelCard = chosenChapel ? 1 : 0; 
-		var remaining = this.options.numberOfCardsToDiscard - this.response.cardsToDiscard.length - chapelCard;
+		var remaining = Math.max(0, this.options.numberOfCardsToDiscard - this.response.cardsToDiscard.length - chapelCard);
 		var discardKey = "c" + Math.min(2, this.options.numberOfCardsToDiscard);
 		var remainKey = "r" + Math.min(2, remaining);
 		
 		var messageArray = [];
-		if (discardKey === "c0" && chapelOwner) {
-			messageArray.push(this.messages.action.chosen.none);
+		if (discardKey === "c0" && chapelOwner && !chosenChapel) {
+			messageArray.push(this.messages.action.chosen.c0chapel);
 		}
 		if (chosenChapel || chosenAnyCards) {
 			messageArray.push(this.messages.action.chosen.start);
@@ -418,7 +415,7 @@ GovernorPhaseResponse.prototype = {
 	
 	choicesMade : function() {
 		var cardsDiscarded = this.response.cardsToDiscard.length;
-		if (angular.isDefined(this.response.chapelCard)) {
+		if (this.needToDiscardCards() && angular.isDefined(this.response.chapelCard)) {
 			cardsDiscarded += 1;
 		}
 		return cardsDiscarded === this.options.numberOfCardsToDiscard;
@@ -466,17 +463,24 @@ function CouncillorResponder($xhr, game, gameCallback) {
 	this.offered = game.$round.$phase.$play.offered;
 	this.response = { "councilDiscarded" : [] };
 	this.emptyResponse = { "skip" : true };
-	this.cardsToDiscard = this.offered.councilOffered.length - this.offered.councilRetainCount;
+	this.offeredCount = this.offered.councilOffered.length;
+	this.keepCount = this.offered.councilRetainCount;
+	this.cardsToDiscard = this.offeredCount - this.keepCount;
 	this.template = "partials/councillor.html";
 	this.mode = "do_something";
 	this.game = game;
 	this.gameCallback = gameCallback;
+	this.calculateRemain();
 };
 
 CouncillorResponder.prototype = {
 	
 	commitResponse : function() {
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/plays/" + this.game.$round.$phase.playNumber + "/decision", this.response, this.gameCallback);
+	},
+	
+	calculateRemain : function() {
+		this.remain = this.cardsToDiscard - this.response.councilDiscarded.length;
 	},
 	
 	choicesMade : function() {
@@ -501,6 +505,7 @@ CouncillorResponder.prototype = {
 		} else {
 			this.addCardToDiscarded(councilCard);
 		}
+		this.calculateRemain();
 	},
 	
 	clickHandCard : function(handCard) {
@@ -512,6 +517,7 @@ CouncillorResponder.prototype = {
 		} else {
 			this.addCardToDiscarded(handCard);
 		}
+		this.calculateRemain();
 	},	
 	
 	isDiscardCard : function(card) {
