@@ -11,6 +11,7 @@ function MainController($route, $xhr, userManager, version) {
 	$route.when("/games", { template : "partials/games.html", controller : GamesController });
 	$route.when("/games/:gameId", { template : "partials/game.html", controller : GameController });
 	$route.when("/admin", { template : "partials/admin.html", controller : AdminController });
+	$route.when("/cards", { template : "partials/cards.html", controller : CardsController });
 	$route.otherwise( { "redirectTo" : "/games" });
 	$route.onChange(function() {
         $route.current.scope.params = $route.current.params;
@@ -946,4 +947,16 @@ AdminController.prototype = {
 			this.adding = false;
 		}
 		
+};
+
+function CardsController($xhr, cardService) {
+	
+	this.cardService = cardService;
+	this.$xhr = $xhr;
+	
+
+};
+CardsController.$inject = [ "$xhr", "cardService" ];
+CardsController.prototype = {
+	
 };

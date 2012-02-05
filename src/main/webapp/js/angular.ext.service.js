@@ -113,7 +113,11 @@ angular.service("cardService", angular.extend(function($xhr) {
 		cardMap : {},
 		
 		cardImageUrl : function(id) {
-			return "images/PlayingCards/" + cardService.cardMap[id] + ".BMP";
+			return cardService.typeImageUrl(cardService.cardMap[id]);
+		},
+		
+		typeImageUrl : function(type) {
+			return "images/PlayingCards/" + type + ".BMP";
 		},
 		
 		cardType : function(id) {

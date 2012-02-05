@@ -150,3 +150,8 @@ div.chapel-cards {
 /* 	background: #AAAAAA; */
 }
 
+/* cards */
+
+div.card-row {
+	margin-bottom: 120px;
+}

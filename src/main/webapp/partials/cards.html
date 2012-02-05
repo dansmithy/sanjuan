@@ -1,0 +1,14 @@
+
+  
+    <div class="container">
+        <div class="row">
+            <div class="span2">&nbsp;</div>
+            <div class="span10">
+                <div class="row">
+                    <div class="span2 card card-row" ng:twipsy title="{{typeDetails.description}}" ng:repeat="(typeName, typeDetails) in cardService.cardTypes">
+                        <img class="{{typeName}}" ng:src="{{cardService.typeImageUrl(typeName)}}" width="110" height="160" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
