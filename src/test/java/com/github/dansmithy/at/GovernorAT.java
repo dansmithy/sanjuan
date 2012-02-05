@@ -323,52 +323,41 @@ public class GovernorAT {
 
 		GameDriver context = ((SkeletonBddTestRunner<GameDriver>) bdd)
 				.createContext();
-		given(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order4))
-				.and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER"))
-				.and(userPlays("#alice", "round : 1; phase : 1; play : 1", "{  build : '#coffeeroaster', payment : [ '#prefecture', '#indigoplant3', '#indigoplant4' ]  }"))
-				.and(userPlays("#bob", "round : 1; phase : 1; play : 2", "{  skip : true  }"))
-				.and(roleChosenBy("#bob", "round : 1; phase : 2", "role : COUNCILLOR"))
-				.and(userPlays("#bob", "round : 1; phase : 2; play : 1", "{  councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ]  }"))
-				.and(userPlays("#alice", "round : 1; phase : 2; play : 2", "{  councilDiscarded : [ '#sugarmill3' ]  }"))
-				.and(roleChosenBy("#alice", "round : 1; phase : 3", "role : PRODUCER"))
-				.and(userPlays("#alice", "round : 1; phase : 3; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
-				.and(userPlays("#bob", "round : 1; phase : 3; play : 2", "{  productionFactories : [ '#indigoplant2' ]  }"))
-				.and(roleChosenBy("#bob", "round : 2; phase : 1", "role : COUNCILLOR"))
-				.and(userPlays("#bob", "round : 2; phase : 1; play : 1", "{  councilDiscarded : [ '#tobaccostorage', '#tobaccostorage2', '#tobaccostorage3', '#tobaccostorage4' ]  }"))
-				.and(userPlays("#alice", "round : 2; phase : 1; play : 2", "{  councilDiscarded : [ '#tobaccostorage5' ]  }"))
-				.and(roleChosenBy("#alice", "round : 2; phase : 2", "role : TRADER"))
-				.and(userPlays("#alice", "round : 2; phase : 2; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
-				.and(userPlays("#bob", "round : 2; phase : 2; play : 2", "{  productionFactories : [ '#indigoplant2' ]  }"))
-				.and(roleChosenBy("#bob", "round : 2; phase : 3", "role : BUILDER"))
-				.and(userPlays("#bob", "round : 2; phase : 3; play : 1", "{  build : '#silversmelter7', payment : [ '#smithy', '#indigoplant6', '#indigoplant7', '#indigoplant8' ]  }"))
-				.and(userPlays("#alice", "round : 2; phase : 3; play : 2", "{  build : '#tower', payment : [ '#sugarmill4', '#tobaccostorage7', '#tobaccostorage8' ]  }"))
-				.and(roleChosenBy("#alice", "round : 3; phase : 1", "role : PRODUCER"))
-				.and(userPlays("#alice", "round : 3; phase : 1; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
-				.and(userPlays("#bob", "round : 3; phase : 1; play : 2", "{  productionFactories : [ '#silversmelter7' ]  }"))
-				.and(roleChosenBy("#bob", "round : 3; phase : 2", "role : COUNCILLOR"))
-				.and(userPlays("#bob", "round : 3; phase : 2; play : 1", "{  councilDiscarded : [ '#coffeeroaster7', '#tradingpost', '#coffeeroaster8', '#silversmelter' ]  }"))
-				.and(userPlays("#alice", "round : 3; phase : 2; play : 2", "{  councilDiscarded : [ '#silversmelter2' ]  }"))
-				.and(roleChosenBy("#alice", "round : 3; phase : 3", "role : TRADER"))
-				.and(userPlays("#alice", "round : 3; phase : 3; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
-				.and(userPlays("#bob", "round : 3; phase : 3; play : 2", "{  productionFactories : [ '#silversmelter7' ]  }"))
-				.and(roleChosenBy("#bob", "round : 4; phase : 1", "role : PRODUCER"))
-				.and(userPlays("#bob", "round : 4; phase : 1; play : 1", "{  productionFactories : [ '#silversmelter7', '#indigoplant2' ]  }"))
-				.and(userPlays("#alice", "round : 4; phase : 1; play : 2", "{  productionFactories : [ '#coffeeroaster' ]  }"))
-				.and(roleChosenBy("#alice", "round : 4; phase : 2", "role : TRADER"))
-				.and(userPlays("#alice", "round : 4; phase : 2; play : 1", "{  productionFactories : [ '#coffeeroaster' ]  }"))
-				.and(userPlays("#bob", "round : 4; phase : 2; play : 2", "{  skip : true  }"))
-				.and(roleChosenBy("#bob", "round : 4; phase : 3", "role : COUNCILLOR"))
-				.and(userPlays("#bob", "round : 4; phase : 3; play : 1", "{  councilDiscarded : [ '#triumphalarch', '#quarry2', '#archive', '#quarry3' ]  }"))
+		given(playRoundsOneToFourForTower())
 				.execute(context);
 
 		when(userPlays("#alice", "round : 4; phase : 3; play : 2", "{  councilDiscarded : [ '#tradingpost2' ]  }")).execute(context);
 		
 		then(
-				verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5, handCount: 10 } ], 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { playerName : '#bob' } } } }"))
+				verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5, handCount: 10 } ], 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentPlayer : '#bob' } } }"))
 				.execute(context);
-
 	}
 
+	@Test
+	public void testTowerOwnerMustDiscardAboveTwelveCards() {
+
+		GameDriver context = ((SkeletonBddTestRunner<GameDriver>) bdd)
+				.createContext();
+		given(playRoundsOneToFourForTower()).and(userPlays("#alice", "round : 4; phase : 3; play : 2", "{  councilDiscarded : [ '#tradingpost2' ]  }"))
+				.and(userMakesGovernorPlay("#bob", "round : 5", "{ 'cardsToDiscard' : [ '#smithy2' ] }"))
+				.and(roleChosenBy("#alice", "round : 5; phase : 1", "role : PRODUCER"))
+				.and(userPlays("#alice", "round : 5; phase : 1; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 5; phase : 1; play : 2", "{  skip : true  }"))
+				.and(roleChosenBy("#bob", "round : 5; phase : 2", "role : COUNCILLOR"))
+				.and(userPlays("#bob", "round : 5; phase : 2; play : 1", "{  councilDiscarded : [ '#well2', '#well3', '#statue2', '#statue3' ]  }"))
+				.and(userPlays("#alice", "round : 5; phase : 2; play : 2", "{  councilDiscarded : [ '#triumphalarch2' ]  }"))
+				.and(roleChosenBy("#alice", "round : 5; phase : 3", "role : TRADER"))
+				.and(userPlays("#alice", "round : 5; phase : 3; play : 1", "{  productionFactories : [ '#coffeeroaster', '#indigoplant' ]  }"))
+				.and(userPlays("#bob", "round : 5; phase : 3; play : 2", "{  skip : true  }"))
+				.and(userMakesGovernorPlay("#bob", "round : 6", "{ 'cardsToDiscard' : [ '#archive2' ] }"))
+				.execute(context);
+
+		when(getGameFor("#alice")).execute(context);
+		
+		then(
+				verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5, handCount: 14 } ], 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 2 } } } }"))
+				.execute(context);
+	}
 
 	@Test
 	public void testChapelOwnerHasChapelOwnerSetToTrue() {
@@ -667,4 +656,48 @@ public class GovernorAT {
 
 		;
 	}
+	
+	/**
+	 * For Tower
+	 */
+	private BddPart<GameDriver> playRoundsOneToFourForTower() {
+		return new GivenBddParts(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order4))
+				.and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER"))
+				.and(userPlays("#alice", "round : 1; phase : 1; play : 1", "{  build : '#coffeeroaster', payment : [ '#prefecture', '#indigoplant3', '#indigoplant4' ]  }"))
+				.and(userPlays("#bob", "round : 1; phase : 1; play : 2", "{  skip : true  }"))
+				.and(roleChosenBy("#bob", "round : 1; phase : 2", "role : COUNCILLOR"))
+				.and(userPlays("#bob", "round : 1; phase : 2; play : 1", "{  councilDiscarded : [ '#indigoplant9', '#indigoplant10', '#sugarmill', '#sugarmill2' ]  }"))
+				.and(userPlays("#alice", "round : 1; phase : 2; play : 2", "{  councilDiscarded : [ '#sugarmill3' ]  }"))
+				.and(roleChosenBy("#alice", "round : 1; phase : 3", "role : PRODUCER"))
+				.and(userPlays("#alice", "round : 1; phase : 3; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 1; phase : 3; play : 2", "{  productionFactories : [ '#indigoplant2' ]  }"))
+				.and(roleChosenBy("#bob", "round : 2; phase : 1", "role : COUNCILLOR"))
+				.and(userPlays("#bob", "round : 2; phase : 1; play : 1", "{  councilDiscarded : [ '#tobaccostorage', '#tobaccostorage2', '#tobaccostorage3', '#tobaccostorage4' ]  }"))
+				.and(userPlays("#alice", "round : 2; phase : 1; play : 2", "{  councilDiscarded : [ '#tobaccostorage5' ]  }"))
+				.and(roleChosenBy("#alice", "round : 2; phase : 2", "role : TRADER"))
+				.and(userPlays("#alice", "round : 2; phase : 2; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 2; phase : 2; play : 2", "{  productionFactories : [ '#indigoplant2' ]  }"))
+				.and(roleChosenBy("#bob", "round : 2; phase : 3", "role : BUILDER"))
+				.and(userPlays("#bob", "round : 2; phase : 3; play : 1", "{  build : '#silversmelter7', payment : [ '#smithy', '#indigoplant6', '#indigoplant7', '#indigoplant8' ]  }"))
+				.and(userPlays("#alice", "round : 2; phase : 3; play : 2", "{  build : '#tower', payment : [ '#sugarmill4', '#tobaccostorage7', '#tobaccostorage8' ]  }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 1", "role : PRODUCER"))
+				.and(userPlays("#alice", "round : 3; phase : 1; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 3; phase : 1; play : 2", "{  productionFactories : [ '#silversmelter7' ]  }"))
+				.and(roleChosenBy("#bob", "round : 3; phase : 2", "role : COUNCILLOR"))
+				.and(userPlays("#bob", "round : 3; phase : 2; play : 1", "{  councilDiscarded : [ '#coffeeroaster7', '#tradingpost', '#coffeeroaster8', '#silversmelter' ]  }"))
+				.and(userPlays("#alice", "round : 3; phase : 2; play : 2", "{  councilDiscarded : [ '#silversmelter2' ]  }"))
+				.and(roleChosenBy("#alice", "round : 3; phase : 3", "role : TRADER"))
+				.and(userPlays("#alice", "round : 3; phase : 3; play : 1", "{  productionFactories : [ '#indigoplant', '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 3; phase : 3; play : 2", "{  productionFactories : [ '#silversmelter7' ]  }"))
+				.and(roleChosenBy("#bob", "round : 4; phase : 1", "role : PRODUCER"))
+				.and(userPlays("#bob", "round : 4; phase : 1; play : 1", "{  productionFactories : [ '#silversmelter7', '#indigoplant2' ]  }"))
+				.and(userPlays("#alice", "round : 4; phase : 1; play : 2", "{  productionFactories : [ '#coffeeroaster' ]  }"))
+				.and(roleChosenBy("#alice", "round : 4; phase : 2", "role : TRADER"))
+				.and(userPlays("#alice", "round : 4; phase : 2; play : 1", "{  productionFactories : [ '#coffeeroaster' ]  }"))
+				.and(userPlays("#bob", "round : 4; phase : 2; play : 2", "{  skip : true  }"))
+				.and(roleChosenBy("#bob", "round : 4; phase : 3", "role : COUNCILLOR"))
+				.and(userPlays("#bob", "round : 4; phase : 3; play : 1", "{  councilDiscarded : [ '#triumphalarch', '#quarry2', '#archive', '#quarry3' ]  }"))
+
+		;
+	}	
 }

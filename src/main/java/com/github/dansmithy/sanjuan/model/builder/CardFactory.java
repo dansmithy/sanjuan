@@ -57,7 +57,7 @@ public class CardFactory {
 		addBuildingType(new BuildingType("Statue",3,3,3,BuildingCategory.VIOLET,1, "standard","monument (no special function)"));
 		addBuildingType(new BuildingType("SugarMill",8,2,1,BuildingCategory.PRODUCTION,1, "standard","owner produces 1 sugar"));
 		addBuildingType(new BuildingType("TobaccoStorage",8,3,2,BuildingCategory.PRODUCTION,1, "standard","owner produces 1 tobacco"));
-		addBuildingType(new BuildingType("Tower",3,3,2,BuildingCategory.VIOLET,1, "standard","owner may have up to 12 cards in his hand"));
+		addBuildingType(new BuildingType("Tower",3,3,2,BuildingCategory.VIOLET,1, "tower","owner may have up to 12 cards in his hand"));
 		addBuildingType(new BuildingType("TradingPost",3,2,1,BuildingCategory.VIOLET,1, "tradingpost","owner may sell 1 additional good"));
 		addBuildingType(new BuildingType("TriumphalArch",2,6,0,BuildingCategory.VIOLET,2, "triumphalarch","owner earns an additional 4-6-8 victory points for 1-2-3 monuments"));
 		addBuildingType(new BuildingType("VictoryColumn",3,4,4,BuildingCategory.VIOLET,1, "standard","monument (no special function)"));
