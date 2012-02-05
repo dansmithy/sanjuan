@@ -288,10 +288,7 @@ public class Game {
 
 	private void addGovernorStepIfRequired(Player player,
 			List<GovernorStep> governorSteps) {
-		int cardsToDiscard = player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold();
-		if (cardsToDiscard < 0) {
-			cardsToDiscard = 0;
-		}
+		int cardsToDiscard = Math.max(0, player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold());
 		boolean chapelOwner = player.getPlayerNumbers().isChapelOwner();
 		if (cardsToDiscard > 0 || chapelOwner) {
 			governorSteps.add(new GovernorStep(player.getName(), cardsToDiscard, chapelOwner));

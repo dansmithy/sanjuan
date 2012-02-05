@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
+import com.github.dansmithy.sanjuan.dev.TestRecorder;
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.RequestInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.GameService;
@@ -149,7 +150,7 @@ public class GameBean implements GameResource {
 	@Override
 	public Game chooseRole(Long gameId, Integer roundNumber,
 			Integer phaseNumber, RoleChoice choice) {
-		
+		TestRecorder.roleChosenBy(roundNumber, phaseNumber, choice);
 		PlayCoords coords = new PlayCoords(gameId, roundNumber, phaseNumber, 0);
 		return gameService.selectRole(coords, choice);
 	}
@@ -157,7 +158,7 @@ public class GameBean implements GameResource {
 	@Override
 	public Game makePlay(Long gameId, Integer roundNumber,
 			Integer phaseNumber, Integer playNumber, PlayChoice playChoice) {
-		
+		TestRecorder.outputPlay(roundNumber, phaseNumber, playNumber, playChoice);
 		PlayCoords coords = new PlayCoords(gameId, roundNumber, phaseNumber, playNumber);
 		return gameService.makePlay(coords, playChoice);
 
@@ -165,7 +166,7 @@ public class GameBean implements GameResource {
 	
 	@Override
 	public Game makeGovernorPlay(Long gameId, Integer roundNumber, GovernorChoice governorChoice) {
-		
+		TestRecorder.governorPlay(roundNumber, governorChoice);
 		PlayCoords coords = new PlayCoords(gameId, roundNumber, 1, 0);
 		return gameService.governorDiscard(coords, governorChoice);
 	}	

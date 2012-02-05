@@ -17,8 +17,8 @@
                                 <span ng:show="responder.response.build">
                                     <span>Choosing to build {{cardService.cardMap[responder.response.build]}}.</span>
                                     <span ng:show="responder.unableToBuildReason">{{responder.unableToBuildReason}}</span>
-                                    <span ng:show="responder.currentBuildCost">
-                                        <span ng:hide="responder.unableToBuildReason">Cost to you is {{responder.currentBuildCost}}. </span>
+                                    <span ng:show="responder.currentBuildCost && !responder.unableToBuildReason">
+                                        <span>Cost to you is {{responder.currentBuildCost}}. </span>
                                         <span ng:hide="responder.response.payment">No payment chosen yet. </span>
                                     </span>
                                     <span ng:hide="responder.currentBuildCost">There is no cost to you!</span>
