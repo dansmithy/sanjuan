@@ -15,6 +15,7 @@ import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.mongodb.WriteConcern;
 
 @Named
 public class MongoGameDao implements GameDao {
@@ -30,6 +31,7 @@ public class MongoGameDao implements GameDao {
 	public MongoGameDao(MongoTemplate mongoTemplate, MongoIdGenerator mongoIdGenerator) {
 		super();
 		this.mongoTemplate = mongoTemplate;
+		mongoTemplate.setWriteConcern(WriteConcern.SAFE);
 		this.mongoIdGenerator = mongoIdGenerator;
 	}
 	
