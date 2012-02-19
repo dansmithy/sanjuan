@@ -79,7 +79,7 @@ public class DefaultJsonUserDetailsProducer implements JsonUserDetailsProducer {
 
 	}
 
-	private void addAuthorities(JsonUserDetails userDetails, Collection<GrantedAuthority> authorities) {
+	private void addAuthorities(JsonUserDetails userDetails, Collection<? extends GrantedAuthority> authorities) {
 		String[] simpleAuthorities = new String[authorities.size()];
 		int index = 0;
 		for (GrantedAuthority authority : authorities) {
