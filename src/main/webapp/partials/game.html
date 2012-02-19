@@ -43,7 +43,10 @@
                             <img ng:show="responder.game.currentPlayerName == player.name" src="images/player-marker.png" width="40" height="40" />
                             &nbsp;
                         </div>
-                        <div class="span9">
+                        <div class="span1">
+                            <img style="padding-left: 5px; padding-top: 5px;" ng:src="http://img.tweetimag.es/i/{{player.name}}_n" width="30" height="30" />
+                        </div>
+                        <div class="span8">
                             <h2 class="light-text">{{player.name}} <span ng:show="isSelf(player.name)" class="smaller">(you)</span></h2>
                         </div>
                         <div class="span2">
