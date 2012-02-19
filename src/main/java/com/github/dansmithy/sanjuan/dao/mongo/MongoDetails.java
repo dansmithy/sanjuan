@@ -31,7 +31,6 @@ public class MongoDetails {
 	
 	protected static MongoDetails configureFromUri(MongoDetails details, String uri) {
 		Matcher matcher = URI_PATTERN.matcher(uri);
-		System.out.println(matcher.groupCount());
 		if (matcher.matches() && matcher.groupCount() == 5) {
 			String username = matcher.group(1).length() == 0 ? null : matcher.group(1);
 			String password = matcher.group(2).length() == 0 ? null : matcher.group(2);
