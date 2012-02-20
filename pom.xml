@@ -21,14 +21,12 @@
         <hibernate.version>3.6.4.Final</hibernate.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <jackson.version>1.9.1</jackson.version>
-        <jetty.scope>runtime</jetty.scope>
-        <jetty.version>6.1.9</jetty.version>
-        <jetty.servlet.version>7.4.4.v20110707</jetty.servlet.version>
+        <jetty.version>8.1.0.v20120127</jetty.version>
         <jodatime.version>2.0</jodatime.version>
         <jpa.version>2.0-cr-1</jpa.version>
         <json.lib.version>2.4</json.lib.version>
         <jsonpath.version>0.5.5</jsonpath.version>
-        <junit.version>4.5</junit.version>
+        <junit.version>4.10</junit.version>
         <lambdaj.version>2.3.1</lambdaj.version>
         <log4j.version>1.2.9</log4j.version>
         <mockito.version>1.8.5</mockito.version>
@@ -40,6 +38,13 @@
         <spring.version>3.1.1.RELEASE</spring.version>
         <spring-security.version>3.1.0.RELEASE</spring-security.version>
         <spring-data.version>1.0.1.RELEASE</spring-data.version>
+        
+        <jetty.daemon>true</jetty.daemon>
+        <jetty.port>8086</jetty.port>
+        <wait>false</wait>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <at.pattern>**/*AT.java</at.pattern>
+        <at.parallel>none</at.parallel>
     </properties>
 
     <repositories>
@@ -74,6 +79,50 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty.version}</version>
+                <configuration>
+                    <scanIntervalSeconds>1</scanIntervalSeconds>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>${jetty.port}</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>                    
+                    
+                    <webApp>
+                        <contextPath>/</contextPath>
+                        <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                            <resourcesAsCSV>${project.basedir}/src/main/webapp,${project.basedir}/src/test/webapp
+                            </resourcesAsCSV>
+                        </baseResource>
+                    </webApp>
+                    <stopPort>9966</stopPort>
+                    <stopKey>foo</stopKey>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>${jetty.daemon}</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            
         </plugins>
         <pluginManagement>
             <plugins>
@@ -199,13 +248,13 @@
         <!-- Jetty -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.servlet.version}</version>
+            <artifactId>jetty-servlets</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>${jetty.servlet.version}</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -378,6 +427,57 @@
         </dependency>
     </dependencies>
     <profiles>
+        <profile>
+            <id>acceptance</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.12</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.12</version>
+                            </dependency>
+                        </dependencies>                        
+                        <executions>
+                            <execution>
+                                <id>acceptance-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>acceptance-test-analysis</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <includes>
+                                <include>${at.pattern}</include>
+                            </includes>
+                            <parallel>${at.parallel}</parallel>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>    
+        <profile>
+            <id>wait</id>
+            <activation>
+                <property>
+                    <name>wait</name>
+                </property>
+            </activation>
+            <properties>
+                <jetty.daemon>false</jetty.daemon>
+            </properties>
+        </profile>
         <profile>
             <id>version</id>
             <build>
