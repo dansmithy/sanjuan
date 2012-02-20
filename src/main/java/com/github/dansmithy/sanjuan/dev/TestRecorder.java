@@ -11,7 +11,7 @@ import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 public class TestRecorder {
 
-	private static boolean enabled = true;
+	private static boolean enabled = false;
 	
 	private static String[] QUICK_NAMES = { "NONE",
 			"#indigoplant",

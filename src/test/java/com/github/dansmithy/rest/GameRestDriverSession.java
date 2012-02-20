@@ -65,7 +65,7 @@ public class GameRestDriverSession implements GameDriverSession {
 		RequestValues urlValues = createRequest(String.format("username : %s", username));
 		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
 		String url = String.format("%s/users/%s", wsBaseUri, urlValues.get("username"));
-		System.out.println(String.format("Calling [%s].", url));
+//		System.out.println(String.format("Calling [%s].", url));
 		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	
@@ -174,7 +174,7 @@ public class GameRestDriverSession implements GameDriverSession {
 //			System.out.println("here");
 //		}
 		String url = String.format("%s/games/%s/rounds/%s/phases/%s/plays/%s/decision", wsBaseUri, gameId, urlValues.get("round"), urlValues.get("phase"), urlValues.get("play"));
-		System.out.println(String.format("Calling [%s].", url));
+//		System.out.println(String.format("Calling [%s].", url));
 		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 	
@@ -183,7 +183,7 @@ public class GameRestDriverSession implements GameDriverSession {
 		RequestValues urlValues = createRequest(urlData);
 		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
 		String url = String.format("%s/games/%s/rounds/%s/governorChoice", wsBaseUri, gameId, urlValues.get("round"));
-		System.out.println(String.format("Calling [%s].", url));
+//		System.out.println(String.format("Calling [%s].", url));
 		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
 	}	
 	
