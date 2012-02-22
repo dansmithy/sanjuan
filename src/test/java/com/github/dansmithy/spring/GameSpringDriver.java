@@ -6,11 +6,11 @@ import java.util.Map;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.SkeletonGameDriver;
-import com.github.dansmithy.sanjuan.model.User;
 import com.github.dansmithy.sanjuan.rest.jaxrs.CardResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
-import com.github.dansmithy.sanjuan.security.SecurityContextAuthenticatedSessionProvider;
+import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
+import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GameSpringDriver extends SkeletonGameDriver {
@@ -18,12 +18,12 @@ public class GameSpringDriver extends SkeletonGameDriver {
 	private GameResource gameResource;
 	private UserResource userResource;
 	private final CardResource cardResource;
-	private SecurityContextAuthenticatedSessionProvider sessionProvider;
+	private TwitterUserStore sessionProvider;
 	
-	private Map<String, User> users = new HashMap<String, User>();
+	private Map<String, TwitterUser> users = new HashMap<String, TwitterUser>();
 	
 	public GameSpringDriver(GameResource gameResource,
-			UserResource userResource, CardResource cardResource, SecurityContextAuthenticatedSessionProvider sessionProvider, String adminUsername, String adminPassword) {
+			UserResource userResource, CardResource cardResource, TwitterUserStore sessionProvider, String adminUsername, String adminPassword) {
 		super(adminUsername, adminPassword);
 		this.gameResource = gameResource;
 		this.userResource = userResource;
@@ -35,20 +35,17 @@ public class GameSpringDriver extends SkeletonGameDriver {
 	@Override
 	protected GameDriverSession login(String username, String password, boolean isAdmin) {
 		RequestValues requestValues = createTranslatedUserRequest(username, password);
-		User user = new User();
-		user.setPassword(requestValues.get("password"));
-		user.setUsername(requestValues.get("username"));
 		String[] roles = isAdmin ? new String[] { "player", "admin" } : new String[] { "player" };
-		user.setRoles(roles);
-		sessionProvider.addUser(user);
+		TwitterUser user = new TwitterUser(requestValues.get("username"), null, roles);
+		sessionProvider.setCurrentUser(user);
 		users.put(username, user);
 		return new GameSpringDriverSession(getTranslatedValues(), gameResource, userResource);
 	}
 
 	@Override
 	public GameDriverSession getSession(String username) {
-		User user = users.get(username);
-		sessionProvider.addUser(user);
+		TwitterUser user = users.get(username);
+		sessionProvider.setCurrentUser(user);
 		return super.getSession(username);
 	}
 

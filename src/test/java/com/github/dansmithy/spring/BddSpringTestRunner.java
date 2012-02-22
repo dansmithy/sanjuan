@@ -13,7 +13,7 @@ import com.github.dansmithy.sanjuan.exception.mapper.SanJuanRuntimeExceptionMapp
 import com.github.dansmithy.sanjuan.rest.jaxrs.CardResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameResource;
 import com.github.dansmithy.sanjuan.rest.jaxrs.UserResource;
-import com.github.dansmithy.sanjuan.security.SecurityContextAuthenticatedSessionProvider;
+import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 
 public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 
@@ -22,7 +22,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	private final GameResource gameResource;
 	private final UserResource userResource;
 	private final CardResource cardResource;
-	private SecurityContextAuthenticatedSessionProvider sessionProvider;
+	private TwitterUserStore sessionProvider;
 	private final String adminUsername;
 	private final String adminPassword;
 
@@ -35,7 +35,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 		gameResource = context.getBean(GameResource.class);
 		userResource = context.getBean(UserResource.class);
 		cardResource = context.getBean(CardResource.class);
-		sessionProvider = context.getBean(SecurityContextAuthenticatedSessionProvider.class);
+		sessionProvider = context.getBean(TwitterUserStore.class);
 	}
 
 	@Override

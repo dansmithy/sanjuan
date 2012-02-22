@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.dansmithy.sanjuan.game.aspect.AuthenticatedUser;
 import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
-import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 public class TestRecorder {
 

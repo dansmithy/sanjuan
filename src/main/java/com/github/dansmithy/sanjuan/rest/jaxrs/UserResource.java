@@ -13,9 +13,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.github.dansmithy.sanjuan.model.User;
 import com.github.dansmithy.sanjuan.model.output.Users;
-import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
+import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 
-@RolesAllowed({ SanJuanRole.ADMIN })
+@RolesAllowed({ TwitterUser.ROLE_ADMIN })
 @Path("/ws/users")
 public interface UserResource {
 

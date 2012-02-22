@@ -29,16 +29,6 @@
       <div class="fill">
         <div class="container">
             <a class="brand" href="#/games">San Juan</a>
- 
-            <form class="pull-right input-errors-{{userManager.hasErrors()}}" ng:submit="login()" action="">
-                <span class="lefthand-label danger" ng:show="userManager.hasErrors()">invalid username/password</span>
-                <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.username" type="text" placeholder="Username">
-                <input ng:show="userManager.isVerifiedButUnauthenticated()" class="input-small" name="userManager.credentials.password" type="password" placeholder="Password">
-                <button ng:show="userManager.isUnauthenticated()" class="btn" type="submit">Sign in</button>
-            	<span class="label-text" ng:show="userManager.isVerifying()">Checking user </span>
-            	<span class="login-processing" ng:show="userManager.isProcessing()"><img src="images/ajax-loader.gif" /></span>
-            </form>                         
-            
             <p class="pull-right">
                 <span ng:show="userManager.isAuthenticated()" class="lefthand-label label-text">Logged in as <span class="username-text">{{userManager.user.username}}</span></span>
                 <span ng:show="userManager.isAuthenticated()" ng:click="logout()"><a class="logout" href="#">logout</a></span>
@@ -47,12 +37,12 @@
       </div>
     </div>
   
-  
     <div class="container" ng:show="userManager.isUnauthenticated()">
     
       <div class="hero-unit">
         <h1>Welcome to San Juan!</h1>
-        <p>Please login to play</p>
+        <p>&nbsp;</p>
+        <p ng:show="userManager.isVerifiedButUnauthenticated()"><a href="/ws/auth/authToken"><img src="images/sign-in-with-twitter.png" alt="Sign in with Twitter" /></a></p>
         <img style="margin-left:200px;" alt="San Juan box" src="images/sanjuanbox.jpg">
       </div>    
         

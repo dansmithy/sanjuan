@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan.security.user;
+package com.github.dansmithy.sanjuan.game.aspect;
 
 public class AuthenticatedUser {
 

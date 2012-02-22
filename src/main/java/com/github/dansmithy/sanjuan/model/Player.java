@@ -12,8 +12,8 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.data.annotation.Transient;
 
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
+import com.github.dansmithy.sanjuan.game.aspect.AuthenticatedUser;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
-import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Player {

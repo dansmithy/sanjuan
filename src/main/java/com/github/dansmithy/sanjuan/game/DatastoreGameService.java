@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.dao.GameDao;
-import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
 import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.Deck;
@@ -30,7 +30,7 @@ import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
-import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
+import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
@@ -41,12 +41,12 @@ public class DatastoreGameService implements GameService {
 	private TariffBuilder tariffBuilder;
 	private CardFactory cardFactory;
 	private final GameDao gameDao;
-	private final AuthenticatedSessionProvider userProvider;
+	private final TwitterUserStore userProvider;
 	private final RoleProcessorProvider roleProcessorProvider;
 	private final CalculationService calculationService;
 	
 	@Inject
-	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, AuthenticatedSessionProvider userProvider, CalculationService calculationService, TariffBuilder tariffBuilder, CardFactory cardFactory) {
+	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, TwitterUserStore userProvider, CalculationService calculationService, TariffBuilder tariffBuilder, CardFactory cardFactory) {
 		super();
 		this.gameDao = gameDao;
 		this.roleProcessorProvider = roleProcessorProvider;
@@ -146,7 +146,7 @@ public class DatastoreGameService implements GameService {
 	public Game startGame(Long gameId) {
 		Game game = gameDao.getGame(gameId);
 		
-		String loggedInUser = userProvider.getAuthenticatedUsername();
+		String loggedInUser = userProvider.getCurrentUser().getName();
 		if (!loggedInUser.equals(game.getOwner())) {
 			throw new AccessUnauthorizedRuntimeException(String.format("Must be game owner to start game."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 		}
@@ -168,7 +168,7 @@ public class DatastoreGameService implements GameService {
 	public Game abandonGame(Long gameId) {
 		Game game = gameDao.getGame(gameId);
 		
-		String loggedInUser = userProvider.getAuthenticatedUsername();
+		String loggedInUser = userProvider.getCurrentUser().getName();
 		
 		if (!game.hasPlayer(loggedInUser)) {
 			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
@@ -192,7 +192,7 @@ public class DatastoreGameService implements GameService {
 	public Game selectRole(PlayCoords playCoords, RoleChoice choice) {
 		
 		Game game = getGame(playCoords.getGameId());
-		String loggedInUser = userProvider.getAuthenticatedUsername();
+		String loggedInUser = userProvider.getCurrentUser().getName();
 		
 		if (!game.hasPlayer(loggedInUser)) {
 			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
@@ -245,7 +245,7 @@ public class DatastoreGameService implements GameService {
 		
 		Game game = getGame(playCoords.getGameId());
 		GameUpdater gameUpdater = new GameUpdater(game);
-		String loggedInUser = userProvider.getAuthenticatedUsername();
+		String loggedInUser = userProvider.getCurrentUser().getName();
 		
 		if (!game.hasPlayer(loggedInUser)) {
 			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
@@ -330,7 +330,7 @@ public class DatastoreGameService implements GameService {
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
 		
 		Game game = getGame(coords.getGameId());
-		String loggedInUser = userProvider.getAuthenticatedUsername();
+		String loggedInUser = userProvider.getCurrentUser().getName();
 		GameUpdater gameUpdater = new GameUpdater(game);
 		
 		if (!game.hasPlayer(loggedInUser)) {
@@ -394,7 +394,7 @@ public class DatastoreGameService implements GameService {
 		Game game = gameDao.getGame(gameId);
 		
 		if (!isAdminUser) {
-			String loggedInUser = userProvider.getAuthenticatedUsername();
+			String loggedInUser = userProvider.getCurrentUser().getName();
 			
 			if (loggedInUser.equals(game.getOwner())) {
 				if (!GameState.RECRUITING.equals(game.getState())) {

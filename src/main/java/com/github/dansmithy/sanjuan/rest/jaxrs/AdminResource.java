@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
+import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 
 
 @Path("/ws/admin")
@@ -17,7 +17,7 @@ public interface AdminResource {
 	@GET
 	@Path("/mongo")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SanJuanRole.ADMIN })
+	@RolesAllowed({ TwitterUser.ROLE_ADMIN })
 	Map<String, String> mongoDetails();
 	
 	@GET

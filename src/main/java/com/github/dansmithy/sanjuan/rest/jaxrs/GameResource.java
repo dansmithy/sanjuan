@@ -27,9 +27,9 @@ import com.github.dansmithy.sanjuan.model.Tariff;
 import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
-import com.github.dansmithy.sanjuan.security.user.SanJuanRole;
+import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 
-@RolesAllowed({ SanJuanRole.PLAYER })
+@RolesAllowed({ TwitterUser.ROLE_PLAYER })
 @Path("/ws/games")
 public interface GameResource {
 
@@ -68,7 +68,7 @@ public interface GameResource {
 	@Path("/fullGame/{gameId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(GameViews.Full.class)
-	@RolesAllowed({ SanJuanRole.ADMIN })
+	@RolesAllowed({ TwitterUser.ROLE_ADMIN })
 	Game getFullGame(@PathParam("gameId") Long gameId);
 
 	/**
@@ -122,13 +122,13 @@ public interface GameResource {
 	@Path("{gameId}/deck")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SanJuanRole.ADMIN })
+	@RolesAllowed({ TwitterUser.ROLE_ADMIN })
 	Deck orderDeck(@PathParam("gameId") Long gameId, List<Integer> deckOrder);
 	
 	@PUT
 	@Path("{gameId}/tariffs")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SanJuanRole.ADMIN })
+	@RolesAllowed({ TwitterUser.ROLE_ADMIN })
 	List<Tariff> orderTariffs(@PathParam("gameId") Long gameId, List<Integer> tariffOrder);	
 }

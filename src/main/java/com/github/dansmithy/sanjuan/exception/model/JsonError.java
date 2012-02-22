@@ -18,6 +18,9 @@ public class JsonError {
 	public String getCode() {
 		return code;
 	}
-
 	
+	public String toJsonString() {
+		return String.format("{ \"message\" : \"%s\", \"code\" : \"%s\" }", message, code);
+	}
+		
 }

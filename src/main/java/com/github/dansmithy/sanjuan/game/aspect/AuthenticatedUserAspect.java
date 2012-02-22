@@ -7,18 +7,17 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
-import com.github.dansmithy.sanjuan.security.AuthenticatedSessionProvider;
-import com.github.dansmithy.sanjuan.security.user.AuthenticatedUser;
+import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 
 @Named
 @Aspect
 public class AuthenticatedUserAspect {
 
-	private AuthenticatedSessionProvider authenticatedSessionProvider;
+	private TwitterUserStore authenticatedSessionProvider;
 	
 	@Inject
 	public AuthenticatedUserAspect(
-			AuthenticatedSessionProvider authenticatedSessionProvider) {
+			TwitterUserStore authenticatedSessionProvider) {
 		super();
 		this.authenticatedSessionProvider = authenticatedSessionProvider;
 	}
@@ -28,7 +27,7 @@ public class AuthenticatedUserAspect {
 
 	@Before("com.github.dansmithy.sanjuan.game.aspect.AuthenticatedUserAspect.restBeanMethods()")
 	public void setAuthenticatedUser() {
-		AuthenticatedUser.set(authenticatedSessionProvider.getAuthenticatedUsername());
+		AuthenticatedUser.set(authenticatedSessionProvider.getCurrentUser().getName());
 	}
 
 }

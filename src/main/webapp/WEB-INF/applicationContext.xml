@@ -23,39 +23,20 @@
 	<aop:aspectj-autoproxy/>
     
     <!-- Security -->
-    
-    <bean id="loginRedirectStrategy" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseRedirectStrategy" />
-    <bean id="loginSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <property name="redirectStrategy" ref="loginRedirectStrategy" />
-    </bean>
+    <sec:global-method-security jsr250-annotations="enabled" />
+    <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true">
+        <sec:intercept-url pattern="/**" access="permitAll" />
+        <sec:logout logout-url="/logout"/>
+    </sec:http>
 
-    <bean id="userService" class="com.github.dansmithy.sanjuan.security.user.SanJuanUserDetailsService" />
-    <bean id="forbiddenEntryPoint" class="com.github.dansmithy.sanjuan.security.spring.JsonResponseHttp403AuthenticationEntryPoint" />
-    <bean id="http403AuthenticationFailureHandler" class="com.github.dansmithy.sanjuan.security.spring.Http403AuthenticationFailureHandler" />
-    <bean id="retrieveDetailsFilter" class="com.github.dansmithy.sanjuan.security.spring.RetrieveUserDetailsFilter" />
-    
-    <bean id="jsonPayloadAuthenticationFilter" class="com.github.dansmithy.sanjuan.security.spring.JsonPayloadUsernamePasswordAuthenticationFilter">
-        <property name="authenticationManager" ref="authenticationManager" />
-        <property name="authenticationSuccessHandler" ref="loginSuccessHandler" />
-        <property name="authenticationFailureHandler" ref="http403AuthenticationFailureHandler" />
-        <property name="sessionAuthenticationStrategy">
-            <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
+    <bean id="forbiddenEntryPoint"
+        class="com.github.dansmithy.sanjuan.twitter.service.springsecurity.JsonResponseHttp403AuthenticationEntryPoint" />
+
+    <bean id="org.springframework.security.authenticationManager"
+        class="org.springframework.security.authentication.ProviderManager">
+        <property name="providers">
+            <bean class="com.github.dansmithy.sanjuan.twitter.service.springsecurity.DummyAuthenticationProvider" />
         </property>
     </bean>
     
-    <sec:authentication-manager alias="authenticationManager">
-		<sec:authentication-provider user-service-ref="userService" >
-			<sec:password-encoder hash="md5" />
-		</sec:authentication-provider>        
-    </sec:authentication-manager>
-    
-    <sec:global-method-security jsr250-annotations="enabled" />
-    <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true" >
-        <sec:custom-filter position="FORM_LOGIN_FILTER" ref="jsonPayloadAuthenticationFilter" />
-        <sec:custom-filter before="FORM_LOGIN_FILTER" ref="retrieveDetailsFilter" />
-        <sec:access-denied-handler ref="forbiddenEntryPoint" />
-        <sec:logout />
-        <sec:intercept-url pattern="/**" access="permitAll" />
-    </sec:http>
-        
 </beans>
