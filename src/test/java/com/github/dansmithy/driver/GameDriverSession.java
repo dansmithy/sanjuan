@@ -6,15 +6,9 @@ import com.github.restdriver.serverdriver.http.response.Response;
 
 public interface GameDriverSession {
 
-	void createUser(String username);
-
-	void deleteUser(String data);
-
 	//** GAME ADMIN ONLY ** 
 	void orderDeck(String gameId, List<Integer> order);
 	void orderTariff(String gameId, List<Integer> order);
-	Response updateUser(String username, String userJson);
-	Response getUsers();
 
 	Response createGame(String data);
 
@@ -53,4 +47,6 @@ public interface GameDriverSession {
 	Response getGamesInState(String state);
 
 	Response getAllGames();
+	
+	Response getUser();
 }

@@ -45,35 +45,6 @@ public class GameRestDriverSession implements GameDriverSession {
 		this.wsBaseUri = String.format("%s/ws", baseUri);
 	}
 
-	//** USER METHODS ** //
-	
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.driver.GameDriverSession#createUser(java.lang.String)
-	 */
-	@Override
-	public void createUser(String username) {
-		RequestValues requestValues = createTranslatedUserRequest(username, DefaultValues.PASSWORD);
-		Response response = post(wsBaseUri + "/users", body(requestValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
-		if (response.getStatusCode() != 200) {
-			throw new AcceptanceTestException(String.format("Unable to create user with username %s.", username));
-		}
-	}
-	
-
-	@Override
-	public Response updateUser(String username, String postJson) {
-		RequestValues urlValues = createRequest(String.format("username : %s", username));
-		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
-		String url = String.format("%s/users/%s", wsBaseUri, urlValues.get("username"));
-//		System.out.println(String.format("Calling [%s].", url));
-		return put(url, body(json.toString(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER, createSessionHeader());
-	}	
-	
-	@Override
-	public Response getUsers() {
-		return get(wsBaseUri + "/users", ACCEPT_JSON_HEADER, createSessionHeader());
-	}	
-
 	@Override
 	public Response getGetGamesFor(String username) {
 		RequestValues urlValues = createRequest(String.format("username : %s", username));
@@ -97,15 +68,6 @@ public class GameRestDriverSession implements GameDriverSession {
 			String password) {
 		return getTranslatedValues().aliasRequestValues(new RequestValues().add("username", username).add("password", password));
 	}		
-	
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.driver.GameDriverSession#deleteUser(java.lang.String)
-	 */
-	@Override
-	public void deleteUser(String data) {
-		RequestValues requestValues = createRequest(DefaultValues.USER, data);
-		Response response = delete(wsBaseUri + "/users/" + requestValues.get("username"), ACCEPT_JSON_HEADER, createSessionHeader());
-	}
 	
 	//** GAME ADMIN ONLY ** 
 	//
@@ -287,6 +249,11 @@ public class GameRestDriverSession implements GameDriverSession {
 		for (Map.Entry<String, String> entry : values) {
 			getTranslatedValues().add(entry.getKey(), entry.getValue());
 		}
+	}
+
+	@Override
+	public Response getUser() {
+		return get(wsBaseUri + "/auth/user", ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 
 

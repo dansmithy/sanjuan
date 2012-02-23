@@ -44,28 +44,6 @@ public class GameSpringDriverSession implements GameDriverSession {
 	}
 
 	@Override
-	public void createUser(String username) {
-		RequestValues requestValues = createTranslatedUserRequest(username, DefaultValues.PASSWORD);
-		User user = new User();
-		user.setPassword(requestValues.get("password"));
-		user.setUsername(requestValues.get("username"));
-		userResource.createUser(user);
-	}
-	
-	@Override
-	public Response updateUser(String username, String postJson) {
-		RequestValues urlValues = createRequest(String.format("username : %s", username));
-		JSON json = new JsonHashTranslator(translatedValues).translate(JSONSerializer.toJSON(postJson));
-		User user = (User)JSONObject.toBean((JSONObject)json, User.class);
-		return new SpringResponse(userResource.updateUser(urlValues.get("username"), user));
-	}	
-	
-	@Override
-	public Response getUsers() {
-		return new SpringResponse(userResource.getUsers());
-	}
-	
-	@Override
 	public Response getGetGamesFor(String username) {
 		RequestValues urlValues = createRequest(String.format("username : %s", username));
 		return new SpringResponse(gameResource.getGames(urlValues.get("username"), null));
@@ -85,12 +63,6 @@ public class GameSpringDriverSession implements GameDriverSession {
 			String password) {
 		return getTranslatedValues().aliasRequestValues(new RequestValues().add("username", username).add("password", password));
 	}	
-
-	@Override
-	public void deleteUser(String data) {
-		RequestValues requestValues = createRequest(DefaultValues.USER, data);
-		userResource.deleteUser(requestValues.get("username"));
-	}
 
 	@Override
 	public void orderDeck(String gameId, List<Integer> order) {
@@ -214,6 +186,12 @@ public class GameSpringDriverSession implements GameDriverSession {
 	}
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
 		return translatedValues.aliasRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
+	}
+
+	@Override
+	public Response getUser() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

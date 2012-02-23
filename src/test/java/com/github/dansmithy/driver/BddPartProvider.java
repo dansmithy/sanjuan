@@ -199,26 +199,6 @@ public class BddPartProvider {
 		};
 	}	
 	
-	public static BddPart<GameDriver> updateUser(final String username, final String userJson) {
-		return new BddPart<GameDriver>() {
-			@Override
-			public void execute(GameDriver context) {
-				Response actualResponse = context.getAdminSession().updateUser(username, userJson);
-				context.setLastResponse(actualResponse);
-			}
-		};		
-	}	
-	
-	public static BddPart<GameDriver> getUsers() {
-		return new BddPart<GameDriver>() {
-			@Override
-			public void execute(GameDriver context) {
-				Response actualResponse = context.getAdminSession().getUsers();
-				context.setLastResponse(actualResponse);
-			}
-		};		
-	}		
-
 	public static BddPart<GameDriver> userAuthenticated(final String username) {
 		return new BddPart<GameDriver>() {
 			@Override

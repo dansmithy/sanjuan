@@ -1,5 +1,7 @@
 package com.github.dansmithy.driver;
 
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,22 +56,9 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	
 
 	@Override
-	public void createUser(String username) {
-		getAdminSession().createUser(username);
-		players.add(username);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.driver.BddContext#loginUser(java.lang.String)
-	 */
-	@Override
 	public void loginUser(String username) {
-		loginUser(username, DefaultValues.PASSWORD);
-	}
-	
-	@Override
-	public void loginUser(String username, String password) {
 		GameDriverSession sessionPlayer = login(username, false);
+		players.add(username);
 		playerSessions.put(username, sessionPlayer);
 	}
 		
@@ -84,7 +73,6 @@ public abstract class SkeletonGameDriver implements GameDriver {
 				if (playerSessions.containsKey(user)) {
 					deleteGame(playerSessions.get(user).getGameId());
 				}
-				getAdminSession().deleteUser(String.format("username : %s", user));
 			}
 		}
 		getAdminSession().logout();
@@ -93,7 +81,10 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	private void deleteGame(String gameId) {
 		if (gameId != null) {
 			try {
-				getAdminSession().deleteGame(gameId);
+				Response response = getAdminSession().deleteGame(gameId);
+				System.out.println("got");
+				response = getAdminSession().getUser();
+				System.out.println("again");
 			} catch (ResourceNotFoundRuntimeException e) {
 				// do nothing! only for spring implementaiton
 			} catch (AccessUnauthorizedRuntimeException e) {

@@ -8,8 +8,6 @@ public interface GameDriver {
 
 	void loginUser(String username);
 	
-	void loginUser(String username, String password);
-
 	void cleanup();
 
 	GameDriverSession getSession(String username);
@@ -21,8 +19,6 @@ public interface GameDriver {
 	TranslatedValues getTranslatedValues();
 
 	void outputGamePlayers();
-
-	void createUser(String username);
 
 	Response getRememberedResponse(String rememberedResponseKey);
 

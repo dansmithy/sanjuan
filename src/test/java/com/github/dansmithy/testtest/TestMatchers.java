@@ -28,7 +28,7 @@ public class TestMatchers {
 	@Test
 	public void testRequestCreate() {
 		TranslatedValues translatedValues = new TranslatedValues();
-		RequestValues values = new RequestValues().addAll(DefaultValues.USER).addReadableData("username : #danny, password : testPassword");
+		RequestValues values = new RequestValues().addAll(MapBuilder.simple().add("password", "testPassword").buildUnmodifiable()).addReadableData("username : #danny, password : testPassword");
 		RequestValues newValues = translatedValues.aliasRequestValues(values);
 		System.out.println(newValues.toJson());
 		
