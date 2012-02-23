@@ -29,11 +29,11 @@ public class TestMatchers {
 	public void testRequestCreate() {
 		TranslatedValues translatedValues = new TranslatedValues();
 		RequestValues values = new RequestValues().addAll(DefaultValues.USER).addReadableData("username : #danny, password : testPassword");
-		RequestValues newValues = translatedValues.translateRequestValues(values);
+		RequestValues newValues = translatedValues.aliasRequestValues(values);
 		System.out.println(newValues.toJson());
 		
 		RequestValues values2 = new RequestValues().addReadableData("user : #danny");
-		RequestValues values3 = translatedValues.translateRequestValues(values2);
+		RequestValues values3 = translatedValues.aliasRequestValues(values2);
 		System.out.println(values3.toJson());
 		
 	}	

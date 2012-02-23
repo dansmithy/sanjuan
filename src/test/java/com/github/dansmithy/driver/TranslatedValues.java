@@ -7,25 +7,25 @@ import java.util.UUID;
 
 public class TranslatedValues {
 
-	private Map<String, String> translatedValues = new HashMap<String, String>();
+	private Map<String, String> aliases = new HashMap<String, String>();
 	
 	public TranslatedValues() {
 		super();
 	}
 	
-	public TranslatedValues(Map<String, String> translatedValues) {
+	public TranslatedValues(Map<String, String> aliases) {
 		super();
-		this.translatedValues = translatedValues;
+		this.aliases = aliases;
 	}
 
-	public RequestValues translateRequestValues(RequestValues oldRequestValues) {
+	public RequestValues aliasRequestValues(RequestValues oldRequestValues) {
 		RequestValues requestValues = new RequestValues();
 		for (Map.Entry<String, String> entry : oldRequestValues.entrySet()) {
 			if (entry.getValue().contains(",")) {
-				handleArray(translatedValues, entry, requestValues);
+				handleArray(aliases, entry, requestValues);
 			}
-			else if (entry.getValue().startsWith("#")) {
-				generateValueIfNotExistAndAdd(translatedValues, requestValues, entry);
+			else if (shouldHaveGeneratedAlias(entry.getValue())) {
+				generateValueIfNotExistAndAdd(aliases, requestValues, entry);
 			} else {
 				requestValues.add(entry.getKey(), entry.getValue());
 			}
@@ -33,6 +33,14 @@ public class TranslatedValues {
 		return requestValues;
 	}
 	
+	public String alias(String value) {
+		return shouldHaveGeneratedAlias(value) ? addToMapIfNotExist(aliases, value) : value; 
+	}
+	
+	private boolean shouldHaveGeneratedAlias(String value) {
+		return value.startsWith("#");
+	}
+		
 	private void handleArray(Map<String, String> map, Entry<String, String> entry,
 			RequestValues requestValues) {
 		String[] parts = entry.getValue().split(",");
@@ -41,7 +49,7 @@ public class TranslatedValues {
 		for (String part : parts) {
 			String value = part;
 			if (value.startsWith("#")) {
-				value = addToMapIfNotExist(translatedValues, value);
+				value = addToMapIfNotExist(aliases, value);
 			}
 			builder.append(delimiter);
 			builder.append(value);
@@ -63,7 +71,7 @@ public class TranslatedValues {
 			String value) {
 		if (!map.containsKey(value)) {
 			String cleanValue = value.substring(1);
-			String generatedValue = generateValue(cleanValue);
+			String generatedValue = generateAlias(cleanValue);
 			map.put(value, generatedValue);
 			return generatedValue;
 		} else {
@@ -71,20 +79,20 @@ public class TranslatedValues {
 		}
 	}	
 	
-	private static String generateValue(String actualKey) {
+	private static String generateAlias(String actualKey) {
 		return String.format("%s-%s", actualKey, UUID.randomUUID().toString());
 	}
 	
 	public String get(String key) {
-		return translatedValues.get(key);
+		return aliases.get(key);
 	}
 	
 	public boolean containsKey(String key) {
-		return translatedValues.containsKey(key);
+		return aliases.containsKey(key);
 	}
 
 	public TranslatedValues add(String key, String value) {
-		translatedValues.put(key, value);
+		aliases.put(key, value);
 		return this;
 	}
 	

@@ -1,16 +1,21 @@
 package com.github.dansmithy.rest;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.RestServerDriver.body;
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
-import static com.github.restdriver.serverdriver.RestServerDriver.post;
+import static org.hamcrest.Matchers.*;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 
+import org.junit.Assert;
+
+import com.github.dansmithy.driver.ATUtils;
 import com.github.dansmithy.driver.GameDriverSession;
-import com.github.dansmithy.driver.RequestValues;
 import com.github.dansmithy.driver.SkeletonGameDriver;
-import com.github.dansmithy.exception.AcceptanceTestException;
+import com.github.dansmithy.sanjuan.twitter.service.scribe.ConfigurableTwitterApi;
+import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.clientdriver.ClientDriverFactory;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -21,30 +26,38 @@ public class GameRestDriver extends SkeletonGameDriver {
 	private static final Header ACCEPT_JSON_HEADER = header("Accept", JSON_CONTENT_TYPE);
 
 	private String baseUri;
+	private ClientDriver clientDriver;
 	
-	public GameRestDriver(String baseUri, String adminUsername, String adminPassword) {
-		super(adminUsername, adminPassword);
+	public GameRestDriver(String baseUri, String adminUsername, ClientDriver clientDriver) {
+		super(adminUsername);
 		this.baseUri = baseUri;
+		this.clientDriver = clientDriver;
 		createAdminSession();
 	}
 
 	@Override
-	protected GameDriverSession login(String username, String password, boolean isAdmin) {
-		RequestValues requestValues = createTranslatedUserRequest(username, password);
-		Response response = null;
-		// Assume this loop is required because Mongo has not yet written the created user to disk, but have not proved this
-		for (int tries = 0; tries < 2; tries++) {
-			response = post(baseUri + "/j_spring_security_check", body(requestValues.toJson(), JSON_CONTENT_TYPE), ACCEPT_JSON_HEADER);
-			if (response.getStatusCode() == 200) {
-				break;
-			}
-		}
-		if (response.getStatusCode() != 200) {
-			throw new AcceptanceTestException(String.format("Failed to authenticate with username %s and password %s. Got response code %d and content [%s].", requestValues.get("username"), requestValues.get("password"), response.getStatusCode(), response.asText()));
-		}
-		List<Header> cookieData = response.getHeaders("Set-Cookie");
+	protected GameDriverSession login(String username, boolean isAdmin) {
+		String aliasUsername = getTranslatedValues().alias(username);
+		String requestToken = "request_token";
+		String requestTokenSecret = "request_token_secret";
+		String accessToken = "access_token";
+		String accessTokenSecret = "access_token_secret";
+		String accessTokenVerifier = "access_token_verifier";
+		String userId = "user_id";
+		String requestTokenReponseBody = String.format("oauth_token=%s&oauth_token_secret=%s&oauth_callback_confirmed=true", requestToken, requestTokenSecret);
+		clientDriver.addExpectation(onRequestTo("/oauth/request_token").withMethod(Method.POST), giveResponse(requestTokenReponseBody).withStatus(HttpURLConnection.HTTP_OK));
+		Response requestTokenResponse = get(baseUri + "/ws/auth/authToken");
+		List<Header> cookieData = requestTokenResponse.getHeaders("Set-Cookie");
 		String sessionId = extractJSessionId(cookieData);
-		return new GameRestDriverSession(baseUri, sessionId, getTranslatedValues());
+		GameRestDriverSession session = new GameRestDriverSession(baseUri, sessionId, getTranslatedValues());
+		Assert.assertThat("Expected to get 302 response code when requesting authToken", requestTokenResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_MOVED_TEMP)));
+		String twitterLoginUrl = requestTokenResponse.getHeader("location").getValue();
+		Assert.assertThat(twitterLoginUrl, is(equalTo(String.format("http://localhost:%d/oauth/authenticate?oauth_token=%s", ATUtils.getRestDriverPort(), requestToken))));
+		String accessTokenReponseBody = String.format("oauth_token=%s&oauth_token_secret=%s&user_id=%s&screen_name=%s", accessToken, accessTokenSecret, userId, aliasUsername);
+		clientDriver.addExpectation(onRequestTo("/oauth/access_token").withMethod(Method.POST), giveResponse(accessTokenReponseBody).withStatus(HttpURLConnection.HTTP_OK));
+		Response validateUserResponse = get(String.format(baseUri + "/ws/auth/authValidate?oauth_token=%s&oauth_verifier=%s", requestToken, accessTokenVerifier), session.createSessionHeader());
+		Assert.assertThat(validateUserResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_MOVED_TEMP)));
+		return session;
 	}	
 	
 	private String extractJSessionId(List<Header> headers) {

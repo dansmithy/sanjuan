@@ -95,7 +95,7 @@ public class GameRestDriverSession implements GameDriverSession {
 	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
-		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));
+		return getTranslatedValues().aliasRequestValues(new RequestValues().add("username", username).add("password", password));
 	}		
 	
 	/* (non-Javadoc)
@@ -226,10 +226,10 @@ public class GameRestDriverSession implements GameDriverSession {
 	}
 	
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
-		return translatedValues.translateRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
+		return translatedValues.aliasRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
 	}
 
-	private AnyRequestModifier createSessionHeader() {
+	public AnyRequestModifier createSessionHeader() {
 		return header("Cookie", "JSESSIONID=" + sessionId);
 	}
 

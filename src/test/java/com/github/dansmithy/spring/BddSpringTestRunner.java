@@ -24,13 +24,9 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	private final CardResource cardResource;
 	private TwitterUserStore sessionProvider;
 	private final String adminUsername;
-	private final String adminPassword;
 
-	
-
-	public BddSpringTestRunner(String adminUsername, String adminPassword) {
+	public BddSpringTestRunner(String adminUsername) {
 		this.adminUsername = adminUsername;
-		this.adminPassword = adminPassword;
 		ApplicationContext context = new FileSystemXmlApplicationContext("src/main/webapp/WEB-INF/applicationContext.xml");
 		gameResource = context.getBean(GameResource.class);
 		userResource = context.getBean(UserResource.class);
@@ -40,7 +36,7 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 
 	@Override
 	public GameDriver createContext() {
-		return new GameSpringDriver(gameResource, userResource, cardResource, sessionProvider, adminUsername, adminPassword);
+		return new GameSpringDriver(gameResource, userResource, cardResource, sessionProvider, adminUsername);
 	}
 
 	public void afterTest(GameDriver context) {

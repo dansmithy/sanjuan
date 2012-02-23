@@ -10,7 +10,7 @@ import com.github.dansmithy.sanjuan.twitter.service.RoleProvider;
 @Named
 public class BasicRoleProvider implements RoleProvider {
 
-	private String[] adminUsernames = { "dan_bristol" };
+	private static final String[] adminUsernames = { "dan_bristol" };
 	
 	public BasicRoleProvider() {
 		super();
@@ -24,4 +24,7 @@ public class BasicRoleProvider implements RoleProvider {
 		return new String[] { TwitterUser.ROLE_PLAYER };
 	}
 
+	public static String getAdminUsername() {
+		return adminUsernames[0];
+	}
 }

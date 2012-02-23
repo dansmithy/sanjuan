@@ -83,7 +83,7 @@ public class GameSpringDriverSession implements GameDriverSession {
 	
 	protected RequestValues createTranslatedUserRequest(String username,
 			String password) {
-		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));
+		return getTranslatedValues().aliasRequestValues(new RequestValues().add("username", username).add("password", password));
 	}	
 
 	@Override
@@ -213,7 +213,7 @@ public class GameSpringDriverSession implements GameDriverSession {
 		return Collections.emptyMap();
 	}
 	private RequestValues createRequest(Map<String, String> defaults, String data) {
-		return translatedValues.translateRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
+		return translatedValues.aliasRequestValues(new RequestValues().addAll(defaults).addReadableData(data));
 	}
 
 

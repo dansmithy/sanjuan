@@ -18,23 +18,20 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	private Map<String, Response> rememberedResponses = new HashMap<String, Response>();
 	
 	private String adminUsername;
-	private String adminPassword;
 	
-	public SkeletonGameDriver(String adminUsername, String adminPassword) {
+	public SkeletonGameDriver(String adminUsername) {
 		super();
 		this.adminUsername = adminUsername;
-		this.adminPassword = adminPassword;
 		this.translatedValues = new TranslatedValues();
 	}
 
 	protected void createAdminSession() {
-		GameDriverSession adminSession = login(adminUsername, adminPassword, true);
+		GameDriverSession adminSession = login(adminUsername, true);
 		playerSessions.put(adminUsername, adminSession);
 	}
 
-	protected RequestValues createTranslatedUserRequest(String username,
-			String password) {
-		return getTranslatedValues().translateRequestValues(new RequestValues().add("username", username).add("password", password));
+	protected RequestValues createTranslatedUserRequest(String username) {
+		return getTranslatedValues().aliasRequestValues(new RequestValues().add("username", username));
 	}
 	
 	/* (non-Javadoc)
@@ -53,7 +50,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 		return playerSessions.get(username);
 	}	
 	
-	protected abstract GameDriverSession login(String username, String password, boolean isAdmin);
+	protected abstract GameDriverSession login(String username, boolean isAdmin);
 	
 
 	@Override
@@ -72,7 +69,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	
 	@Override
 	public void loginUser(String username, String password) {
-		GameDriverSession sessionPlayer = login(username, password, false);
+		GameDriverSession sessionPlayer = login(username, false);
 		playerSessions.put(username, sessionPlayer);
 	}
 		

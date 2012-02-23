@@ -24,7 +24,7 @@ public class TestRequestValues {
 		String input = "build : #coffeeroaster; payment : #one,#two,#three";
 		RequestValues rv = new RequestValues();
 		rv.addReadableData(input);
-		RequestValues newRV = tv.translateRequestValues(rv);
+		RequestValues newRV = tv.aliasRequestValues(rv);
 		
 		
 		System.out.println(newRV.toJson());
@@ -37,7 +37,7 @@ public class TestRequestValues {
 		String input = "build : #coffeeroaster; payment : #one,#two,#three";
 		RequestValues rv = new RequestValues();
 		rv.addReadableData(input);
-		RequestValues newRV = tv.translateRequestValues(rv);
+		RequestValues newRV = tv.aliasRequestValues(rv);
 		
 		
 		System.out.println(newRV.toJson());

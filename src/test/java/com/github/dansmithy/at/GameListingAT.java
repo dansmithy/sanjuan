@@ -20,7 +20,7 @@ public class GameListingAT {
 	public void testCanGetGamesForPlayer() {
 
 		bdd.runTest(
-				given(userExistsAndAuthenticated("#alice")).and(
+				given(userAuthenticated("#alice")).and(
 						gameCreatedBy("#alice")).and(
 						lastResponseRememberedAs("created")),
 
@@ -34,7 +34,7 @@ public class GameListingAT {
 	public void testCanGetRecruitingGames() {
 
 		bdd.runTest(
-				given(userExistsAndAuthenticated("#alice")).and(
+				given(userAuthenticated("#alice")).and(
 						gameCreatedBy("#alice")).and(
 						lastResponseRememberedAs("created")),
 
@@ -48,7 +48,7 @@ public class GameListingAT {
 	public void testCanGetAllGames() {
 
 		bdd.runTest(
-				given(userExistsAndAuthenticated("#alice")).and(
+				given(userAuthenticated("#alice")).and(
 						gameCreatedBy("#alice")).and(
 						lastResponseRememberedAs("created")),
 
@@ -62,8 +62,8 @@ public class GameListingAT {
 	public void testCannotGetGamesForOtherPlayer() {
 
 		bdd.runTest(
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(lastResponseRememberedAs("created")),
 
@@ -77,7 +77,7 @@ public class GameListingAT {
 	public void testGetNotFoundWhenGameDoesNotExist() {
 
 		bdd.runTest(
-				given(userExistsAndAuthenticated("#alice")),
+				given(userAuthenticated("#alice")),
 
 				when(getGame("#alice", 0)),
 

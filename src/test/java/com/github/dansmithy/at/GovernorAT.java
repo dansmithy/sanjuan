@@ -91,7 +91,7 @@ public class GovernorAT {
 		bdd.runTest(
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
-						userExistsAndAuthenticated("#charlie")).and(
+						userAuthenticated("#charlie")).and(
 						copyGameIdBetweenUsers("#alice", "#charlie")),
 
 				when(roleChosenBy("#charlie", "round : 1; phase : 1",
@@ -200,7 +200,7 @@ public class GovernorAT {
 				given(gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(playRoundsOneAndTwoExceptFinalMove())
 						.and(playRoundTwoFinalMove())
-						.and(userExistsAndAuthenticated("#charlie"))
+						.and(userAuthenticated("#charlie"))
 						.and(copyGameIdBetweenUsers("#alice", "#charlie")),
 
 				when(userMakesGovernorPlay("#charlie", "round : 3",

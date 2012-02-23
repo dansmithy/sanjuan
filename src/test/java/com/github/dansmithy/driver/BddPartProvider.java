@@ -82,15 +82,6 @@ public class BddPartProvider {
 		};
 	}		
 
-	public static BddPart<GameDriver> userExists(final String username) {
-		return new BddPart<GameDriver>() {
-			@Override
-			public void execute(GameDriver context) {
-				context.createUser(username);
-			}
-		};
-	}
-	
 	public static String loggedInAs(String username) {
 		return username;
 	}
@@ -237,12 +228,6 @@ public class BddPartProvider {
 		};
 	}
 
-	public static BddPart<GameDriver> userExistsAndAuthenticated(
-			final String username) {
-		return new SimpleBddParts<GameDriver>(userExists(username))
-				.and(userAuthenticated(username));
-	}
-
 	public static BddPart<GameDriver> orderDeckOwnedBy(final String username,
 			final List<Integer> order) {
 		return new BddPart<GameDriver>() {
@@ -359,8 +344,8 @@ public class BddPartProvider {
 	public static BddPart<GameDriver> gameBegunWithTwoPlayers(
 			final String player, final String player2, List<Integer> deckOrder) {
 		return new SimpleBddParts<GameDriver>(
-				userExistsAndAuthenticated(player))
-				.and(userExistsAndAuthenticated(player2))
+				userAuthenticated(player))
+				.and(userAuthenticated(player2))
 				.and(gameCreatedBy(player))
 				.and(orderDeckOwnedBy(player, deckOrder))
 				.and(orderTariffOwnedBy(player, Arrays.asList(4, 3, 2, 1, 0)))

@@ -22,7 +22,7 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice")),
+				given(userAuthenticated("#alice")),
 
 				when(gameCreatedBy("#alice")),
 
@@ -34,8 +34,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice")).and(
-						userExistsAndAuthenticated("#bob")).and(
+				given(userAuthenticated("#alice")).and(
+						userAuthenticated("#bob")).and(
 						gameCreatedBy("#alice")),
 
 				when(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -51,9 +51,9 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(userExistsAndAuthenticated("#charlie"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
+						.and(userAuthenticated("#charlie"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob"))
 						.and(gameStartedBy("#alice")),
@@ -68,11 +68,11 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
-						.and(userExistsAndAuthenticated("#charlie"))
-						.and(userExistsAndAuthenticated("#debbie"))
-						.and(userExistsAndAuthenticated("#eric"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
+						.and(userAuthenticated("#charlie"))
+						.and(userAuthenticated("#debbie"))
+						.and(userAuthenticated("#eric"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob"))
 						.and(gameOwnedByJoinedBy("#alice", "#charlie"))
@@ -88,7 +88,7 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-			given(userExistsAndAuthenticated("#alice"))
+			given(userAuthenticated("#alice"))
 					.and(gameCreatedBy("#alice")),
 	
 			when(gameOwnedByJoinedBy("#alice", "#alice")),
@@ -101,8 +101,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -116,8 +116,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -131,7 +131,7 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(userExistsAndAuthenticated("#charlie")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(userAuthenticated("#charlie")),
 
 				when(getGameOwnedBySomebodyElse("#charlie", "#alice")),
 
@@ -143,8 +143,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-						.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -158,8 +158,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice")).and(
-						userExistsAndAuthenticated("#bob")).and(
+				given(userAuthenticated("#alice")).and(
+						userAuthenticated("#bob")).and(
 						gameCreatedBy("#alice")),
 
 				when(gameStartedBy("#alice")),
@@ -184,7 +184,7 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice")),
+				given(userAuthenticated("#alice")),
 
 				when(gameCreatedBy("#alice")),
 
@@ -208,8 +208,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-					.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -239,8 +239,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-					.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -266,8 +266,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-					.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
 
@@ -305,8 +305,8 @@ public class GameCreationAT {
 
 		bdd.runTest(
 
-				given(userExistsAndAuthenticated("#alice"))
-					.and(userExistsAndAuthenticated("#bob"))
+				given(userAuthenticated("#alice"))
+					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
 

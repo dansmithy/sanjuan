@@ -42,7 +42,7 @@ public class ExtendedPlayAT {
 
 				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
-								"role : BUILDER")).and(userExistsAndAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
+								"role : BUILDER")).and(userAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
 
 				when(userPlays("#charlie", "round : 1; phase : 1; play : 1",
 						"{ build : '#prefecture', payment : [ '#indigoplant3', '#indigoplant4' ] }")),
