@@ -6,6 +6,8 @@ import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.Matchers.*;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
@@ -14,9 +16,19 @@ import com.github.dansmithy.driver.GameDriver;
 
 public class GameCreationAT {
 
-	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
+	private static BddTestRunner<GameDriver> bdd;
 
+	@BeforeClass
+	public static void createTestRunner() {
+		 bdd = new BddEnvironmentConfigTestRunnerFactory()
+			.createTestRunner();
+	}
+	
+	@AfterClass
+	public static void stopTestRunner() {
+		bdd.shutdown();
+	}
+	
 	@Test
 	public void testCanCreateGame() {
 

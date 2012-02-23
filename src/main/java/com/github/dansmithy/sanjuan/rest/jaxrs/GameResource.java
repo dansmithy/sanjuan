@@ -29,7 +29,7 @@ import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 
-@RolesAllowed({ TwitterUser.ROLE_PLAYER })
+@RolesAllowed({ TwitterUser.ROLE_PLAYER, TwitterUser.ROLE_ADMIN })
 @Path("/ws/games")
 public interface GameResource {
 

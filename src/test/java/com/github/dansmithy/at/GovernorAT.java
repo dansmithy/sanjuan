@@ -5,6 +5,8 @@ import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddPart;
@@ -17,9 +19,19 @@ import com.github.dansmithy.driver.GameDriver;
 
 public class GovernorAT {
 
-	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
+	private static BddTestRunner<GameDriver> bdd;
 
+	@BeforeClass
+	public static void createTestRunner() {
+		 bdd = new BddEnvironmentConfigTestRunnerFactory()
+			.createTestRunner();
+	}
+	
+	@AfterClass
+	public static void stopTestRunner() {
+		bdd.shutdown();
+	}
+	
 	@Test
 	public void testCanChooseRole() {
 
@@ -331,6 +343,8 @@ public class GovernorAT {
 		then(
 				verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5, handCount: 10 } ], 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentPlayer : '#bob' } } }"))
 				.execute(context);
+		
+		context.cleanup();
 	}
 
 	@Test
@@ -357,6 +371,8 @@ public class GovernorAT {
 		then(
 				verifySuccessfulResponseContains("{ 'state' : 'PLAYING', 'players^name' : [ { 'name' : '#alice', victoryPoints: 5, handCount: 14 } ], 'currentRound' : { state : 'GOVERNOR', governorPhase : { currentStep : { numberOfCardsToDiscard : 2 } } } }"))
 				.execute(context);
+		
+		context.cleanup();
 	}
 
 	@Test

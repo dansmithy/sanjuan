@@ -62,6 +62,11 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 			context.setLastResponse(new SpringResponse(response.getEntity(), response.getStatus())); 
 		}
 	}
+
+	@Override
+	public void shutdown() {
+		// do nothing
+	}
 	
 	
 	

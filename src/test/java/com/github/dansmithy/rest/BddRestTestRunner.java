@@ -25,4 +25,9 @@ public class BddRestTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	public void afterTest(GameDriver context) {
 		context.cleanup();
 	}
+
+	@Override
+	public void shutdown() {
+		clientDriver.shutdown();
+	}
 }

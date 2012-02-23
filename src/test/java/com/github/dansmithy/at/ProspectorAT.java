@@ -8,6 +8,8 @@ import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
 import static com.github.dansmithy.driver.BddPartProvider.userPlays;
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
@@ -16,9 +18,19 @@ import com.github.dansmithy.driver.GameDriver;
 
 public class ProspectorAT {
 
-	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
+	private static BddTestRunner<GameDriver> bdd;
 
+	@BeforeClass
+	public static void createTestRunner() {
+		 bdd = new BddEnvironmentConfigTestRunnerFactory()
+			.createTestRunner();
+	}
+	
+	@AfterClass
+	public static void stopTestRunner() {
+		bdd.shutdown();
+	}
+	
 	@Test
 	public void testLeadPlayerGetsACard() {
 

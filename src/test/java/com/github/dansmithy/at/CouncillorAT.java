@@ -11,6 +11,8 @@ import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains
 import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddTestRunner;
@@ -19,9 +21,19 @@ import com.github.dansmithy.driver.GameDriver;
 
 public class CouncillorAT {
 
-	private static BddTestRunner<GameDriver> bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
+	private static BddTestRunner<GameDriver> bdd;
 
+	@BeforeClass
+	public static void createTestRunner() {
+		 bdd = new BddEnvironmentConfigTestRunnerFactory()
+			.createTestRunner();
+	}
+	
+	@AfterClass
+	public static void stopTestRunner() {
+		bdd.shutdown();
+	}
+	
 	@Test
 	public void testCorrectNumberOfCardsOffered() {
 

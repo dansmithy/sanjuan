@@ -9,4 +9,6 @@ package com.github.dansmithy.bdd;
 public interface BddTestRunner<T> {
 
 	void runTest(BddPart<T> given, BddPart<T> event, BddPart<T> outcome);
+
+	void shutdown();
 }

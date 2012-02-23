@@ -81,10 +81,7 @@ public abstract class SkeletonGameDriver implements GameDriver {
 	private void deleteGame(String gameId) {
 		if (gameId != null) {
 			try {
-				Response response = getAdminSession().deleteGame(gameId);
-				System.out.println("got");
-				response = getAdminSession().getUser();
-				System.out.println("again");
+				getAdminSession().deleteGame(gameId);
 			} catch (ResourceNotFoundRuntimeException e) {
 				// do nothing! only for spring implementaiton
 			} catch (AccessUnauthorizedRuntimeException e) {
