@@ -1,5 +1,8 @@
 package com.github.dansmithy.driver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.config.JunitConfiguration;
 import com.github.dansmithy.rest.BddRestTestRunner;
@@ -10,6 +13,8 @@ import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 public class BddEnvironmentConfigTestRunnerFactory implements
 		BddTestRunnerFactory {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BddEnvironmentConfigTestRunnerFactory.class);
 
 	private static final String HTTP_MODE_KEY = "httpMode";
 	private static final String ADMIN_USERNAME_KEY = "adminUsername";
@@ -33,7 +38,9 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 	}
 
 	private BddTestRunner<GameDriver> createHttpTestRunner() {
-		ClientDriver clientDriver = new ClientDriverFactory().createClientDriver(ATUtils.getRestDriverPort()); 
+		int port = ATUtils.getRestDriverPort();
+		LOGGER.info(String.format("Starting ClientDriver on port [%d]", port));
+		ClientDriver clientDriver = new ClientDriverFactory().createClientDriver(port); 
 		return new BddRestTestRunner(configuration.getProperty(BASE_URI_KEY,
 				DefaultValues.BASE_URI), configuration.getProperty(
 				ADMIN_USERNAME_KEY, BasicRoleProvider.getAdminUsername()), clientDriver);

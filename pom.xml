@@ -21,6 +21,7 @@
         <hibernate.version>3.6.4.Final</hibernate.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <jackson.version>1.9.1</jackson.version>
+        <javax.inject.version>1</javax.inject.version>
         <jetty.version>8.1.0.v20120127</jetty.version>
         <jodatime.version>2.0</jodatime.version>
         <jpa.version>2.0-cr-1</jpa.version>
@@ -36,10 +37,12 @@
         <rest-driver.version>1.1.15</rest-driver.version>
         <scribe.version>1.3.0</scribe.version>
         <servlet.version>2.5</servlet.version>
+        <slf4j.version>1.6.3</slf4j.version>
         <spring.version>3.1.1.RELEASE</spring.version>
         <spring-security.version>3.1.0.RELEASE</spring-security.version>
         <spring-data.version>1.0.1.RELEASE</spring-data.version>
         
+        <restdriver.port>48080</restdriver.port>
         <jetty.daemon>true</jetty.daemon>
         <jetty.port>8086</jetty.port>
         <wait>false</wait>
@@ -92,7 +95,16 @@
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>                    
-                    
+                    <systemProperties>
+                        <systemProperty>
+                            <name>restdriver.port</name>
+                            <value>${restdriver.port}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>twitter.baseurl</name>
+                            <value>${twitter.baseurl}</value>
+                        </systemProperty>
+                    </systemProperties>
                     <webApp>
                         <contextPath>/</contextPath>
                         <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
@@ -215,6 +227,10 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-server</artifactId>
                 </exclusion>
+                <exclusion>
+                	<artifactId>slf4j-nop</artifactId>
+                	<groupId>org.slf4j</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -226,6 +242,10 @@
                 <exclusion>
                     <groupId>com.jayway.jsonpath</groupId>
                     <artifactId>json-path</artifactId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>slf4j-nop</artifactId>
+                	<groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -388,8 +408,18 @@
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <version>${javax.inject.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>        
+        </dependency>        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>        
+        </dependency>        
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -425,6 +455,10 @@
         <profile>
             <id>acceptance</id>
 
+            <properties>
+                <twitter.baseurl>http://localhost:${restdriver.port}</twitter.baseurl>
+            </properties>
+
             <build>
                 <plugins>
                     <plugin>
@@ -453,6 +487,10 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <systemPropertyVariables>
+                                <restdriver.port>${restdriver.port}</restdriver.port>
+                                <twitter.baseurl>${twitter.baseurl}</twitter.baseurl>
+                            </systemPropertyVariables>
                             <includes>
                                 <include>${at.pattern}</include>
                             </includes>
