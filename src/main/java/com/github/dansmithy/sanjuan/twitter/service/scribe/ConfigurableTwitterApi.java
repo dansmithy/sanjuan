@@ -5,6 +5,8 @@ import org.scribe.model.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Objects;
+
 public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurableTwitterApi.class);
@@ -21,7 +23,7 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	
 	public ConfigurableTwitterApi() {
 		super();
-		requiredBaseUrl = System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL, DEFAULT_TWITTER_BASE_URL);
+		requiredBaseUrl = Objects.firstNonNull(System.getenv(ENVIRONMENT_KEY_TWITTER_BASE_URL), System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL, DEFAULT_TWITTER_BASE_URL));
 		LOGGER.info(String.format("Using Twitter Base URL [%s].", requiredBaseUrl));
 	}
 
