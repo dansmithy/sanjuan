@@ -109,7 +109,8 @@ public class GameUpdater {
 	
 	public void updateAbandonedBy() {
 		updates.put("abandonedBy", new PartialUpdate("abandonedBy", game.getAbandonedBy()));
-	}	
+	}
+	
 	public Round nextRound(PlayerCycle cycle) {
 		String nextGovernor = cycle.next(game.getCurrentRound().getGovernor());
 		int playerCount = game.getPlayers().size(); 

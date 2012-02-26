@@ -5,28 +5,9 @@ import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.dansmithy.bdd.BddTestRunner;
-import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
-import com.github.dansmithy.driver.GameDriver;
-
-public class CardsAT {
-
-	private static BddTestRunner<GameDriver> bdd;
-
-	@BeforeClass
-	public static void createTestRunner() {
-		 bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
-	}
-	
-	@AfterClass
-	public static void stopTestRunner() {
-		bdd.shutdown();
-	}
+public class CardsAT extends BaseAT {
 
 	@Test
 	public void testGetCards() {

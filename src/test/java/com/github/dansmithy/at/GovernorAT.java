@@ -5,39 +5,22 @@ import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
 import static java.net.HttpURLConnection.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.dansmithy.bdd.BddPart;
-import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.bdd.GivenBddParts;
 import com.github.dansmithy.bdd.SkeletonBddTestRunner;
-import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
 import com.github.dansmithy.driver.DeckOrder;
 import com.github.dansmithy.driver.GameDriver;
 
-public class GovernorAT {
-
-	private static BddTestRunner<GameDriver> bdd;
-
-	@BeforeClass
-	public static void createTestRunner() {
-		 bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
-	}
-	
-	@AfterClass
-	public static void stopTestRunner() {
-		bdd.shutdown();
-	}
+public class GovernorAT extends BaseAT {
 	
 	@Test
 	public void testCanChooseRole() {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER")),
@@ -50,7 +33,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()),
 
 				when(roleChosenBy("#bob", "round : 1; phase : 1",
 						"role : BUILDER")),
@@ -64,7 +47,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -80,7 +63,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -102,7 +85,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						userAuthenticated("#charlie")).and(
 						copyGameIdBetweenUsers("#alice", "#charlie")),
 
@@ -117,7 +100,7 @@ public class GovernorAT {
 	public void testForcedToDiscardCardsIfHaveMoreThanSeven() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()),
 
 				when(playRoundTwoFinalMove()),
@@ -129,7 +112,7 @@ public class GovernorAT {
 	public void testCannotPlayOnWhenAwaitingCardsToBeDiscarded() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playFullRoundsOneAndTwo()),
 
 				when(roleChosenBy("#alice", "round : 3; phase : 1",
@@ -144,7 +127,7 @@ public class GovernorAT {
 	public void testCanDiscardCardsSuccessfully() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -159,7 +142,7 @@ public class GovernorAT {
 	public void testCanDiscardCardsAndChooseRoleAfterwards() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(playRoundsOneAndTwoExceptFinalMove())
 						.and(playRoundTwoFinalMove())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
@@ -178,7 +161,7 @@ public class GovernorAT {
 	public void testCannotMakeGovernorChoiceWhenNotGovernorPhase() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()),
 
 				when(userMakesGovernorPlay("#alice", "round : 1",
 						"{ 'cardsToDiscard' : [ '#indigoplant3' ] }")),
@@ -192,7 +175,7 @@ public class GovernorAT {
 	public void testCannotDiscardCardsWhenNotCurrentPlayer() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -209,7 +192,7 @@ public class GovernorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(playRoundsOneAndTwoExceptFinalMove())
 						.and(playRoundTwoFinalMove())
 						.and(userAuthenticated("#charlie"))
@@ -227,7 +210,7 @@ public class GovernorAT {
 	public void testCannotMakeGovernorChoiceWhenStillGovernorPhaseButChoiceAlreadyMade() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(playRoundsOneAndTwoExceptFinalMove())
 						.and(playRoundTwoFinalMove())
 						.and(userMakesGovernorPlay("#alice", "round : 3",
@@ -244,7 +227,7 @@ public class GovernorAT {
 	public void testCannotDiscardTooManyCards() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -261,7 +244,7 @@ public class GovernorAT {
 	public void testCannotDiscardTooFewCards() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -276,7 +259,7 @@ public class GovernorAT {
 	public void testCannotDiscardCardsDoNotOwn() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -291,7 +274,7 @@ public class GovernorAT {
 	public void testCannotDiscardWhenSpecifyIncorrectRound() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -307,7 +290,7 @@ public class GovernorAT {
 	public void testCanDiscardMultipleCardsSuccessfully() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playFullRoundsOneAndTwo()).and(playFullRound3()),
 
 				when(userMakesGovernorPlay("#bob", "round : 4",
@@ -320,7 +303,7 @@ public class GovernorAT {
 	public void testCannotSpecifySameCardTwiceToDiscard() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playFullRoundsOneAndTwo()).and(playFullRound3()),
 
 				when(userMakesGovernorPlay("#bob", "round : 4",
@@ -483,7 +466,7 @@ public class GovernorAT {
 	public void testCannotSpecifyChapelCardIfNotChapelOwner() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						playRoundsOneAndTwoExceptFinalMove()).and(
 						playRoundTwoFinalMove()),
 
@@ -610,6 +593,7 @@ public class GovernorAT {
 	private BddPart<GameDriver> playRoundOneAndBuildChapel() {
 		return new GivenBddParts(gameBegunWithTwoPlayers("#alice", "#bob",
 				DeckOrder.Order3))
+				.and(anyNumberOfTwitterMessagesPermitted())
 				.and(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER"))
 				.and(userPlays("#alice", "round : 1; phase : 1; play : 1",
@@ -677,7 +661,7 @@ public class GovernorAT {
 	 * For Tower
 	 */
 	private BddPart<GameDriver> playRoundsOneToFourForTower() {
-		return new GivenBddParts(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order4))
+		return new GivenBddParts(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order4)).and(anyNumberOfTwitterMessagesPermitted())
 				.and(roleChosenBy("#alice", "round : 1; phase : 1", "role : BUILDER"))
 				.and(userPlays("#alice", "round : 1; phase : 1; play : 1", "{  build : '#coffeeroaster', payment : [ '#prefecture', '#indigoplant3', '#indigoplant4' ]  }"))
 				.and(userPlays("#bob", "round : 1; phase : 1; play : 2", "{  skip : true  }"))

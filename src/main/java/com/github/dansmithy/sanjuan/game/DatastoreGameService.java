@@ -6,6 +6,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.dansmithy.sanjuan.dao.GameDao;
 import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
 import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
@@ -30,23 +33,27 @@ import com.github.dansmithy.sanjuan.model.input.PlayChoice;
 import com.github.dansmithy.sanjuan.model.input.PlayCoords;
 import com.github.dansmithy.sanjuan.model.input.RoleChoice;
 import com.github.dansmithy.sanjuan.model.update.GameUpdater;
+import com.github.dansmithy.sanjuan.twitter.service.TwitterService;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.dansmithy.sanjuan.util.CollectionUtils;
 
 @Named
 public class DatastoreGameService implements GameService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatastoreGameService.class);
+	
 	private static final int MAXIMUM_PLAYER_COUNT = 4;
 	
-	private TariffBuilder tariffBuilder;
-	private CardFactory cardFactory;
+	private final TariffBuilder tariffBuilder;
+	private final CardFactory cardFactory;
 	private final GameDao gameDao;
 	private final TwitterUserStore userProvider;
 	private final RoleProcessorProvider roleProcessorProvider;
 	private final CalculationService calculationService;
+	private final TwitterService twitterService;
 	
 	@Inject
-	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, TwitterUserStore userProvider, CalculationService calculationService, TariffBuilder tariffBuilder, CardFactory cardFactory) {
+	public DatastoreGameService(GameDao gameDao, RoleProcessorProvider roleProcessorProvider, TwitterUserStore userProvider, CalculationService calculationService, TariffBuilder tariffBuilder, CardFactory cardFactory, TwitterService twitterService) {
 		super();
 		this.gameDao = gameDao;
 		this.roleProcessorProvider = roleProcessorProvider;
@@ -54,6 +61,7 @@ public class DatastoreGameService implements GameService {
 		this.calculationService = calculationService;
 		this.tariffBuilder = tariffBuilder;
 		this.cardFactory = cardFactory;
+		this.twitterService = twitterService;
 	}
 
 	/* (non-Javadoc)
@@ -365,6 +373,9 @@ public class DatastoreGameService implements GameService {
 			gameUpdater.createNextStep();
 			if (!gameUpdater.isPhaseChanged()) {
 				roleProcessor.initiateNewPlay(gameUpdater);
+				String message = String.format("It is now your turn to play at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", coords.getGameId(), gameUpdater.getCurrentPlayer().getName());
+				LOGGER.info(String.format("Hey %s! %s", gameUpdater.getNewPlayer().getName(), message));
+				twitterService.sendDirectMessage(gameUpdater.getNewPlayer().getName(), message);
 			}
 		}
 		

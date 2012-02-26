@@ -28,4 +28,6 @@ public interface GameDriver {
 
 	Response getCardTypes();
 
+	void allowAllTwitterMessages();
+
 }

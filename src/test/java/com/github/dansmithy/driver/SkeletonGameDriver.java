@@ -1,7 +1,5 @@
 package com.github.dansmithy.driver;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

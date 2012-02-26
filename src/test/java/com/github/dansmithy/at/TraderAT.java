@@ -1,45 +1,20 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.GivenBddParts.given;
-import static com.github.dansmithy.bdd.BddHelper.then;
-import static com.github.dansmithy.bdd.BddHelper.when;
-import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.driver.BddPartProvider.userPlays;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseCodeIs;
-import static com.github.dansmithy.driver.BddPartProvider.verifyResponseContains;
-import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static com.github.dansmithy.bdd.BddHelper.*;
+import static com.github.dansmithy.bdd.GivenBddParts.*;
+import static com.github.dansmithy.driver.BddPartProvider.*;
+import static java.net.HttpURLConnection.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.dansmithy.bdd.BddTestRunner;
-import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
-import com.github.dansmithy.driver.GameDriver;
-
-public class TraderAT {
-
-	private static BddTestRunner<GameDriver> bdd;
-
-	@BeforeClass
-	public static void createTestRunner() {
-		 bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
-	}
-	
-	@AfterClass
-	public static void stopTestRunner() {
-		bdd.shutdown();
-	}
+public class TraderAT extends BaseAT {
 	
 	@Test
 	public void testCanChooseTraderRole() {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : PRODUCER"))
 						.and(userPlays("#alice",
@@ -60,7 +35,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : PRODUCER"))
 						.and(userPlays("#alice",
@@ -85,7 +60,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : PRODUCER"))
 						.and(userPlays("#alice",
@@ -109,7 +84,7 @@ public class TraderAT {
 		
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -143,7 +118,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : TRADER")),
 
@@ -159,7 +134,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : PRODUCER"))
 						.and(userPlays("#alice",
@@ -183,7 +158,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -223,7 +198,7 @@ public class TraderAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",

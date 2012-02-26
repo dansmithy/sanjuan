@@ -10,7 +10,7 @@ import com.github.dansmithy.sanjuan.twitter.service.RoleProvider;
 @Named
 public class BasicRoleProvider implements RoleProvider {
 
-	private static final String[] adminUsernames = { "dan_bristol" };
+	private static final String[] adminUsernames = { "sanjuangame" };
 	
 	public BasicRoleProvider() {
 		super();

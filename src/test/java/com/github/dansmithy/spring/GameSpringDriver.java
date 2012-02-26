@@ -58,6 +58,11 @@ public class GameSpringDriver extends SkeletonGameDriver {
 	public Response getCardTypes() {
 		return new SpringResponse(cardResource.getCardTypes());
 	}
+
+	@Override
+	public void allowAllTwitterMessages() {
+		// empty for now
+	}
 	
 	
 	

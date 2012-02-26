@@ -1,5 +1,7 @@
 package com.github.dansmithy.sanjuan.twitter.service.scribe;
 
+import javax.inject.Named;
+
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.slf4j.Logger;
@@ -7,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
 
+@Named
 public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurableTwitterApi.class);
@@ -17,8 +20,6 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	private static final String ENVIRONMENT_KEY_TWITTER_BASE_URL = "twitter.baseurl";
 	private static final String ENVIRONMENT_KEY_RESTDRIVER_PORT = "restdriver.port";
 
-	
-	
 	private String requiredBaseUrl;
 	
 	public ConfigurableTwitterApi() {
@@ -51,5 +52,9 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	
 	public static String getRestDriverPort() {
 		return System.getProperty(ENVIRONMENT_KEY_RESTDRIVER_PORT, DEFAULT_RESTDRIVER_PORT);
+	}
+	
+	public String getTwitterBaseUrl() {
+		return requiredBaseUrl;
 	}
 }

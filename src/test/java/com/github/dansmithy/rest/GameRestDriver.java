@@ -6,15 +6,14 @@ import static org.hamcrest.Matchers.*;
 
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.Assert;
 
 import com.github.dansmithy.driver.ATUtils;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.SkeletonGameDriver;
-import com.github.dansmithy.sanjuan.twitter.service.scribe.ConfigurableTwitterApi;
 import com.github.restdriver.clientdriver.ClientDriver;
-import com.github.restdriver.clientdriver.ClientDriverFactory;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
@@ -59,6 +58,11 @@ public class GameRestDriver extends SkeletonGameDriver {
 		Assert.assertThat(validateUserResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_MOVED_TEMP)));
 		return session;
 	}	
+	
+	@Override
+	public void allowAllTwitterMessages() {
+		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", Pattern.compile(".*")).withParam("text", Pattern.compile(".*")), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK)).anyTimes();
+	}
 	
 	private String extractJSessionId(List<Header> headers) {
 		for (Header header : headers) {

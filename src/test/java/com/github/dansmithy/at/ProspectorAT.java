@@ -1,42 +1,19 @@
 package com.github.dansmithy.at;
 
-import static com.github.dansmithy.bdd.GivenBddParts.given;
-import static com.github.dansmithy.bdd.BddHelper.then;
-import static com.github.dansmithy.bdd.BddHelper.when;
-import static com.github.dansmithy.driver.BddPartProvider.gameBegunWithTwoPlayers;
-import static com.github.dansmithy.driver.BddPartProvider.roleChosenBy;
-import static com.github.dansmithy.driver.BddPartProvider.userPlays;
-import static com.github.dansmithy.driver.BddPartProvider.verifySuccessfulResponseContains;
+import static com.github.dansmithy.bdd.BddHelper.*;
+import static com.github.dansmithy.bdd.GivenBddParts.*;
+import static com.github.dansmithy.driver.BddPartProvider.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.dansmithy.bdd.BddTestRunner;
-import com.github.dansmithy.driver.BddEnvironmentConfigTestRunnerFactory;
-import com.github.dansmithy.driver.GameDriver;
-
-public class ProspectorAT {
-
-	private static BddTestRunner<GameDriver> bdd;
-
-	@BeforeClass
-	public static void createTestRunner() {
-		 bdd = new BddEnvironmentConfigTestRunnerFactory()
-			.createTestRunner();
-	}
-	
-	@AfterClass
-	public static void stopTestRunner() {
-		bdd.shutdown();
-	}
+public class ProspectorAT extends BaseAT {
 	
 	@Test
 	public void testLeadPlayerGetsACard() {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : PROSPECTOR")),
@@ -49,7 +26,7 @@ public class ProspectorAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : PROSPECTOR")),
 
