@@ -342,6 +342,15 @@ public class BddPartProvider {
 		};
 	}	
 
+	public static BddPart<GameDriver> twitterRespondsToMessageFor(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				context.expectTwitterMessage(username);
+			}
+		};
+	}
+	
 	public static BddPart<GameDriver> gameDeletedBy(final String username) {
 		return new BddPart<GameDriver>() {
 			@Override

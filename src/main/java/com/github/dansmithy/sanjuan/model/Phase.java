@@ -103,4 +103,10 @@ public class Phase {
 		plays.add(nextPlay);
 		return nextPlay;
 	}
+
+	@JsonIgnore
+	public String getCurrentPlayerName() {
+		return PhaseState.PLAYING.equals(getState()) ? getCurrentPlay().getPlayer() : getLeadPlayer();
+		
+	}
 }

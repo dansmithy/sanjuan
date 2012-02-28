@@ -70,7 +70,8 @@ public class Round {
 		return phases.get(getPhaseNumber() - 1);
 	}
 	
-	private boolean isGovernorPhase() {
+	@JsonIgnore
+	public boolean isGovernorPhase() {
 		return getState().equals(RoundState.GOVERNOR);
 	}
 	
@@ -143,6 +144,11 @@ public class Round {
 		Phase nextPhase = new Phase(nextLeadPlayer, playerCount);
 		phases.add(nextPhase);
 		return nextPhase;
+	}
+
+	@JsonIgnore
+	public String getCurrentPlayerName() {
+		return  isGovernorPhase() ? getGovernorPhase().getCurrentPlayer() : getCurrentPhase().getCurrentPlayerName();
 	}
 
 }

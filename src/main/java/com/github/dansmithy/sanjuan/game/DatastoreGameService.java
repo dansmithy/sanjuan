@@ -245,6 +245,7 @@ public class DatastoreGameService implements GameService {
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
 		
+		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId());
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
 	
@@ -327,6 +328,7 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateGovernorStep(step);
 		
+		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId());
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 		
 	}
@@ -373,15 +375,20 @@ public class DatastoreGameService implements GameService {
 			gameUpdater.createNextStep();
 			if (!gameUpdater.isPhaseChanged()) {
 				roleProcessor.initiateNewPlay(gameUpdater);
-				String message = String.format("It is now your turn to play at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", coords.getGameId(), gameUpdater.getCurrentPlayer().getName());
-				LOGGER.info(String.format("Hey %s! %s", gameUpdater.getNewPlayer().getName(), message));
-				twitterService.sendDirectMessage(gameUpdater.getNewPlayer().getName(), message);
 			}
+			sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), coords.getGameId());
 		}
 		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 	
+	private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId) {
+		if (!currentPlayer.equals(nextPlayer)) {
+			String message = String.format("It is now your turn to play at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", gameId, currentPlayer);
+			twitterService.sendDirectMessage(nextPlayer, message);
+		}
+	}
+
 	private boolean gameHasJustEnded(Game game, GameUpdater gameUpdater) {
 		return game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete();
 	}

@@ -30,4 +30,6 @@ public interface GameDriver {
 
 	void allowAllTwitterMessages();
 
+	void expectTwitterMessage(String username);
+
 }

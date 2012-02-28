@@ -137,7 +137,7 @@ public class GameUpdater {
 			} else {
 				Play play = currentPhase.nextPlay(cycle);
 				nextPlayCoords = playCoords.nextPlay();
-				if (nextPlayCoords.getPlayNumber() != 1) {
+				if (isNotFirstPlay()) { // will have been saved as part of the phase update, made as part of "Select role" if first play
 					updates.put("newPlay", new PartialUpdate(nextPlayCoords.getPlayLocation(), play));
 				}
 			}
@@ -181,7 +181,7 @@ public class GameUpdater {
 	}
 
 	public boolean isPhaseChanged() {
-		return nextPlayCoords != null && nextPlayCoords.getPlayNumber() == 0;
+		return nextPlayCoords != null && nextPlayCoords.hasChangedPhaseOrRound();
 	}
 	
 	public boolean isCreatingFirstPlay() {
@@ -195,7 +195,7 @@ public class GameUpdater {
 	public Play getNewPlay() {
 		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
 	}
-
+	
 	public GovernorStep getGovernorStep(String player) {
 		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
 			if (step.getPlayerName().equals(player)) {
@@ -226,4 +226,7 @@ public class GameUpdater {
 		updates.put("governorStep", new PartialUpdate(stepLocation, step));
 	}
 
+	private boolean isNotFirstPlay() {
+		return nextPlayCoords.getPlayNumber() != 1;
+	}
 }

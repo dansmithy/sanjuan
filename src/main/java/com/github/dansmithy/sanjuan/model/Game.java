@@ -187,6 +187,16 @@ public class Game {
 	public boolean hasPlayer(String playerName) {
 		return getPlayerIndex(playerName) != -1;
 	}
+	
+	public String getCurrentPlayerName() {
+		if (GameState.PLAYING.equals(getState())) {
+			Round round = getCurrentRound();
+			if (null != round) {
+				return round.getCurrentPlayerName();
+			}
+		}
+		return null;
+	}
 
 	public int getPlayerIndex(String playerName) {
 		int index = 0;

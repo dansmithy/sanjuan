@@ -81,6 +81,10 @@ public class PlayCoords {
 	public String getRoundLocation() {
 		return String.format("rounds.%d", getRoundIndex());
 	}
+	
+	public boolean hasChangedPhaseOrRound() {
+		return getPlayNumber() == 0;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

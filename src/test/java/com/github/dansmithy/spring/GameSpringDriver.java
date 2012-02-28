@@ -63,8 +63,10 @@ public class GameSpringDriver extends SkeletonGameDriver {
 	public void allowAllTwitterMessages() {
 		// empty for now
 	}
-	
-	
-	
+
+	@Override
+	public void expectTwitterMessage(String username) {
+		// TODO Auto-generated method stub
+	}
 
 }

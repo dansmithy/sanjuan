@@ -63,6 +63,12 @@ public class GameRestDriver extends SkeletonGameDriver {
 	public void allowAllTwitterMessages() {
 		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", Pattern.compile(".*")).withParam("text", Pattern.compile(".*")), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK)).anyTimes();
 	}
+
+	@Override
+	public void expectTwitterMessage(String username) {
+		String aliasUsername = getTranslatedValues().alias(username);
+		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", aliasUsername).withParam("text", Pattern.compile(".*")), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK));		
+	}
 	
 	private String extractJSessionId(List<Header> headers) {
 		for (Header header : headers) {
@@ -86,5 +92,4 @@ public class GameRestDriver extends SkeletonGameDriver {
 	public Response getCardTypes() {
 		return get(baseUri + "/ws/cards/types", ACCEPT_JSON_HEADER);
 	}
-
 }
