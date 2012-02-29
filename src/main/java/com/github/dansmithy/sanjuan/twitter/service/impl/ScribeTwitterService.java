@@ -41,14 +41,16 @@ public class ScribeTwitterService implements TwitterService {
 
 	private final TwitterUserStore twitterUserStore;
 	private final OAuthService oauthService;
-	private final RoleProvider roleProvider;
+    private final SecretStore secretStore;
+    private final RoleProvider roleProvider;
 	private final String directMessageUrl;
 	
 	@Inject
 	public ScribeTwitterService(TwitterUserStore twitterUserStore, SecretStore secretStore, RoleProvider roleProvider, ConfigurableTwitterApi twitterApi) {
 		super();
 		this.twitterUserStore = twitterUserStore;
-		this.roleProvider = roleProvider;
+        this.secretStore = secretStore;
+        this.roleProvider = roleProvider;
 		this.oauthService = new ServiceBuilder().provider(twitterApi).apiKey(TWITTER_CONSUMER_KEY)
 				.apiSecret(secretStore.getConsumerKey()).callback(createCallback(secretStore.getBaseUrl(), TWITTER_CALLBACK_URL)).build();
 		this.directMessageUrl = twitterApi.getTwitterBaseUrl() + DIRECT_MESSAGE_URL;
@@ -68,27 +70,32 @@ public class ScribeTwitterService implements TwitterService {
 			throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
 		}
 		Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
+        System.out.println(String.format("Token details are: [%s] and [%s]", accessToken.getToken(), accessToken.getSecret()));
 		String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
 		TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
 		twitterUserStore.setCurrentUser(twitterUser);
 	}
 
-	@Override
-	public TwitterUser getCurrentUser() {
-		return twitterUserStore.getCurrentUser();
-	}
-	
-	@Override
+    @Override
+    public TwitterUser getCurrentUser() {
+        return twitterUserStore.getCurrentUser();
+    }
+
+    @Override
 	public void sendDirectMessage(String targetUser, String message) {
 		OAuthRequest oauthRequest = new OAuthRequest(Verb.POST, directMessageUrl);
 		oauthRequest.addBodyParameter("screen_name", targetUser);
 		oauthRequest.addBodyParameter("text", message);
-		oauthService.signRequest(twitterUserStore.getOAuthToken().createToken(), oauthRequest);
+		oauthService.signRequest(createSanJuanGameAccessToken(), oauthRequest);
 		Response oauthResponse = oauthRequest.send();
 		if (HttpURLConnection.HTTP_OK != oauthResponse.getCode()) {
 			LOGGER.error(String.format("Unable to send Twitter DM to user [%s] with message [%s]. Got response code [%d].", targetUser, message, oauthResponse.getCode()));
 		}
 	}
+    
+    private Token createSanJuanGameAccessToken() {
+        return new Token(secretStore.getAccessToken(), secretStore.getAccessSecret());
+    }
 	
 	private String extractUsingRegex(String response, Pattern p) {
 		Matcher matcher = p.matcher(response);
