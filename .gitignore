@@ -26,12 +26,14 @@
 *.sql
 *.sqlite
 
-# Eclipse and Maven #
+# Eclipse and Maven and IntelliJ #
 #####################
 target
 .settings
 .project
 .classpath
+.idea
+*.iml
 
 # OS generated files #
 ######################
