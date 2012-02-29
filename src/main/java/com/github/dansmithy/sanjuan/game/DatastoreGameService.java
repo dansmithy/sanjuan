@@ -371,6 +371,7 @@ public class DatastoreGameService implements GameService {
 		
 		if (gameHasJustEnded(game, gameUpdater)) {
 			handleGameCompletion(game, gameUpdater);
+            sendGameCompletionTweets(loggedInUser, game);
 		} else {
 			gameUpdater.createNextStep();
 			if (!gameUpdater.isPhaseChanged()) {
@@ -381,10 +382,24 @@ public class DatastoreGameService implements GameService {
 		
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
-	
-	private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId) {
+
+    private void sendGameCompletionTweets(String loggedInUser, Game game) {
+        String finalMessageFormat = "%s, you %s game #%d. %s made the final move. See the game at http://sanjuan.herokuapp.com/#/games/%d.";
+       
+        for (Player player : game.getPlayers()) {
+            if (!loggedInUser.equals(player.getName())) {
+                boolean wonGame = player.getName().equals(game.getWinner());
+                String customisedMessage = String.format(finalMessageFormat, wonGame ? "Congratulations" : "Commiserations", wonGame ? "won" : "lost", game.getGameId(), loggedInUser, game.getGameId());
+                System.out.println(customisedMessage);
+                twitterService.sendDirectMessage(player.getName(), customisedMessage);
+            }
+        }
+
+    }
+
+    private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId) {
 		if (!currentPlayer.equals(nextPlayer)) {
-			String message = String.format("It is now your turn to play at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", gameId, currentPlayer);
+			String message = String.format("It is now your turn on Game #%d at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", gameId, gameId, currentPlayer);
 			twitterService.sendDirectMessage(nextPlayer, message);
 		}
 	}

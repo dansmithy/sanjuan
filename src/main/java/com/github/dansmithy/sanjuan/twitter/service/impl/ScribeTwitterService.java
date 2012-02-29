@@ -70,7 +70,6 @@ public class ScribeTwitterService implements TwitterService {
 			throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
 		}
 		Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
-        System.out.println(String.format("Token details are: [%s] and [%s]", accessToken.getToken(), accessToken.getSecret()));
 		String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
 		TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
 		twitterUserStore.setCurrentUser(twitterUser);
