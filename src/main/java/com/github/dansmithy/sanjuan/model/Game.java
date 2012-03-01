@@ -17,13 +17,14 @@ import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
 import com.github.dansmithy.sanjuan.rest.serialize.Iso8601CustomDateSerializer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Game {
 	
 	private static final int STARTING_CARDS = 5;
 	private static final int FINAL_BUILDING_COUNT = 12;
-	
+    @Indexed(unique = true)
 	private Long gameId;
 	private String owner;
 	private GameState state = GameState.RECRUITING;

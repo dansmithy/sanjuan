@@ -14,10 +14,11 @@ import org.springframework.data.annotation.Transient;
 import com.github.dansmithy.sanjuan.game.PlayerNumbers;
 import com.github.dansmithy.sanjuan.game.aspect.AuthenticatedUser;
 import com.github.dansmithy.sanjuan.rest.jaxrs.GameViews;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Player {
-
+    @Indexed
 	private String name;
 	private List<Integer> hand = new ArrayList<Integer>();
 	private List<Integer> buildings = new ArrayList<Integer>();
