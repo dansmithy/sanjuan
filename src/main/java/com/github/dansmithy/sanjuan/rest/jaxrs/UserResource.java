@@ -19,18 +19,6 @@ import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 @Path("/ws/users")
 public interface UserResource {
 
-	@POST
-	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	User createUser(User user);
-	
-	@PUT
-	@Path("{username}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	User updateUser(@PathParam("username") String username, User user);
-	
 	@DELETE
 	@Path("{username}")
 	@Produces(MediaType.APPLICATION_JSON)

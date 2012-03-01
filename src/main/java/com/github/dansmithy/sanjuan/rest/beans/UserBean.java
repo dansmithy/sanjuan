@@ -20,23 +20,6 @@ public class UserBean implements UserResource {
 		this.userDao = userDao;
 	}
 
-	@Override
-	public User createUser(User user) {
-		if (user.getRoles().length == 0) {
-			user.setRoles(new String[] { "player" });
-		}
-		userDao.createUser(user);
-		return user;
-	}
-
-	@Override
-	public User updateUser(String username, User user) {
-		if (user.getUsername() != null && !username.equals(user.getUsername())) {
-			throw new RequestInvalidRuntimeException(String.format("Username cannot be updated and should not be specified in the request body."));
-		}
-		userDao.updateUser(user);
-		return user;
-	}
 
 	@Override
 	public void deleteUser(String username) {
