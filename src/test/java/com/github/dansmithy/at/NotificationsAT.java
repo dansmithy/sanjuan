@@ -51,9 +51,26 @@ public class NotificationsAT extends BaseAT {
                 when(gameOwnedByJoinedBy("#alice", "#bob")),
 
                 then(verifyResponseCodeIs(HTTP_OK)));
-    }    
+    }
 
-	@Test
+    @Test
+    public void testStartGameSendsMessages() {
+
+        bdd.runTest(
+
+                given(userAuthenticated("#alice")).and(
+                        userAuthenticated("#bob")).and(
+                        gameCreatedBy("#alice")).and(
+                        twitterRespondsToMessageFor("#alice")).and(
+                        gameOwnedByJoinedBy("#alice", "#bob")).and(
+                        twitterRespondsToMessageFor("#bob")),
+
+                when(gameStartedBy("#alice")),
+
+                then(verifyResponseCodeIs(HTTP_OK)));
+    }
+
+    @Test
 	public void testSendMessageAfterMove() {
 
 		bdd.runTest(
@@ -69,6 +86,8 @@ public class NotificationsAT extends BaseAT {
 
 				then(verifyResponseCodeIs(HTTP_OK)));
 	}
+    
+    
 	
 	@Test
 	public void testSendAllRequiredMessagesInTwoRoundsOfPlay() {

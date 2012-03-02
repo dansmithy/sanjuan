@@ -171,6 +171,12 @@ public class DatastoreGameService implements GameService {
 		}
 
 		game.startPlaying(cardFactory, tariffBuilder);
+        
+        for (Player player : game.getPlayers()) {
+            if (!loggedInUser.equals(player.getName())) {
+                twitterService.sendDirectMessage(player.getName(), String.format("Game on! Play now with @%s at http://sanjuan.herokuapp.com/#/games/%d.", loggedInUser, gameId));
+            }
+        }
 		gameDao.saveGame(game);
 		return game;
 	}

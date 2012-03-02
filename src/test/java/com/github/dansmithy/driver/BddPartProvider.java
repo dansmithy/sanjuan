@@ -342,8 +342,9 @@ public class BddPartProvider {
                 .and(gameCreatedBy(player))
                 .and(orderDeckOwnedBy(player, DeckOrder.Order1))
                 .and(orderTariffOwnedBy(player, Arrays.asList(4, 3, 2, 1, 0)))
-                .and(twitterRespondsToMessageFor("#alice"))
+                .and(twitterRespondsToMessageFor(player))
                 .and(gameOwnedByJoinedBy(player, player2))
+                .and(twitterRespondsToMessageFor(player2))
                 .and(gameStartedBy(player));
 
     }    
