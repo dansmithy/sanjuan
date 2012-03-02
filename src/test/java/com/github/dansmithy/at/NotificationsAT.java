@@ -12,7 +12,33 @@ import com.github.dansmithy.bdd.GivenBddParts;
 import com.github.dansmithy.driver.GameDriver;
 
 public class NotificationsAT extends BaseAT {
-	
+
+    @Test
+    public void testLoginAddsUserToDatabase() {
+
+        bdd.runTest(
+
+                given(userAuthenticated("#alice")),
+
+                when(getUser("#alice")),
+
+                then(verifySuccessfulResponseContains("{ 'username' : '#alice', 'timesLoggedIn' : 1 }")));
+
+    }
+
+    @Test
+    public void testLoginTwiceGetsRecorded() {
+
+        bdd.runTest(
+
+                given(userAuthenticated("#alice")).and(userAuthenticated("#alice")),
+
+                when(getUser("#alice")),
+
+                then(verifySuccessfulResponseContains("{ 'username' : '#alice', 'timesLoggedIn' : 2 }")));
+
+    }
+
 	@Test
 	public void testSendMessageAfterMove() {
 

@@ -49,4 +49,6 @@ public interface GameDriverSession {
 	Response getAllGames();
 	
 	Response getUser();
+
+    Response getUserDetails(String username);
 }

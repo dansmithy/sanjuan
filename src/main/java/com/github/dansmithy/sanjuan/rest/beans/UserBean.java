@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.rest.beans;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.PathParam;
 
 import com.github.dansmithy.sanjuan.dao.UserDao;
 import com.github.dansmithy.sanjuan.exception.RequestInvalidRuntimeException;
@@ -20,16 +21,19 @@ public class UserBean implements UserResource {
 		this.userDao = userDao;
 	}
 
-
 	@Override
 	public void deleteUser(String username) {
 		userDao.removeUser(username);
-
 	}
 
 	@Override
 	public Users getUsers() {
 		return new Users(userDao.getUsers());
 	}
+
+    @Override
+    public User getUser(String username) {
+        return userDao.getUser(username);
+    }
 
 }

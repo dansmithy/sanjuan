@@ -256,6 +256,11 @@ public class GameRestDriverSession implements GameDriverSession {
 		return get(wsBaseUri + "/auth/user", ACCEPT_JSON_HEADER, createSessionHeader());
 	}
 
+    @Override
+    public Response getUserDetails(String username) {
+        String aliasUsername = getTranslatedValues().alias(username);
+        return get(wsBaseUri + "/users/" + aliasUsername, ACCEPT_JSON_HEADER, createSessionHeader());
+    }
 
 
 }

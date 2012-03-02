@@ -207,6 +207,19 @@ public class BddPartProvider {
 			}
 		};
 	}
+    
+    
+    public static BddPart<GameDriver> getUser(final String username) {
+		return new BddPart<GameDriver>() {
+			@Override
+			public void execute(GameDriver context) {
+				Response response = context.getAdminSession().getUserDetails(username);
+                context.setLastResponse(response);
+			}
+		};
+	}
+    
+    
 
 	public static BddPart<GameDriver> orderDeckOwnedBy(final String username,
 			final List<Integer> order) {

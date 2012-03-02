@@ -194,5 +194,11 @@ public class GameSpringDriverSession implements GameDriverSession {
 		return null;
 	}
 
+    @Override
+    public Response getUserDetails(String username) {
+        // TODO Auto-generated method stub
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
 }

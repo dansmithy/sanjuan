@@ -29,4 +29,9 @@ public interface UserResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	Users getUsers();
 
+
+    @GET
+    @Path("{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    User getUser(@PathParam("username") String username);
 }
