@@ -19,7 +19,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -35,7 +36,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")).and(userAuthenticated("#charlie")).and(copyGameIdBetweenUsers("#alice", "#charlie")),
 
@@ -51,7 +53,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -72,7 +75,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -102,7 +106,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -139,7 +144,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameAlmostCompleted()),
 
 				when(finalLosingMove()),
@@ -152,7 +158,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameAlmostCompleted()),
 
 				when(finalWinningMove()),
@@ -165,7 +172,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameCompleted()),
 
 				when(gameStartedBy("#alice")),
@@ -179,7 +187,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameCompleted()),
 
 				when(roleChosenBy("#bob", "round : 11; phase : 2",
@@ -194,7 +203,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameCompleted()),
 
 				when(roleChosenBy("#bob", "round : 0; phase : 0",
@@ -209,7 +219,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameCompleted()),
 
 				when(userPlays("#bob", "round : 0; phase : 0; play : 0",
@@ -224,7 +235,8 @@ public class ExtendedPlayAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						gameAlmostCompleted()),
 
 				when(finalLosingMove()),

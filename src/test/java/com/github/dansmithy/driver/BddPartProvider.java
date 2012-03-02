@@ -334,6 +334,20 @@ public class BddPartProvider {
 		return gameBegunWithTwoPlayers(player, player2, DeckOrder.Order1);
 	}
 
+    public static BddPart<GameDriver> gameBegunWithTwoPlayersWithTwitterMessages(
+            final String player, final String player2) {
+        return new SimpleBddParts<GameDriver>(
+                userAuthenticated(player))
+                .and(userAuthenticated(player2))
+                .and(gameCreatedBy(player))
+                .and(orderDeckOwnedBy(player, DeckOrder.Order1))
+                .and(orderTariffOwnedBy(player, Arrays.asList(4, 3, 2, 1, 0)))
+                .and(twitterRespondsToMessageFor("#alice"))
+                .and(gameOwnedByJoinedBy(player, player2))
+                .and(gameStartedBy(player));
+
+    }    
+
 	public static BddPart<GameDriver> gameBegunWithTwoPlayers(
 			final String player, final String player2, List<Integer> deckOrder) {
 		return new SimpleBddParts<GameDriver>(

@@ -16,7 +16,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : BUILDER")),
@@ -29,7 +30,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -46,7 +48,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -62,7 +65,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -80,7 +84,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -96,7 +101,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -112,7 +118,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")),
 
@@ -128,9 +135,9 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
 						gameBegunWithTwoPlayers("#alice", "#bob",
-								withDeck(DeckOrder.Order2))).and(anyNumberOfTwitterMessagesPermitted()).and(
+								withDeck(DeckOrder.Order2))).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER")).and(
 						userPlays("#alice", "round : 1; phase : 1; play : 1",
@@ -147,9 +154,9 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
 						gameBegunWithTwoPlayers("#alice", "#bob",
-								withDeck(DeckOrder.Order2))).and(anyNumberOfTwitterMessagesPermitted())
+								withDeck(DeckOrder.Order2)))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -192,7 +199,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -231,7 +239,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays("#alice",
@@ -270,7 +279,8 @@ public class BuilderAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted())
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(userPlays(

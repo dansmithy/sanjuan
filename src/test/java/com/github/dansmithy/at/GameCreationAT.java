@@ -27,7 +27,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice")).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        userAuthenticated("#alice")).and(
 						userAuthenticated("#bob")).and(
 						gameCreatedBy("#alice")),
 
@@ -44,7 +45,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 						.and(userAuthenticated("#bob"))
 						.and(userAuthenticated("#charlie"))
 						.and(gameCreatedBy("#alice"))
@@ -61,7 +63,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 						.and(userAuthenticated("#bob"))
 						.and(userAuthenticated("#charlie"))
 						.and(userAuthenticated("#debbie"))
@@ -81,7 +84,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-			given(userAuthenticated("#alice"))
+			given(anyNumberOfTwitterMessagesPermitted())
+                    .and(userAuthenticated("#alice"))
 					.and(gameCreatedBy("#alice")),
 	
 			when(gameOwnedByJoinedBy("#alice", "#alice")),
@@ -94,7 +98,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -109,7 +114,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -124,7 +130,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(userAuthenticated("#charlie")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")).and(userAuthenticated("#charlie")),
 
 				when(getGameOwnedBySomebodyElse("#charlie", "#alice")),
 
@@ -136,7 +143,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 						.and(userAuthenticated("#bob"))
 						.and(gameCreatedBy("#alice"))
 						.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -151,7 +159,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice")).and(
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice")).and(
 						userAuthenticated("#bob")).and(
 						gameCreatedBy("#alice")),
 
@@ -165,7 +174,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 				
 				when(gameStartedBy("#alice")),
 
@@ -189,7 +199,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 				
 				when(gameStartedBy("#alice")),
 
@@ -201,7 +212,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(userAuthenticated("#alice"))
 					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -217,7 +229,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(gameDeletedBy("#alice")),
 
@@ -232,7 +245,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                    .and(userAuthenticated("#alice"))
 					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -247,7 +261,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(gameQuitBy("#bob")),
 
@@ -259,7 +274,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                    .and(userAuthenticated("#alice"))
 					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),
@@ -274,7 +290,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(gameAbandonedBy("#alice")),
 
@@ -286,7 +303,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")),
+				given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(gameAbandonedBy("#bob")),
 
@@ -298,7 +316,8 @@ public class GameCreationAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(userAuthenticated("#alice"))
+				given(anyNumberOfTwitterMessagesPermitted())
+                    .and(userAuthenticated("#alice"))
 					.and(userAuthenticated("#bob"))
 					.and(gameCreatedBy("#alice"))
 					.and(gameOwnedByJoinedBy("#alice", "#bob")),

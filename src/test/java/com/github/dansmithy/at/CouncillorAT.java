@@ -14,7 +14,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()),
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")),
 
 				when(roleChosenBy("#alice", "round : 1; phase : 1",
 						"role : COUNCILLOR")),
@@ -27,7 +28,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 
@@ -44,7 +46,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 
@@ -59,7 +62,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 
@@ -74,7 +78,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 
@@ -89,7 +94,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 
@@ -104,7 +110,8 @@ public class CouncillorAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob")).and(anyNumberOfTwitterMessagesPermitted()).and(
+				given(anyNumberOfTwitterMessagesPermitted()).and(
+                        gameBegunWithTwoPlayers("#alice", "#bob")).and(
 						roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : COUNCILLOR")),
 

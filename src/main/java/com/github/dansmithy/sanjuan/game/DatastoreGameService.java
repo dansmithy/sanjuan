@@ -124,6 +124,9 @@ public class DatastoreGameService implements GameService {
 		}
 		Player player = new Player(playerName);
 		game.addPlayer(player);
+        
+        twitterService.sendDirectMessage(game.getOwner(), String.format("@%s has joined your game #%d, so start it now at http://sanjuan.herokuapp.com/#/games/%d", playerName, gameId, gameId));
+
 		gameDao.saveGame(game);
 		return player;
 	}
@@ -384,13 +387,12 @@ public class DatastoreGameService implements GameService {
 	}
 
     private void sendGameCompletionTweets(String loggedInUser, Game game) {
-        String finalMessageFormat = "%s, you %s game #%d. %s made the final move. See the game at http://sanjuan.herokuapp.com/#/games/%d.";
+        String finalMessageFormat = "@%s, you %s game #%d. @%s made the final move. See the game at http://sanjuan.herokuapp.com/#/games/%d.";
        
         for (Player player : game.getPlayers()) {
             if (!loggedInUser.equals(player.getName())) {
                 boolean wonGame = player.getName().equals(game.getWinner());
                 String customisedMessage = String.format(finalMessageFormat, wonGame ? "Congratulations" : "Commiserations", wonGame ? "won" : "lost", game.getGameId(), loggedInUser, game.getGameId());
-                System.out.println(customisedMessage);
                 twitterService.sendDirectMessage(player.getName(), customisedMessage);
             }
         }
@@ -399,7 +401,7 @@ public class DatastoreGameService implements GameService {
 
     private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId) {
 		if (!currentPlayer.equals(nextPlayer)) {
-			String message = String.format("It is now your turn on Game #%d at http://sanjuan.herokuapp.com/#/games/%d. %s has made their move.", gameId, gameId, currentPlayer);
+			String message = String.format("It is now your turn on Game #%d at http://sanjuan.herokuapp.com/#/games/%d. @%s has made their move.", gameId, gameId, currentPlayer);
 			twitterService.sendDirectMessage(nextPlayer, message);
 		}
 	}

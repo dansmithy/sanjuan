@@ -23,7 +23,6 @@ public class NotificationsAT extends BaseAT {
                 when(getUser("#alice")),
 
                 then(verifySuccessfulResponseContains("{ 'username' : '#alice', 'timesLoggedIn' : 1 }")));
-
     }
 
     @Test
@@ -39,12 +38,27 @@ public class NotificationsAT extends BaseAT {
 
     }
 
+    @Test
+    public void testJoinGameSendsMessage() {
+
+        bdd.runTest(
+
+                given(userAuthenticated("#alice")).and(
+                        userAuthenticated("#bob")).and(
+                        gameCreatedBy("#alice")).and(
+                        twitterRespondsToMessageFor("#alice")),
+
+                when(gameOwnedByJoinedBy("#alice", "#bob")),
+
+                then(verifyResponseCodeIs(HTTP_OK)));
+    }    
+
 	@Test
 	public void testSendMessageAfterMove() {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayersWithTwitterMessages("#alice", "#bob"))
 						.and(roleChosenBy("#alice", "round : 1; phase : 1",
 								"role : BUILDER"))
 						.and(twitterRespondsToMessageFor("#bob")),
@@ -61,7 +75,7 @@ public class NotificationsAT extends BaseAT {
 
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayersWithTwitterMessages("#alice", "#bob"))
 					.and(playRoundOne()),
 
 				when(playRoundTwo()),
@@ -73,7 +87,7 @@ public class NotificationsAT extends BaseAT {
 	public void testSendMessageForGovernorMove() {
 		bdd.runTest(
 
-				given(gameBegunWithTwoPlayers("#alice", "#bob"))
+				given(gameBegunWithTwoPlayersWithTwitterMessages("#alice", "#bob"))
 						.and(playRoundOne())
 						.and(playRoundTwo())
 						.and(twitterRespondsToMessageFor("#bob"))
@@ -91,7 +105,7 @@ public class NotificationsAT extends BaseAT {
     public void testSendCompletionMessagesToLoser() {
         bdd.runTest(
 
-                given(gameBegunWithTwoPlayers("#alice", "#bob"))
+                given(gameBegunWithTwoPlayersWithTwitterMessages("#alice", "#bob"))
                         .and(gameAlmostCompleted())
                         .and(twitterRespondsToMessageFor("#bob")),
 
