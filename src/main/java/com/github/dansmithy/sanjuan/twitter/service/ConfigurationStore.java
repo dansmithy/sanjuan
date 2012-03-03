@@ -1,10 +1,10 @@
 package com.github.dansmithy.sanjuan.twitter.service;
 
-public interface SecretStore {
+public interface ConfigurationStore {
 
-	String getConsumerKey();
+	String getConsumerSecret();
 
-	String getBaseUrl();
+	String getSanJuanBaseUrl();
     
     String getAccessToken();
     

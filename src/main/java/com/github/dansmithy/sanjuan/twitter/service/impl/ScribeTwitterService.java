@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.github.dansmithy.sanjuan.twitter.model.OAuthToken;
 import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 import com.github.dansmithy.sanjuan.twitter.service.RoleProvider;
-import com.github.dansmithy.sanjuan.twitter.service.SecretStore;
+import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterService;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.dansmithy.sanjuan.twitter.service.exception.TwitterAuthRuntimeException;
@@ -43,20 +43,20 @@ public class ScribeTwitterService implements TwitterService {
 
 	private final TwitterUserStore twitterUserStore;
 	private final OAuthService oauthService;
-    private final SecretStore secretStore;
+    private final ConfigurationStore configurationStore;
     private final RoleProvider roleProvider;
     private final UserDao userDao;
     private final String directMessageUrl;
 	
 	@Inject
-	public ScribeTwitterService(TwitterUserStore twitterUserStore, SecretStore secretStore, RoleProvider roleProvider, ConfigurableTwitterApi twitterApi, UserDao userDao) {
+	public ScribeTwitterService(TwitterUserStore twitterUserStore, ConfigurationStore configurationStore, RoleProvider roleProvider, ConfigurableTwitterApi twitterApi, UserDao userDao) {
 		super();
 		this.twitterUserStore = twitterUserStore;
-        this.secretStore = secretStore;
+        this.configurationStore = configurationStore;
         this.roleProvider = roleProvider;
         this.userDao = userDao;
         this.oauthService = new ServiceBuilder().provider(twitterApi).apiKey(TWITTER_CONSUMER_KEY)
-				.apiSecret(secretStore.getConsumerKey()).callback(createCallback(secretStore.getBaseUrl(), TWITTER_CALLBACK_URL)).build();
+				.apiSecret(configurationStore.getConsumerSecret()).callback(createCallback(configurationStore.getSanJuanBaseUrl(), TWITTER_CALLBACK_URL)).build();
 		this.directMessageUrl = twitterApi.getTwitterBaseUrl() + DIRECT_MESSAGE_URL;
 	}
 
@@ -115,7 +115,7 @@ public class ScribeTwitterService implements TwitterService {
 	}
     
     private Token createSanJuanGameAccessToken() {
-        return new Token(secretStore.getAccessToken(), secretStore.getAccessSecret());
+        return new Token(configurationStore.getAccessToken(), configurationStore.getAccessSecret());
     }
 	
 	private String extractUsingRegex(String response, Pattern p) {
