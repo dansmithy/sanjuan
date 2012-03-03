@@ -146,6 +146,8 @@ public class DatastoreGameService implements GameService {
 		}
 		
 		game.getPlayers().remove(game.getPlayerIndex(playerName));
+
+        twitterService.sendDirectMessage(game.getOwner(), String.format("@%s has decided not to play game #%d after all.", playerName, gameId));
 		gameDao.saveGame(game);
 	}
 	

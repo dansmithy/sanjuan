@@ -54,7 +54,7 @@ public class NotificationsAT extends BaseAT {
     }
 
     @Test
-    public void testStartGameSendsMessages() {
+    public void testStartGameSendsMessage() {
 
         bdd.runTest(
 
@@ -68,6 +68,23 @@ public class NotificationsAT extends BaseAT {
                 when(gameStartedBy("#alice")),
 
                 then(verifyResponseCodeIs(HTTP_OK)));
+    }
+
+    @Test
+    public void testQuitGameSendsMessage() {
+
+        bdd.runTest(
+
+                given(userAuthenticated("#alice")).and(
+                        userAuthenticated("#bob")).and(
+                        gameCreatedBy("#alice")).and(
+                        twitterRespondsToMessageFor("#alice")).and(
+                        gameOwnedByJoinedBy("#alice", "#bob")).and(
+                        twitterRespondsToMessageFor("#alice")),
+
+                when(gameQuitBy("#bob")),
+
+                then(verifyResponseCodeIs(HTTP_NO_CONTENT)));
     }
 
     @Test
