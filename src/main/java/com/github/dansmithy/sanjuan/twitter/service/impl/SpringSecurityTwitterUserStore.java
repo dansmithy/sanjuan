@@ -38,9 +38,6 @@ public class SpringSecurityTwitterUserStore implements TwitterUserStore {
 
 	@Override
 	public OAuthToken getOAuthToken() {
-		if (getCurrentUser().getAccessToken() == null) {
-			throw new TwitterAuthRuntimeException("No token found!");
-		}
 		return getCurrentUser().getAccessToken();
 	}
 

@@ -14,22 +14,33 @@ import com.github.dansmithy.sanjuan.exception.RequestInvalidRuntimeException;
 import com.github.dansmithy.sanjuan.exception.ResourceNotFoundRuntimeException;
 import com.github.dansmithy.sanjuan.exception.SanJuanRuntimeException;
 import com.github.dansmithy.sanjuan.exception.model.JsonError;
+import com.github.dansmithy.sanjuan.twitter.service.exception.TwitterAuthRuntimeException;
+
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 @Provider
 @Named
 public class SanJuanRuntimeExceptionMapper implements ExceptionMapper<SanJuanRuntimeException> {
 
-	/**
+    private static final String LOGIN_ERROR = "/login_error.html";
+
+    /**
 	 */
 	@Override
 	public Response toResponse(SanJuanRuntimeException e) {
 
-		return Response
-			.status(convertToStatus(e))
-			.type(MediaType.APPLICATION_JSON)
-			.entity(createError(e))
-			.build();
+        if (e instanceof TwitterAuthRuntimeException) {
+            return createRedirectToUrl(LOGIN_ERROR);
+        } else {
+            return Response
+                .status(convertToStatus(e))
+                .type(MediaType.APPLICATION_JSON)
+                .entity(createError(e))
+                .build();
+        }
 	}
 
 	private JsonError createError(SanJuanRuntimeException e) {
@@ -39,8 +50,8 @@ public class SanJuanRuntimeExceptionMapper implements ExceptionMapper<SanJuanRun
 	private Status convertToStatus(SanJuanRuntimeException e) {
 		if (e instanceof AccessUnauthorizedRuntimeException) {
 			return Status.UNAUTHORIZED;
-		} else if (e instanceof ResourceNotFoundRuntimeException) {
-			return Status.NOT_FOUND;
+        } else if (e instanceof ResourceNotFoundRuntimeException) {
+            return Status.NOT_FOUND;
 		} else if (e instanceof IllegalGameStateRuntimeException) {
 			return Status.CONFLICT;
 		} else if (e instanceof PlayChoiceInvalidRuntimeException) {
@@ -52,4 +63,15 @@ public class SanJuanRuntimeExceptionMapper implements ExceptionMapper<SanJuanRun
 		}
 	}
 
+    private Response createRedirectToUrl(String url) {
+        return Response.status(HttpURLConnection.HTTP_MOVED_TEMP).location(createUri(url)).build();
+    }
+
+    private URI createUri(String uri) {
+        try {
+            return new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

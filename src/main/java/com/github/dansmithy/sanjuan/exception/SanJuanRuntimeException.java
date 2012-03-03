@@ -9,6 +9,10 @@ public abstract class SanJuanRuntimeException extends RuntimeException {
 		super(message);
 	}
 
-	public abstract String getType();
+    public SanJuanRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public abstract String getType();
 	
 }

@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.dao.UserDao;
 import org.scribe.builder.ServiceBuilder;
+import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -61,9 +62,13 @@ public class ScribeTwitterService implements TwitterService {
 
 	@Override
 	public String getRedirectForAuthorization() {
-		Token requestToken = oauthService.getRequestToken();
-		twitterUserStore.rememberToken(OAuthToken.createFromToken(requestToken));
-		return oauthService.getAuthorizationUrl(requestToken);
+        try {
+            Token requestToken = oauthService.getRequestToken();
+            twitterUserStore.rememberToken(OAuthToken.createFromToken(requestToken));
+            return oauthService.getAuthorizationUrl(requestToken);
+        } catch (OAuthException oauthException) {
+            throw new TwitterAuthRuntimeException("Unable to create a request token", oauthException);
+        }
 	}
 
 	@Override
@@ -72,12 +77,21 @@ public class ScribeTwitterService implements TwitterService {
 		if (tokenKey == null || !tokenKey.equals(requestToken.getToken())) {
 			throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
 		}
-		Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
-		String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
-		TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
-        userDao.recordLogin(screenName);
-		twitterUserStore.setCurrentUser(twitterUser);
+        authenticateRequestToken(requestToken, oauthVerifier);
 	}
+
+    private void authenticateRequestToken(Token requestToken, String oauthVerifier) {
+        try {
+            Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
+            String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
+            TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
+            userDao.recordLogin(screenName);
+            twitterUserStore.setCurrentUser(twitterUser);
+        } catch (OAuthException oauthException) {
+            throw new TwitterAuthRuntimeException("Unable to authnenticate", oauthException);
+        }
+
+    }
 
     @Override
     public TwitterUser getCurrentUser() {
@@ -86,14 +100,18 @@ public class ScribeTwitterService implements TwitterService {
 
     @Override
 	public void sendDirectMessage(String targetUser, String message) {
-		OAuthRequest oauthRequest = new OAuthRequest(Verb.POST, directMessageUrl);
-		oauthRequest.addBodyParameter("screen_name", targetUser);
-		oauthRequest.addBodyParameter("text", message);
-		oauthService.signRequest(createSanJuanGameAccessToken(), oauthRequest);
-		Response oauthResponse = oauthRequest.send();
-		if (HttpURLConnection.HTTP_OK != oauthResponse.getCode()) {
-			LOGGER.error(String.format("Unable to send Twitter DM to user [%s] with message [%s]. Got response code [%d].", targetUser, message, oauthResponse.getCode()));
-		}
+        try {
+            OAuthRequest oauthRequest = new OAuthRequest(Verb.POST, directMessageUrl);
+            oauthRequest.addBodyParameter("screen_name", targetUser);
+            oauthRequest.addBodyParameter("text", message);
+            oauthService.signRequest(createSanJuanGameAccessToken(), oauthRequest);
+            Response oauthResponse = oauthRequest.send();
+            if (HttpURLConnection.HTTP_OK != oauthResponse.getCode()) {
+                LOGGER.warn(String.format("Unable to send Twitter DM to user [%s] with message [%s]. Got response code [%d].", targetUser, message, oauthResponse.getCode()));
+            }
+        } catch (OAuthException oauthException) {
+            LOGGER.warn(String.format("Unable to send Twitter DM to user [%s] with message [%s].", targetUser, message), oauthException);
+        }
 	}
     
     private Token createSanJuanGameAccessToken() {
@@ -105,7 +123,7 @@ public class ScribeTwitterService implements TwitterService {
 		if (matcher.find() && matcher.groupCount() >= 1) {
 			return OAuthEncoder.decode(matcher.group(1));
 		} else {
-			throw new TwitterAuthRuntimeException("Response body is incorrect. Can't extract details from response", null);
+			throw new TwitterAuthRuntimeException(String.format("Response body is incorrect. Can't extract details from response [%s].", response));
 		}
 	}
 	

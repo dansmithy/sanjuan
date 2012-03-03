@@ -1,20 +1,20 @@
 package com.github.dansmithy.sanjuan.twitter.service.exception;
 
-public class TwitterAuthRuntimeException extends RuntimeException {
+import com.github.dansmithy.sanjuan.exception.SanJuanRuntimeException;
 
-	public TwitterAuthRuntimeException() {
-		super();
-	}
+public class TwitterAuthRuntimeException extends SanJuanRuntimeException {
+
+    public TwitterAuthRuntimeException(String message) {
+        super(message);
+    }
 
 	public TwitterAuthRuntimeException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public TwitterAuthRuntimeException(String message) {
-		super(message);
-	}
+    @Override
+    public String getType() {
+        return "TWITTER_AUTH";
+    }
 
-	public TwitterAuthRuntimeException(Throwable cause) {
-		super(cause);
-	}
 }

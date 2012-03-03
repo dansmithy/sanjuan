@@ -13,11 +13,12 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TwitterUser implements Authentication {
 
-	public static TwitterUser EMPTY_USER = new TwitterUser(null, null, new String[0]);
+	public static TwitterUser EMPTY_USER = new TwitterUser(null, OAuthToken.EMPTY_TOKEN, new String[0]);
 	
 	public static final String ROLE_PLAYER = "player";
 	public static final String ROLE_ADMIN = "admin";
@@ -48,8 +49,8 @@ public class TwitterUser implements Authentication {
 		});
 	}
 
-	private GrantedAuthority createGrantedAuthority(String role) {
-		return new GrantedAuthorityImpl(role);
+	protected GrantedAuthority createGrantedAuthority(String role) {
+		return new SimpleGrantedAuthority(role);
 	}
 
 	@JsonIgnore

@@ -7,6 +7,8 @@ public class OAuthToken {
 	private String token;
 	private String secret;
 
+    public static final OAuthToken EMPTY_TOKEN = new OAuthToken("Empty token", null);
+
 	public OAuthToken(String token, String secret) {
 		super();
 		this.token = token;
