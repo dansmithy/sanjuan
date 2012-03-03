@@ -3,6 +3,7 @@ package com.github.dansmithy.at;
 import static com.github.dansmithy.bdd.BddHelper.*;
 import static com.github.dansmithy.bdd.GivenBddParts.*;
 import static com.github.dansmithy.driver.BddPartProvider.*;
+import static com.github.dansmithy.driver.BddPartProvider.twitterRespondsToMessageFor;
 import static java.net.HttpURLConnection.*;
 
 import org.junit.Test;
@@ -103,10 +104,23 @@ public class NotificationsAT extends BaseAT {
 
 				then(verifyResponseCodeIs(HTTP_OK)));
 	}
-    
-    
-	
-	@Test
+
+    @Test
+    public void testAbandonGameSendsMessage() {
+
+        bdd.runTest(
+
+                given(twitterRespondsToMessageFor("#alice")).and(twitterRespondsToMessageFor("#bob"))
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob"))
+                        .and(twitterRespondsToMessageFor("#alice")),
+
+                when(gameAbandonedBy("#bob")),
+
+                then(verifyResponseCodeIs(HTTP_OK)));
+    }
+
+
+    @Test
 	public void testSendAllRequiredMessagesInTwoRoundsOfPlay() {
 
 		bdd.runTest(

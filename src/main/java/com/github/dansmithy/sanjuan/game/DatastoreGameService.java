@@ -201,7 +201,13 @@ public class DatastoreGameService implements GameService {
 		game.markAbandoned(loggedInUser);
 		gameUpdater.updateGameState();
 		gameUpdater.updateAbandonedBy();
-		return gameDao.gameUpdate(gameId, gameUpdater);		
+
+        for (Player player : game.getPlayers()) {
+            if (!loggedInUser.equals(player.getName())) {
+                twitterService.sendDirectMessage(player.getName(), String.format("@%s has spoilt is for everyone, and abandoned game #%d.", loggedInUser, gameId));
+            }
+        }
+		return gameDao.gameUpdate(gameId, gameUpdater);
 	}
 	
 	/* (non-Javadoc)
