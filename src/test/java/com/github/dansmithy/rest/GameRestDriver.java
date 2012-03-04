@@ -51,7 +51,7 @@ public class GameRestDriver extends SkeletonGameDriver {
 		GameRestDriverSession session = new GameRestDriverSession(baseUri, sessionId, getTranslatedValues());
 		Assert.assertThat("Expected to get 302 response code when requesting authToken", requestTokenResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_MOVED_TEMP)));
 		String twitterLoginUrl = requestTokenResponse.getHeader("location").getValue();
-		Assert.assertThat(twitterLoginUrl, is(equalTo(String.format("http://localhost:%d/oauth/authenticate?oauth_token=%s", ATUtils.getRestDriverPort(), requestToken))));
+		Assert.assertThat(twitterLoginUrl, endsWith(String.format("/oauth/authenticate?oauth_token=%s", requestToken)));
 		String accessTokenReponseBody = String.format("oauth_token=%s&oauth_token_secret=%s&user_id=%s&screen_name=%s", accessToken, accessTokenSecret, userId, aliasUsername);
 		clientDriver.addExpectation(onRequestTo("/oauth/access_token").withMethod(Method.POST), giveResponse(accessTokenReponseBody).withStatus(HttpURLConnection.HTTP_OK));
 		Response validateUserResponse = get(String.format(baseUri + "/ws/auth/authValidate?oauth_token=%s&oauth_verifier=%s", requestToken, accessTokenVerifier), session.createSessionHeader());

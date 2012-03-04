@@ -12,6 +12,8 @@ import com.github.dansmithy.spring.BddSpringTestRunner;
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 
+import static com.github.restdriver.serverdriver.RestServerDriver.get;
+
 public class BddEnvironmentConfigTestRunnerFactory implements
 		BddTestRunnerFactory {
 	
@@ -39,11 +41,13 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 	}
 
 	private BddTestRunner<GameDriver> createHttpTestRunner() {
-		int port = ATUtils.getRestDriverPort();
+        String sanJuanBaseUrl = configuration.getProperty(BASE_URI_KEY,
+                DefaultValues.BASE_URI);
+        String twitterBaseUrl = get(sanJuanBaseUrl + "/ws/admin/twitter.baseurl").getContent();
+		int port = ATUtils.extractRestDriverPort(twitterBaseUrl);
 		LOGGER.info(String.format("Starting ClientDriver on port [%d]", port));
 		ClientDriver clientDriver = new ClientDriverFactory().createClientDriver(port); 
-		return new BddRestTestRunner(configuration.getProperty(BASE_URI_KEY,
-				DefaultValues.BASE_URI), configuration.getProperty(
+		return new BddRestTestRunner(sanJuanBaseUrl, configuration.getProperty(
 				ADMIN_USERNAME_KEY, BasicRoleProvider.getAdminUsername()), clientDriver);
 	}
 

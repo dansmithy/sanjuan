@@ -28,5 +28,10 @@ public interface AdminResource {
 	@GET
 	@Path("/version.js")
 	@Produces("application/x-javascript")
-	String getVersionInJsonFormat();	
+	String getVersionInJsonFormat();
+
+    @GET
+    @Path("/twitter.baseurl")
+    @Produces("text/plain")
+    String getTwitterBaseUrl();
 }

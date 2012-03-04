@@ -14,33 +14,30 @@ import static org.hamcrest.Matchers.is;
 public class ATUtils {
 
     private static final Pattern p = Pattern.compile("http://.*?(\\d+)(/.*){0,1}");
-    public static int getRestDriverPort() {
-        return Integer.parseInt(extractRestDriverPort(ConfigurableTwitterApi.initializeTwitterBaseUrl()));
-    } 
     
-    private static String extractRestDriverPort(String url) {
+    private static final String DEFAULT_REST_DRIVER_PORT = "48080";
+
+    public static int extractRestDriverPort(String url) {
+        return Integer.parseInt(extractRestDriverPortAsString(url));
+    }
+    
+    private static String extractRestDriverPortAsString(String url) {
         Matcher m = p.matcher(url);
         if (m.matches()) {
             return m.group(1);
         }
-        throw new IllegalArgumentException(String.format("Unable to extra port from url [%s]", url));
+        return DEFAULT_REST_DRIVER_PORT;
     }
 
     @Test
     public void testCantExtractRestDriverPort() {
-        Assert.assertThat(extractRestDriverPort("http://localhost:1234"), is(equalTo("1234")));
-        Assert.assertThat(extractRestDriverPort("http://localhost:1234/"), is(equalTo("1234")));
-        Assert.assertThat(extractRestDriverPort("http://localhost:1234/other"), is(equalTo("1234")));
+        Assert.assertThat(extractRestDriverPortAsString("http://localhost:1234"), is(equalTo("1234")));
+        Assert.assertThat(extractRestDriverPortAsString("http://localhost:1234/"), is(equalTo("1234")));
+        Assert.assertThat(extractRestDriverPortAsString("http://localhost:1234/other"), is(equalTo("1234")));
+        Assert.assertThat(extractRestDriverPortAsString("http://localhost"), is(equalTo(DEFAULT_REST_DRIVER_PORT)));
+        Assert.assertThat(extractRestDriverPortAsString("http://localhost:1234andtext"), is(equalTo(DEFAULT_REST_DRIVER_PORT)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCannotExtractRestDriverPortExtract1() {
-        extractRestDriverPort("http://localhost");
-    }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCannotExtractRestDriverPortExtract2() {
-        extractRestDriverPort("http://localhost:1234andtext");
-    }
 
 }
