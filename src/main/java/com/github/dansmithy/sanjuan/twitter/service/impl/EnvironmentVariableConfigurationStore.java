@@ -13,7 +13,8 @@ import com.google.common.base.Objects;
 @Named
 public class EnvironmentVariableConfigurationStore implements ConfigurationStore {
 
-	private static final String CONSUMER_SECRET_ENVIRONMENT_KEY = "twitter_consumer_key";
+    private static final String CONSUMER_KEY_ENVIRONMENT_KEY = "twitter_consumer_key";
+	private static final String CONSUMER_SECRET_ENVIRONMENT_KEY = "twitter_consumer_secret";
     private static final String ACCESS_TOKEN_ENVIRONMENT_KEY = "twitter_access_token";
     private static final String ACCESS_SECRET_ENVIRONMENT_KEY = "twitter_access_secret";
 	private static final String SAN_JUAN_BASE_URL_ENVIRONMENT_KEY = "base_url";
@@ -25,9 +26,14 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
         return getConfiguredValue(SAN_JUAN_BASE_URL_ENVIRONMENT_KEY, DEFAULT_BASE_URL);
     }
 
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.twitterlogin.service.impl.ConfigurationStore#getConsumerSecret()
-	 */
+    @Override
+    public String getConsumerKey() {
+        return getConfiguredValueUsingFilesystemDefault(CONSUMER_KEY_ENVIRONMENT_KEY);
+    }
+
+    /* (non-Javadoc)
+      * @see com.github.dansmithy.twitterlogin.service.impl.ConfigurationStore#getConsumerSecret()
+      */
 	@Override
 	public String getConsumerSecret() {
         return getConfiguredValueUsingFilesystemDefault(CONSUMER_SECRET_ENVIRONMENT_KEY);

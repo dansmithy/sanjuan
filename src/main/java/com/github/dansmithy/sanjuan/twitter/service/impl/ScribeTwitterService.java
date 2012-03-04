@@ -28,13 +28,12 @@ import com.github.dansmithy.sanjuan.twitter.service.TwitterService;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.dansmithy.sanjuan.twitter.service.exception.TwitterAuthRuntimeException;
 import com.github.dansmithy.sanjuan.twitter.service.scribe.ConfigurableTwitterApi;
+import org.springframework.util.Assert;
 
 @Named
 public class ScribeTwitterService implements TwitterService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScribeTwitterService.class);
-	
-	private static final String TWITTER_CONSUMER_KEY = "nYOW3tE8e96R7px104ez1w";
 	
 	private static final String TWITTER_CALLBACK_URL = "/ws/auth/authValidate";
 	private static final String DIRECT_MESSAGE_URL = "/1/direct_messages/new.json";
@@ -51,16 +50,25 @@ public class ScribeTwitterService implements TwitterService {
 	@Inject
 	public ScribeTwitterService(TwitterUserStore twitterUserStore, ConfigurationStore configurationStore, RoleProvider roleProvider, ConfigurableTwitterApi twitterApi, UserDao userDao) {
 		super();
+        verifyConfiguration(configurationStore, twitterApi);
 		this.twitterUserStore = twitterUserStore;
         this.configurationStore = configurationStore;
         this.roleProvider = roleProvider;
         this.userDao = userDao;
-        this.oauthService = new ServiceBuilder().provider(twitterApi).apiKey(TWITTER_CONSUMER_KEY)
+        this.oauthService = new ServiceBuilder().provider(twitterApi).apiKey(configurationStore.getConsumerKey())
 				.apiSecret(configurationStore.getConsumerSecret()).callback(createCallback(configurationStore.getSanJuanBaseUrl(), TWITTER_CALLBACK_URL)).build();
 		this.directMessageUrl = twitterApi.getTwitterBaseUrl() + DIRECT_MESSAGE_URL;
 	}
 
-	@Override
+    private void verifyConfiguration(ConfigurationStore configurationStore, ConfigurableTwitterApi twitterApi) {
+        Assert.notNull(configurationStore.getConsumerKey(), "No Twitter Consumer Key set");
+        Assert.notNull(configurationStore.getConsumerSecret(), "No Twitter Consumer Secret set");
+        Assert.notNull(configurationStore.getAccessToken(), "No Twitter Access Token set");
+        Assert.notNull(configurationStore.getAccessSecret(), "No Twitter Access Secret set");
+        Assert.notNull(configurationStore.getSanJuanBaseUrl(), "No San Juan Base URL set");
+    }
+
+    @Override
 	public String getRedirectForAuthorization() {
         try {
             Token requestToken = oauthService.getRequestToken();
