@@ -125,7 +125,7 @@ public class DatastoreGameService implements GameService {
 		Player player = new Player(playerName);
 		game.addPlayer(player);
         
-        twitterService.sendDirectMessage(game.getOwner(), String.format("@%s has joined your game #%d, so start it now at http://sanjuan.herokuapp.com/#/games/%d", playerName, gameId, gameId));
+        twitterService.sendDirectMessage(game.getOwner(), String.format("@%s has joined your game #%d, so start it now at http://sanjuan.herokuapp.com/#/games", playerName, gameId));
 
 		gameDao.saveGame(game);
 		return player;
@@ -204,7 +204,7 @@ public class DatastoreGameService implements GameService {
 
         for (Player player : game.getPlayers()) {
             if (!loggedInUser.equals(player.getName())) {
-                twitterService.sendDirectMessage(player.getName(), String.format("@%s has spoilt is for everyone, and abandoned game #%d.", loggedInUser, gameId));
+                twitterService.sendDirectMessage(player.getName(), String.format("@%s has spoilt it for everyone, and abandoned game #%d.", loggedInUser, gameId));
             }
         }
 		return gameDao.gameUpdate(gameId, gameUpdater);
