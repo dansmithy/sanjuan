@@ -8,10 +8,10 @@ function MainController($route, $xhr, userManager, version) {
 	$xhr.defaults.headers.post["Content-Type"] = "application/json";
 	$xhr.defaults.headers.common["Content-Type"] = "application/json";
 
-	$route.when("/games", { template : "partials/games.html", controller : GamesController });
-	$route.when("/games/:gameId", { template : "partials/game.html", controller : GameController });
-	$route.when("/admin", { template : "partials/admin.html", controller : AdminController });
-	$route.when("/cards", { template : "partials/cards.html", controller : CardsController });
+	$route.when("/games", { template : "partials/games.html?v=" + version, controller : GamesController });
+	$route.when("/games/:gameId", { template : "partials/game.html?v=" + version, controller : GameController });
+	$route.when("/admin", { template : "partials/admin.html?v=" + version, controller : AdminController });
+	$route.when("/cards", { template : "partials/cards.html?v=" + version, controller : CardsController });
 	$route.otherwise( { "redirectTo" : "/games" });
 	$route.onChange(function() {
         $route.current.scope.params = $route.current.params;
@@ -42,13 +42,14 @@ MainController.prototype = {
 		}
 };
 
-function GameController($xhr, $defer, userManager, gameService, cardService) {
+function GameController($xhr, $defer, userManager, gameService, cardService, version) {
 	
 	
 	this.userManager = userManager;
 	this.$defer = $defer;
 	this.gameService = gameService;
 	this.cardService = cardService;
+	this.version = version;
 	
 	this.responder = { "mode" : "none", "template" : "partials/none.html" };
 	this.roleStatusMap = { "builder" : "to build", "councillor" : "cards to keep", "producer" : "to produce", "trader" : "to trade", "prospector" : "to do." };
@@ -83,7 +84,7 @@ function GameController($xhr, $defer, userManager, gameService, cardService) {
 	});
 
 };
-GameController.$inject = [ "$xhr", "$defer", "userManager", "gameService", "cardService" ];
+GameController.$inject = [ "$xhr", "$defer", "userManager", "gameService", "cardService", "version" ];
 GameController.prototype = {
 		
 		autoRefresh : function() {

@@ -1,5 +1,6 @@
 package com.github.dansmithy.sanjuan.rest.beans;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,11 @@ public class AdminBean implements AdminResource {
 	@Inject
 	public AdminBean(@Value("${build.version}") String version) {
 		super();
-		this.version = version;
+        if ("DEV".equals(version)) {
+            this.version = Long.toString(new Date().getTime());
+        } else {
+            this.version = version;
+        }
 	}
 
 	@Override
