@@ -8,9 +8,9 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.dansmithy.util.ATUtils;
 import org.junit.Assert;
 
-import com.github.dansmithy.driver.ATUtils;
 import com.github.dansmithy.driver.GameDriverSession;
 import com.github.dansmithy.driver.SkeletonGameDriver;
 import com.github.restdriver.clientdriver.ClientDriver;
