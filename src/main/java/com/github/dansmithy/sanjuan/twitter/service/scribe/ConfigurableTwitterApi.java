@@ -2,6 +2,7 @@ package com.github.dansmithy.sanjuan.twitter.service.scribe;
 
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.slf4j.Logger;
@@ -54,7 +55,10 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 
     public static String initializeTwitterBaseUrl() {
         String environmentVariable = System.getenv(ENVIRONMENT_KEY_TWITTER_BASE_URL);
-        String systemProperty = System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL, DEFAULT_TWITTER_BASE_URL);
+        String systemProperty = System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL);
+        if (StringUtils.isEmpty(systemProperty)) {
+            systemProperty = DEFAULT_TWITTER_BASE_URL;
+        }
         LOGGER.info(String.format("Environment variable for [%s] is [%s], System property is [%s]", ENVIRONMENT_KEY_TWITTER_BASE_URL, environmentVariable, systemProperty));
         return Objects.firstNonNull(environmentVariable, systemProperty);
     }
