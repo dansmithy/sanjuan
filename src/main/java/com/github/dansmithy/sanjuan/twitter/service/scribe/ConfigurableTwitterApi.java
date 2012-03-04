@@ -53,7 +53,10 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	}
 
     public static String initializeTwitterBaseUrl() {
-        return Objects.firstNonNull(System.getenv(ENVIRONMENT_KEY_TWITTER_BASE_URL), System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL, DEFAULT_TWITTER_BASE_URL));
+        String environmentVariable = System.getenv(ENVIRONMENT_KEY_TWITTER_BASE_URL);
+        String systemProperty = System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL, DEFAULT_TWITTER_BASE_URL);
+        LOGGER.info(String.format("Environment variable for [%s] is [%s], System property is [%s]", ENVIRONMENT_KEY_TWITTER_BASE_URL, environmentVariable, systemProperty));
+        return Objects.firstNonNull(environmentVariable, systemProperty);
     }
 
 
