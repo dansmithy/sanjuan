@@ -54,7 +54,7 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
     }
 
     private String getConfiguredValue(String key, String defaultValue) {
-        String environmentValue = System.getenv(key);
+        String environmentValue = System.getProperty(key);
         try {
             return Objects.firstNonNull(environmentValue, defaultValue);
         } catch (NullPointerException e) {
