@@ -41,12 +41,14 @@ public class ScribeTwitterService implements TwitterService {
 	private static final Pattern SCREEN_NAME_REGEX = Pattern.compile("screen_name=([^&]+)");
 
 	private final TwitterUserStore twitterUserStore;
-	private final OAuthService oauthService;
     private final ConfigurationStore configurationStore;
     private final RoleProvider roleProvider;
     private final UserDao userDao;
     private final String directMessageUrl;
-	
+
+	private final OAuthService oauthService;
+    private final OAuthService adminOauthService;
+
 	@Inject
 	public ScribeTwitterService(TwitterUserStore twitterUserStore, ConfigurationStore configurationStore, RoleProvider roleProvider, ConfigurableTwitterApi twitterApi, UserDao userDao) {
 		super();
@@ -55,8 +57,12 @@ public class ScribeTwitterService implements TwitterService {
         this.configurationStore = configurationStore;
         this.roleProvider = roleProvider;
         this.userDao = userDao;
+
         this.oauthService = new ServiceBuilder().provider(twitterApi).apiKey(configurationStore.getConsumerKey())
 				.apiSecret(configurationStore.getConsumerSecret()).callback(createCallback(configurationStore.getSanJuanBaseUrl(), TWITTER_CALLBACK_URL)).build();
+        this.adminOauthService = new ServiceBuilder().provider(twitterApi).apiKey(configurationStore.getAdminConsumerKey())
+                .apiSecret(configurationStore.getAdminConsumerSecret()).build();
+
 		this.directMessageUrl = twitterApi.getTwitterBaseUrl() + DIRECT_MESSAGE_URL;
 	}
 
@@ -112,7 +118,7 @@ public class ScribeTwitterService implements TwitterService {
             OAuthRequest oauthRequest = new OAuthRequest(Verb.POST, directMessageUrl);
             oauthRequest.addBodyParameter("screen_name", targetUser);
             oauthRequest.addBodyParameter("text", message);
-            oauthService.signRequest(createSanJuanGameAccessToken(), oauthRequest);
+            adminOauthService.signRequest(createSanJuanGameAccessToken(), oauthRequest);
             Response oauthResponse = oauthRequest.send();
             if (HttpURLConnection.HTTP_OK != oauthResponse.getCode()) {
                 LOGGER.warn(String.format("Unable to send Twitter DM to user [%s] with message [%s]. Got response code [%d].", targetUser, message, oauthResponse.getCode()));

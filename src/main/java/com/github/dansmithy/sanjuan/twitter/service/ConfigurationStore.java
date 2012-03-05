@@ -6,6 +6,10 @@ public interface ConfigurationStore {
 
 	String getConsumerSecret();
 
+    String getAdminConsumerKey();
+
+    String getAdminConsumerSecret();
+
 	String getSanJuanBaseUrl();
     
     String getAccessToken();
