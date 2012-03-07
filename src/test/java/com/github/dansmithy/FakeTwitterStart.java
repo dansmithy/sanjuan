@@ -47,10 +47,10 @@ public class FakeTwitterStart extends HttpServlet {
             sendResponse(resp, HttpURLConnection.HTTP_OK, requestTokenReponseBody);
         } else if ("/authenticate".equals(path) && "GET".equals(req.getMethod())) {
             String fakeUsername = req.getParameter("oauth_token");
-            String location = String.format(SAN_JUAN_BASE_URL + "/ws/auth/authValidate?oauth_token=%s&oauth_verifier=verifier", fakeUsername);
-            resp.sendRedirect(location);
+            sendResponse(resp, HttpURLConnection.HTTP_OK, generateHtml(fakeUsername));
         } else if ("/access_token".equals(path) && "POST".equals(req.getMethod())){
             String header = req.getHeader("Authorization");
+            LOGGER.info(String.format("Header is: [%s]", header));
             String fakeUsername = extractUsername(header);
             String accessTokenReponseBody = String.format("oauth_token=%s&oauth_token_secret=%s&user_id=%s&screen_name=%s", FAKE_ACCESS_TOKEN, FAKE_TOKEN_SECRET, FAKE_USER_ID, fakeUsername);
             sendResponse(resp, HttpURLConnection.HTTP_OK, accessTokenReponseBody);
@@ -58,9 +58,14 @@ public class FakeTwitterStart extends HttpServlet {
             sendResponse(resp, HttpURLConnection.HTTP_BAD_REQUEST, String.format("Failed to handle [%s] request to [%s]", req.getMethod(), req.getRequestURL().toString()));
         }
     }
+    
+    private String generateHtml(String defaultFakeUsername) {
+        String html = String.format("<html></head><body><form action=\"%s/ws/auth/authValidate\" method=\"GET\"><input type=\"hidden\" name=\"oauth_token\" value=\"%s\" /><input type=\"text\" size=\"100\" name=\"oauth_verifier\" value=\"%s\" /><input type=\"submit\" name=\"Submit\" /></form></body></html>", SAN_JUAN_BASE_URL, defaultFakeUsername, defaultFakeUsername);
+        return html;
+    }
 
     private String extractUsername(String header) {
-        String startKey = "oauth_token=\"";
+        String startKey = "oauth_verifier=\"";
         String endKey = "\"";
         int start = header.indexOf(startKey);
         if (start == -1) {
