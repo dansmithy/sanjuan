@@ -1,11 +1,13 @@
 package com.github.dansmithy.sanjuan.game;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -261,8 +263,7 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.createNextStep();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
-		
-		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId());
+
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}	
 	
@@ -344,48 +345,50 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateGovernorStep(step);
+        
+        String governorText = createGovernorDescription(step);
 		
-		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId());
+		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId(), String.format("@%s has %s in round %d governor phase", loggedInUser, governorText, playCoords.getRoundNumber()));
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.github.dansmithy.sanjuan.game.GameService#makePlay(com.github.dansmithy.sanjuan.model.input.PlayCoords, com.github.dansmithy.sanjuan.model.input.PlayChoice)
-	 */
+
+    /* (non-Javadoc)
+      * @see com.github.dansmithy.sanjuan.game.GameService#makePlay(com.github.dansmithy.sanjuan.model.input.PlayCoords, com.github.dansmithy.sanjuan.model.input.PlayChoice)
+      */
 	@Override
 	public Game makePlay(PlayCoords coords, PlayChoice playChoice) {
-		
+
 		Game game = getGame(coords.getGameId());
 		String loggedInUser = userProvider.getCurrentUser().getName();
 		GameUpdater gameUpdater = new GameUpdater(game);
-		
+
 		if (!game.hasPlayer(loggedInUser)) {
 			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
-		
+
 		if (!game.getState().equals(GameState.PLAYING)) {
 			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.NOT_PLAYING);
 		}
-		
+
 		if (!gameUpdater.matchesCoords(coords)) {
 			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d, phase %d, play %d as not the current play.", coords.getRoundNumber(), coords.getPhaseNumber(), coords.getPlayNumber()), IllegalGameStateRuntimeException.PLAY_NOT_ACTIVE);
 		}
-		
+
 		if (!gameUpdater.getCurrentPlay().getState().equals(PlayState.AWAITING_INPUT)) {
 			throw new IllegalGameStateRuntimeException(String.format("Cannot make play at this point in the game."), IllegalGameStateRuntimeException.PLAY_NOT_ACTIVE);
-		}		
-		
+		}
+
 		if (!loggedInUser.equals(gameUpdater.getCurrentPlayer().getName())) {
 			throw new AccessUnauthorizedRuntimeException("It is not your turn to play.", AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 		}
-		
+
 		Role role = game.getCurrentRound().getCurrentPhase().getRole();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.makeChoice(gameUpdater, playChoice);
-		
+
 		calculationService.processPlayers(game.getPlayers());
-		
+
 		if (gameHasJustEnded(game, gameUpdater)) {
 			handleGameCompletion(game, gameUpdater);
             sendGameCompletionTweets(loggedInUser, game);
@@ -394,15 +397,15 @@ public class DatastoreGameService implements GameService {
 			if (!gameUpdater.isPhaseChanged()) {
 				roleProcessor.initiateNewPlay(gameUpdater);
 			}
-			sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), coords.getGameId());
+			sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), coords.getGameId(), String.format("@%s has %s for round %d", loggedInUser, gameUpdater.getCurrentPhase().getRole().getPastTense(), coords.getRoundNumber()));
 		}
-		
+
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
 
     private void sendGameCompletionTweets(String loggedInUser, Game game) {
-        String finalMessageFormat = "@%s, you %s game #%d. @%s made the final move. See the game at http://sanjuan.herokuapp.com/#/games/%d.";
-       
+        String finalMessageFormat = "%s, you %s game #%d. @%s made the final move at http://sanjuan.herokuapp.com/#/games/%d.";
+
         for (Player player : game.getPlayers()) {
             if (!loggedInUser.equals(player.getName())) {
                 boolean wonGame = player.getName().equals(game.getWinner());
@@ -413,12 +416,23 @@ public class DatastoreGameService implements GameService {
 
     }
 
-    private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId) {
+    private void sendNextMoveTweet(String currentPlayer, String nextPlayer, Long gameId, String tweetText) {
 		if (!currentPlayer.equals(nextPlayer)) {
-			String message = String.format("It is now your turn on Game #%d at http://sanjuan.herokuapp.com/#/games/%d. @%s has made their move.", gameId, gameId, currentPlayer);
+			String message = String.format("Your turn on Game #%d at http://sanjuan.herokuapp.com/#/games/%d. %s", gameId, gameId, tweetText);
 			twitterService.sendDirectMessage(nextPlayer, message);
 		}
 	}
+
+    private String createGovernorDescription(GovernorStep step) {
+        List<String> messages = new ArrayList<String>();
+        if (!step.getCardsToDiscard().isEmpty()) {
+            messages.add(String.format("discarded %d", step.getCardsToDiscard().size()));
+        }
+        if (null != step.getChapelCard()) {
+            messages.add("added 1 to chapel");
+        }
+        return StringUtils.join(messages, " and ");
+    }
 
 	private boolean gameHasJustEnded(Game game, GameUpdater gameUpdater) {
 		return game.hasReachedEndCondition() && gameUpdater.getCurrentPhase().isComplete();

@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.github.dansmithy.util.ATUtils;
 import org.junit.Assert;
 
 import com.github.dansmithy.driver.GameDriverSession;
@@ -23,6 +22,12 @@ public class GameRestDriver extends SkeletonGameDriver {
 
 	private static final String JSON_CONTENT_TYPE = "application/json";
 	private static final Header ACCEPT_JSON_HEADER = header("Accept", JSON_CONTENT_TYPE);
+    
+    private static final int URL_MIN_EXCESS = "http://sanjuan.herokuapp.com/#/games/00".length() - "http://t.co/1234567".length();
+    private static final int USERNAME_MIN_EXCESS = "bob-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".length() - "twittermaximum".length();
+    private static final int MAX_LENGTH = 140 + URL_MIN_EXCESS + USERNAME_MIN_EXCESS;
+    private static final String TWEET_PATTERN_FORMAT = String.format(".{1,%d}", MAX_LENGTH);
+    private static final Pattern TWEET_PATTERN = Pattern.compile(TWEET_PATTERN_FORMAT);
 
 	private String baseUri;
 	private ClientDriver clientDriver;
@@ -61,13 +66,13 @@ public class GameRestDriver extends SkeletonGameDriver {
 	
 	@Override
 	public void allowAllTwitterMessages() {
-		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", Pattern.compile(".*")).withParam("text", Pattern.compile(".*")), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK)).anyTimes();
+		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", Pattern.compile(".*")).withParam("text", TWEET_PATTERN), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK)).anyTimes();
 	}
 
 	@Override
 	public void expectTwitterMessage(String username) {
 		String aliasUsername = getTranslatedValues().alias(username);
-		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", aliasUsername).withParam("text", Pattern.compile(".*")), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK));		
+		clientDriver.addExpectation(onRequestTo("/1/direct_messages/new.json").withMethod(Method.POST).withParam("screen_name", aliasUsername).withParam("text", TWEET_PATTERN), giveEmptyResponse().withStatus(HttpURLConnection.HTTP_OK));
 	}
 	
 	private String extractJSessionId(List<Header> headers) {
