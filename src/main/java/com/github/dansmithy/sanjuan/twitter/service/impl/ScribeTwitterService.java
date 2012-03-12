@@ -38,7 +38,7 @@ public class ScribeTwitterService implements TwitterService {
 	private static final String TWITTER_CALLBACK_URL = "/ws/auth/authValidate";
 	private static final String DIRECT_MESSAGE_URL = "/1/direct_messages/new.json";
 	
-	private static final Pattern SCREEN_NAME_REGEX = Pattern.compile("screen_name=([^&]+)");
+    private static final UsernameExtractor STANDARD_USERNAME_EXTRACTOR = new RegexUsernameExtactor();
 
 	private final TwitterUserStore twitterUserStore;
     private final ConfigurationStore configurationStore;
@@ -85,26 +85,25 @@ public class ScribeTwitterService implements TwitterService {
         }
 	}
 
-	@Override
-	public void authenticateUser(String tokenKey, String oauthVerifier) {
-		Token requestToken = twitterUserStore.getOAuthToken().createToken();
-		if (tokenKey == null || !tokenKey.equals(requestToken.getToken())) {
-			throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
-		}
-        authenticateRequestToken(requestToken, oauthVerifier);
-	}
+    @Override
+    public void authenticateUser(String tokenKey, String oauthVerifier) {
+        Token requestToken = twitterUserStore.getOAuthToken().createToken();
+        if (tokenKey == null || !tokenKey.equals(requestToken.getToken())) {
+            throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
+        }
+        authenticateRequestToken(requestToken, oauthVerifier, STANDARD_USERNAME_EXTRACTOR);
+    }
 
-    private void authenticateRequestToken(Token requestToken, String oauthVerifier) {
+    private void authenticateRequestToken(Token requestToken, String oauthVerifier, UsernameExtractor extractor) {
         try {
             Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
-            String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
+            String screenName = extractor.extractUsername(accessToken.getRawResponse());
             TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
             userDao.recordLogin(screenName);
             twitterUserStore.setCurrentUser(twitterUser);
         } catch (OAuthException oauthException) {
             throw new TwitterAuthRuntimeException("Unable to authnenticate", oauthException);
         }
-
     }
 
     @Override
@@ -127,22 +126,37 @@ public class ScribeTwitterService implements TwitterService {
             LOGGER.warn(String.format("Unable to send Twitter DM to user [%s] with message [%s].", targetUser, message), oauthException);
         }
 	}
-    
+
     private Token createSanJuanGameAccessToken() {
         return new Token(configurationStore.getAccessToken(), configurationStore.getAccessSecret());
     }
-	
-	private String extractUsingRegex(String response, Pattern p) {
-		Matcher matcher = p.matcher(response);
-		if (matcher.find() && matcher.groupCount() >= 1) {
-			return OAuthEncoder.decode(matcher.group(1));
-		} else {
-			throw new TwitterAuthRuntimeException(String.format("Response body is incorrect. Can't extract details from response [%s].", response));
-		}
-	}
-	
+
 	private String createCallback(String hostname, String callbackUrl) {
 		return hostname + callbackUrl;
 	}
-	
+
+    private static interface UsernameExtractor {
+
+        String extractUsername(String response);
+    }
+
+    private static class RegexUsernameExtactor implements UsernameExtractor {
+
+        private static final Pattern SCREEN_NAME_REGEX = Pattern.compile("screen_name=([^&]+)");
+
+        @Override
+        public String extractUsername(String response) {
+            return extractUsingRegex(response, SCREEN_NAME_REGEX);
+        }
+    }
+
+    private static final String extractUsingRegex(String response, Pattern p) {
+        Matcher matcher = p.matcher(response);
+        if (matcher.find() && matcher.groupCount() >= 1) {
+            return OAuthEncoder.decode(matcher.group(1));
+        } else {
+            throw new TwitterAuthRuntimeException(String.format("Response body is incorrect. Can't extract details from response [%s].", response));
+        }
+    }
+
 }
