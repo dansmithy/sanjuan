@@ -205,7 +205,9 @@ angular.service("gameService", angular.extend(function($xhr, $defer, $log) {
 			if (gameService.requestTrack < 2) {
 				gameService.requestTrack += 1;
 				$xhr("GET", "ws/games/" + gameId, function(code, response) {
-					gameService.requestTrack -= 1;
+					if (gameService.requestTrack > 0) {
+					    gameService.requestTrack -= 1;
+					}
 					if (response.version !== version) {
 						gameCallback(code, response);
 					}
