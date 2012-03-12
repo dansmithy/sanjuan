@@ -1,6 +1,8 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Named;
 
@@ -30,16 +32,20 @@ public class ProspectorProcessor implements RoleProcessor {
 	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
 
 		Play play = gameUpdater.getCurrentPlay();
+        boolean withPrivilege = play.isHasPrivilige();
 		Player player = gameUpdater.getCurrentPlayer();
 		Game game = gameUpdater.getGame();
 		
-		// TODO change to based on privilege system
 		if (gameUpdater.getCurrentPhase().getLeadPlayer().equals(player.getName())) {
-			
-			Integer prospectedCard = game.getDeck().takeOne();
-			player.addToHand(prospectedCard);
+
+            List<Integer> prospectedCards = new ArrayList<Integer>();
+            for (int count = 0; count < player.getPlayerNumbers().getTotalProspectedCards(withPrivilege); count++) {
+                Integer prospectedCard = game.getDeck().takeOne();
+                player.addToHand(prospectedCard);
+                prospectedCards.add(prospectedCard);
+            }
 			PlayOffered offered = play.createOffered();
-			offered.setProspected(Arrays.asList(prospectedCard));
+			offered.setProspected(prospectedCards);
 			gameUpdater.updateDeck(game.getDeck());
 			gameUpdater.updatePlayer(player);
 		}
