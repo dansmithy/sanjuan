@@ -15,10 +15,10 @@ public interface CardResource {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	Map<Integer, String> getCards();
+	Map<Integer, BuildingType.Card> getCards();
 
 	@GET
 	@Path("/types")
 	@Produces(MediaType.APPLICATION_JSON)
-	Map<String, BuildingType> getCardTypes();
+	Map<BuildingType.Card, BuildingType> getCardTypes();
 }

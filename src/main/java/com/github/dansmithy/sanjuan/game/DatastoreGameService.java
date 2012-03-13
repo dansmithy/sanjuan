@@ -11,11 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.dansmithy.sanjuan.dao.GameDao;
-import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
-import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
-import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
-import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
+import com.github.dansmithy.sanjuan.model.BuildingType;
 import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Game;
 import com.github.dansmithy.sanjuan.model.GameState;
@@ -28,6 +24,11 @@ import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
 import com.github.dansmithy.sanjuan.model.RoundState;
 import com.github.dansmithy.sanjuan.model.Tariff;
+import com.github.dansmithy.sanjuan.dao.GameDao;
+import com.github.dansmithy.sanjuan.exception.AccessUnauthorizedRuntimeException;
+import com.github.dansmithy.sanjuan.exception.IllegalGameStateRuntimeException;
+import com.github.dansmithy.sanjuan.exception.PlayChoiceInvalidRuntimeException;
+import com.github.dansmithy.sanjuan.game.aspect.ProcessGame;
 import com.github.dansmithy.sanjuan.model.builder.CardFactory;
 import com.github.dansmithy.sanjuan.model.builder.TariffBuilder;
 import com.github.dansmithy.sanjuan.model.input.GovernorChoice;
@@ -258,34 +259,39 @@ public class DatastoreGameService implements GameService {
 			throw new IllegalGameStateRuntimeException(String.format("Cannot choose role at this point in the game."), IllegalGameStateRuntimeException.ROLE_ALREADY_TAKEN);
 		}
 		
+        if (playCoords.getPhaseNumber() == 1 && game.getPlayers().size() == 2 && playerHasLibrary(game.getPlayer(loggedInUser))) {
+            phase.setLeadPlayerUsedLibrary(choice.isUseLibrary());
+        }
+
 		phase.selectRole(role);
+        
 		gameUpdater.updatePhase(phase);
 		gameUpdater.createNextStep();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
 
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
-	}	
-	
-	@Override
+	}
+
+    @Override
 	public Game governorDiscard(PlayCoords playCoords, GovernorChoice governorChoice) {
-		
+
 		Game game = getGame(playCoords.getGameId());
 		GameUpdater gameUpdater = new GameUpdater(game);
 		String loggedInUser = userProvider.getCurrentUser().getName();
-		
+
 		if (!game.hasPlayer(loggedInUser)) {
 			throw new AccessUnauthorizedRuntimeException(String.format("%s is not a player in this game.", loggedInUser), AccessUnauthorizedRuntimeException.NOT_YOUR_GAME);
 		}
-		
+
 		if (!game.getState().equals(GameState.PLAYING)) {
 			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.NOT_PLAYING);
 		}
-		
+
 		if (!gameUpdater.matchesCoords(playCoords)) {
 			throw new IllegalGameStateRuntimeException(String.format("Cannot modify round %d", playCoords.getRoundNumber()), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
-		}		
-		
+		}
+
 		if (!gameUpdater.getCurrentRound().getState().equals(RoundState.GOVERNOR)) {
 			throw new IllegalGameStateRuntimeException(String.format("Game not active, so cannot play now."), IllegalGameStateRuntimeException.PHASE_NOT_ACTIVE);
 		}
@@ -296,7 +302,7 @@ public class DatastoreGameService implements GameService {
 
 		GovernorStep step = gameUpdater.getCurrentRound().getGovernorPhase().getCurrentStep();
 		// cannot be null, cos wouldn't be GOVERNOR state (verified by previous check)
-		
+
  		if (!loggedInUser.equals(step.getPlayerName())) {
 			throw new AccessUnauthorizedRuntimeException(String.format("Not your turn to make Governor phase choices."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
  		}
@@ -304,18 +310,18 @@ public class DatastoreGameService implements GameService {
 		if (CollectionUtils.hasDuplicates(governorChoice.getCardsToDiscard())) {
 			throw new PlayChoiceInvalidRuntimeException(String.format("Discarded list of cards contains duplicates, not allowed."), PlayChoiceInvalidRuntimeException.DUPLICATE_CHOICE);
 		}
-		
+
 		Player player = game.getPlayer(loggedInUser);
 
 		int cardsShouldDiscardCount = Math.max(0, player.getHandCards().size() - player.getPlayerNumbers().getCardsCanHold());
  		int cardsRequestedToDiscardCount = governorChoice.getCardsToDiscard().size();
- 		
+
  		if (governorChoice.getChapelCard() != null) {
- 			
+
  			if (!step.isChapelOwner()) {
  				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as you have not built a chapel"), PlayChoiceInvalidRuntimeException.NOT_OWNED_BUILDING);
  			}
- 			
+
  			if (!player.getHandCards().contains(governorChoice.getChapelCard())) {
  				throw new PlayChoiceInvalidRuntimeException(String.format("Cannot add card to chapel as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  			}
@@ -324,7 +330,7 @@ public class DatastoreGameService implements GameService {
  			player.removeHandCard(governorChoice.getChapelCard());
  			cardsShouldDiscardCount = Math.max(0, cardsShouldDiscardCount - 1);
  		}
- 		
+
  		if (cardsRequestedToDiscardCount > cardsShouldDiscardCount) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but only need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidRuntimeException.OVER_DISCARD);
  		}
@@ -332,25 +338,25 @@ public class DatastoreGameService implements GameService {
  		if (cardsRequestedToDiscardCount < cardsShouldDiscardCount) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Chosen to discard %d cards, but need to discard %d", cardsRequestedToDiscardCount, cardsShouldDiscardCount), PlayChoiceInvalidRuntimeException.UNDER_DISCARD);
  		}
- 		
+
  		if (!player.getHandCards().containsAll(governorChoice.getCardsToDiscard())) {
  			throw new PlayChoiceInvalidRuntimeException(String.format("Cannot discard card as not one of your hand cards"), PlayChoiceInvalidRuntimeException.NOT_OWNED_HAND_CARD);
  		}
- 		
+
 		step.setCardsToDiscard(governorChoice.getCardsToDiscard());
 		step.setState(PlayState.COMPLETED);
 		player.removeHandCards(governorChoice.getCardsToDiscard());
 		game.getDeck().discard(governorChoice.getCardsToDiscard());
-		
+
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateGovernorStep(step);
-        
+
         String governorText = createGovernorDescription(step);
-		
+
 		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId(), String.format("@%s has %s in round %d governor phase", loggedInUser, governorText, playCoords.getRoundNumber()));
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
-		
+
 	}
 
     /* (non-Javadoc)
@@ -442,23 +448,23 @@ public class DatastoreGameService implements GameService {
 		game.markCompleted();
 		game.calculateWinner();
 		game.setEnded(new Date());
-		
-		gameUpdater.updateWinner();			
+
+		gameUpdater.updateWinner();
 		gameUpdater.updatePlayers();
 		gameUpdater.updateEndedDate();
 		gameUpdater.updateGameState();
-	}		
-	
+	}
+
 	/* (non-Javadoc)
 	 * @see com.github.dansmithy.sanjuan.game.GameService#deleteGame(java.lang.Long)
 	 */
 	@Override
 	public void deleteGame(Long gameId, boolean isAdminUser) {
 		Game game = gameDao.getGame(gameId);
-		
+
 		if (!isAdminUser) {
 			String loggedInUser = userProvider.getCurrentUser().getName();
-			
+
 			if (loggedInUser.equals(game.getOwner())) {
 				if (!GameState.RECRUITING.equals(game.getState())) {
 					throw new IllegalGameStateRuntimeException(String.format("Game must be still recruiting in order to delete."), IllegalGameStateRuntimeException.NOT_RECRUITING);
@@ -467,13 +473,13 @@ public class DatastoreGameService implements GameService {
 				throw new AccessUnauthorizedRuntimeException(String.format("Must be game owner to delete game."), AccessUnauthorizedRuntimeException.NOT_CORRECT_USER);
 			}
 		}
-		
+
 		gameDao.deleteGame(gameId);
 	}
 
 	@Override
 	public Deck updateDeckOrder(Long gameId, List<Integer> deckOrder) {
-		Game game = gameDao.getGame(gameId);	
+		Game game = gameDao.getGame(gameId);
 		GameUpdater gameUpdater = new GameUpdater(game);
 		Deck deck = new Deck(deckOrder);
 		gameUpdater.updateDeck(deck);
@@ -490,12 +496,16 @@ public class DatastoreGameService implements GameService {
 
 	@Override
 	public List<Tariff> updateTariff(Long gameId, List<Integer> tariffOrder) {
-		Game game = gameDao.getGame(gameId);	
+		Game game = gameDao.getGame(gameId);
 		GameUpdater gameUpdater = new GameUpdater(game);
 		List<Tariff> tariffs = tariffBuilder.createTariff(tariffOrder);
 		gameUpdater.updateTariffs(tariffs);
 		return gameDao.gameUpdate(gameId, gameUpdater).getTariffs();
 	}
+
+    private boolean playerHasLibrary(Player player) {
+        return cardFactory.getBuildingTypes(player.getBuildings()).contains(cardFactory.getCardTypes().get(BuildingType.Card.Library));
+    }
 
 
 }

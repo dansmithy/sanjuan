@@ -187,14 +187,18 @@ public class GameUpdater {
 	public boolean isCreatingFirstPlay() {
 		return nextPlayCoords.getPlayNumber() == 1;
 	}
-	
-	public Phase getNewPhase() {
-		return game.getRounds().get(nextPlayCoords.getRoundIndex()).getPhases().get(nextPlayCoords.getPhaseIndex());
-	}
-	
-	public Play getNewPlay() {
-		return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
-	}
+
+    public Round getNewRound() {
+        return game.getRounds().get(nextPlayCoords.getRoundIndex());
+    }
+
+    public Phase getNewPhase() {
+        return getNewRound().getPhases().get(nextPlayCoords.getPhaseIndex());
+    }
+
+    public Play getNewPlay() {
+        return getNewPhase().getPlays().get(nextPlayCoords.getPlayIndex());
+    }
 	
 	public GovernorStep getGovernorStep(String player) {
 		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {

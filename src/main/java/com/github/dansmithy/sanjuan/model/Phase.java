@@ -18,6 +18,7 @@ public class Phase {
 	private String leadPlayer;
 	private int playerCount;
 	private Tariff tariff;
+    private Boolean leadPlayerUsedLibrary;
 	
 	public Phase() {
 		super();
@@ -107,6 +108,14 @@ public class Phase {
 	@JsonIgnore
 	public String getCurrentPlayerName() {
 		return PhaseState.PLAYING.equals(getState()) ? getCurrentPlay().getPlayer() : getLeadPlayer();
-		
 	}
+
+    public boolean getLeadPlayerUsedLibrary() {
+        return Boolean.TRUE.equals(leadPlayerUsedLibrary);
+    }
+
+    public void setLeadPlayerUsedLibrary(boolean leadPlayerUsedLibrary) {
+        this.leadPlayerUsedLibrary = leadPlayerUsedLibrary;
+    }
+
 }

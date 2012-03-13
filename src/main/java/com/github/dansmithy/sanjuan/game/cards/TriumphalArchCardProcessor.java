@@ -13,7 +13,7 @@ import com.github.dansmithy.sanjuan.model.Player;
 @Named
 public class TriumphalArchCardProcessor implements CardProcessor {
 
-	private static final String[] statues = { "Statue", "VictoryColumn", "Hero" };
+	private static final BuildingType.Card[] statues = { BuildingType.Card.Statue, BuildingType.Card.Statue, BuildingType.Card.VictoryColumn, BuildingType.Card.Hero };
 	
 	@Override
 	public void doVictoryPoints(BuildingType building, List<BuildingType> buildings, Player player) {
@@ -28,7 +28,7 @@ public class TriumphalArchCardProcessor implements CardProcessor {
 	}
 
 	private boolean buildingIsAStatue(BuildingType otherBuilding) {
-		return Arrays.asList(statues).contains(otherBuilding.getName());
+		return Arrays.asList(statues).contains(otherBuilding.getCard());
 	}
 
 	@Override

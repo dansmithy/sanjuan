@@ -8,7 +8,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class BuildingType {
 
-	private String name;
+    public enum Card {
+        IndigoPlant, Aqueduct, Archive, BlackMarket, Carpenter, Chapel, CityHall, CoffeeRoaster,
+        Crane, GoldMine, GuildHall, Hero, Library, MarketHall, MarketStand, Palace, PoorHouse,
+        Prefecture, Quarry, SilverSmelter, Smithy, Statue, SugarMill, TobaccoStorage, Tower,
+        TradingPost, TriumphalArch, VictoryColumn, Well
+    }
+
+	private Card card;
 	private int count;
 	private int buildingCost;
 	private int victoryPoints;
@@ -17,10 +24,10 @@ public class BuildingType {
 	private String processorType;
 	private String description;
 	
-	public BuildingType(String name, int count, int buildingCost,
+	public BuildingType(Card card, int count, int buildingCost,
 			int victoryPoints, BuildingCategory category, Integer computeOrder, String processorType, String description) {
 		super();
-		this.name = name;
+		this.card = card;
 		this.count = count;
 		this.buildingCost = buildingCost;
 		this.victoryPoints = victoryPoints;
@@ -31,8 +38,8 @@ public class BuildingType {
 	}
 
 	@JsonIgnore
-	public String getName() {
-		return name;
+	public Card getCard() {
+		return card;
 	}
 
 	@JsonIgnore

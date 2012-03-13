@@ -21,12 +21,12 @@ public class CardBean implements CardResource {
 	}
 
 	@Override
-	public Map<Integer, String> getCards() {
+	public Map<Integer, BuildingType.Card> getCards() {
 		return cardFactory.getCardMap();
 	}
 
 	@Override
-	public Map<String, BuildingType> getCardTypes() {
+	public Map<BuildingType.Card, BuildingType> getCardTypes() {
 		return cardFactory.getCardTypes();
 	}
 

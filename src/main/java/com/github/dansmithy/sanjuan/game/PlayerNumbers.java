@@ -105,8 +105,8 @@ public class PlayerNumbers implements BonusCardMatcher {
 		matchers.add(matcher);
 	}
 	
-	public void setUseLibrary() {
-		useLibrary = true;
+	public void setLibraryNotUsed() {
+		useLibrary = false;
 	}
 	public void setLibraryOwner() {
 		libraryOwner = true;

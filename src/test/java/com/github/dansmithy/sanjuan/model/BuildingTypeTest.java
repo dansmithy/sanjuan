@@ -9,20 +9,20 @@ public class BuildingTypeTest {
 
 	@Test
 	public void testGetDescription() {
-		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
+		BuildingType type1 = new BuildingType(BuildingType.Card.Aqueduct, 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
 		Assert.assertThat(type1.getDescription(), is(equalTo("description")));
 	}
 	
 	@Test
 	public void testHashcode() {
-		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
-		BuildingType type2 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
+		BuildingType type1 = new BuildingType(BuildingType.Card.Aqueduct, 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
+		BuildingType type2 = new BuildingType(BuildingType.Card.Aqueduct, 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
 		Assert.assertThat(type1.hashCode(), is(equalTo(type2.hashCode())));
 	}
 	
 	@Test
 	public void testToString() {
-		BuildingType type1 = new BuildingType("name", 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
+		BuildingType type1 = new BuildingType(BuildingType.Card.Aqueduct, 5, 2, 3, BuildingCategory.VIOLET, 3, "type", "description");
 		Assert.assertThat(type1.toString(), is(not(nullValue())));
 	}
 	

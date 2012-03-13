@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.game.roles.LibraryAwareRoleProcessor;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import com.github.dansmithy.sanjuan.game.roles.SkipAwareRoleProcessor;
@@ -25,6 +26,6 @@ public class RoleProcessorProvider {
 	}
 
 	public RoleProcessor getProcessor(Role role) {
-		return new SkipAwareRoleProcessor(processors.get(role));
+		return new SkipAwareRoleProcessor(new LibraryAwareRoleProcessor(processors.get(role)));
 	}
 }
