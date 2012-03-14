@@ -10,7 +10,6 @@ import static com.github.dansmithy.bdd.BddHelper.then;
 import static com.github.dansmithy.bdd.BddHelper.when;
 import static com.github.dansmithy.bdd.GivenBddParts.given;
 import static com.github.dansmithy.driver.BddPartProvider.*;
-import static java.net.HttpURLConnection.*;
 
 public class LibraryAT extends BaseAT {
 
@@ -31,7 +30,17 @@ public class LibraryAT extends BaseAT {
 
 
     @Test
-    public void testCannotUseLibrarySecondTimeIfChosenFirstTime() {
+    public void testLibraryRequestWillBeIgnoredIfRequestedTwice() {
+        bdd.runTest(
+
+                given(anyNumberOfTwitterMessagesPermitted())
+                        .and(gameBegunWithTwoPlayers("#alice", "#bob", DeckOrder.Order5))
+                        .and(roundsOneAndTwo())
+                ,
+
+                when(roundThreeLibraryRequestedTwice()),
+
+                then(verifySuccessfulResponseContains("{ 'roundNumber' : 3, 'players^name' : [ { 'name' : '#alice', handCount : 3 } ] }")));
 
     }
 
@@ -109,5 +118,21 @@ public class LibraryAT extends BaseAT {
                 ;
 
     }
+
+    private BddPart<GameDriver> roundThreeLibraryRequestedTwice() {
+
+        return new GivenBddParts(
+                roleChosenBy("#alice", "round : 3; phase : 1", String.format("role : BUILDER; useLibrary : true"))) // choose library! library makes cost 0
+                .and(userPlays("#alice", "round : 3; phase : 1; play : 1", "{  build : '#sugarmill6', payment : [  ]  }"))
+                .and(userPlays("#bob", "round : 3; phase : 1; play : 2", "{  skip : true  }"))
+                .and(roleChosenBy("#bob", "round : 3; phase : 2", "role : PRODUCER"))
+                .and(userPlays("#bob", "round : 3; phase : 2; play : 1", "{  productionFactories : [ '#coffeeroaster' ]  }"))
+                .and(userPlays("#alice", "round : 3; phase : 2; play : 2", "{  skip : true  }"))
+                .and(roleChosenBy("#alice", "round : 3; phase : 3", "role : PROSPECTOR; useLibrary : true")) // shouldn't be allowed to do this: should be ignored!
+                .and(userPlays("#alice", "round : 3; phase : 3; play : 1", "{  }")) // already used library, so should get one extra card (not two)
+                ;
+
+    }
+
 
 }
