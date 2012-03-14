@@ -177,7 +177,7 @@ GameController.prototype = {
 				game.currentPlayerName = game.$round.$phase.leadPlayer;
 				this.isActivePlayer = this.isNameActivePlayer(game.currentPlayerName);
 				if (this.isActivePlayer) {
-					this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback);
+					this.responder = new GovernorChoiceResponse(this.$xhr, game, this.gameCallback, this.cardService);
 				} else {
 					this.statusText = { "waiting" : true, "message" : "Waiting for <strong>" + game.currentPlayerName + "</strong> to choose role." };
 				}
@@ -249,13 +249,14 @@ function CompletedGameResponder(game) {
 	this.isWinner = (game.players[0].name === game.winner);
 };
 
-function GovernorChoiceResponse($xhr, game, gameCallback) {
+function GovernorChoiceResponse($xhr, game, gameCallback, cardService) {
 	this.$xhr = $xhr;
-	this.response = { "role" : game.$unusedRoles[0] };
+	this.response = { "role" : game.$unusedRoles[0], "useLibrary" : true };
 	this.mode = "role_choice";
 	this.template = "partials/chooseRole.html";
 	this.game = game;
 	this.gameCallback = gameCallback;
+	this.needToChooseLibrary = this.checkIfLibraryNeedsToBeChosen(cardService);
 };
 
 GovernorChoiceResponse.prototype = {
@@ -264,7 +265,22 @@ GovernorChoiceResponse.prototype = {
 		var modifiedResponse = angular.Object.copy(this.response);
 		modifiedResponse.role = modifiedResponse.role.toUpperCase();
 		this.$xhr("PUT", "ws/games/" + this.game.gameId + "/rounds/" + this.game.roundNumber + "/phases/" + this.game.$round.phaseNumber + "/role", modifiedResponse, this.gameCallback);
+	},
+
+	checkIfLibraryNeedsToBeChosen : function(cardService) {
+	    if (this.game.$round.phaseNumber !== 1) {
+	        return false;
+	    }
+	    var buildings = this.game.players[0].buildings;
+        for (var cardIndex = 0; cardIndex < buildings.length; cardIndex++) {
+            if (cardService.isLibrary(buildings[cardIndex])) {
+                return true;
+            }
+        }
+        return false;
 	}
+
+
 };
 
 function GovernorPhaseResponse($xhr, game, gameCallback, cardService) {

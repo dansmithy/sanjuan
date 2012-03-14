@@ -124,6 +124,11 @@ div.chapel-cards {
 	color: #555555;
 }
 
+/* role choice */
+label.library {
+    width: 200px;
+}
+
 /* players */
 
 .player {

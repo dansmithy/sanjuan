@@ -139,7 +139,11 @@ angular.service("cardService", angular.extend(function($xhr) {
 		isChapel : function(id) {
 			return cardService.cardMap[id] === "Chapel";
 		},
-		
+
+		isLibrary : function(id) {
+			return cardService.cardMap[id] === "Library";
+		},
+
 		cardList : function(cardArray) {
 			var arrayCopy = angular.Object.copy(cardArray);
 			var nameArray = [];

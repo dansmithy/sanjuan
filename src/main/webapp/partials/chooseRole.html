@@ -1,7 +1,13 @@
         <div class="row">
-            <div class="span14">
+            <div class="span10">
                 <p>It's your turn to choose which role you'd like for this phase (above)</p>
                 <p><strong>Choosing the {{responder.response.role}} role</strong></p>
+            </div>
+            <div class="span4" ng:show="responder.needToChooseLibrary">
+                <form><label class="checkbox library" for="useLibraryChk"><input id="useLibraryChk" type="checkbox" name="responder.response.useLibrary" />  Use Library on this turn?</label></form>
+            </div>
+            <div class="span4" ng:hide="responder.needToChooseLibrary">
+                <p></p>
             </div>
             <div class="span2"><button ng:disabled="!responder.response.role" class="btn success" ng:click="responder.sendResponse()">Choose role</button></div>
         </div>
