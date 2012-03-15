@@ -1,13 +1,12 @@
 package com.github.dansmithy.sanjuan.game.roles;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.game.RoleProcessor;
-import com.github.dansmithy.sanjuan.model.Game;
+import com.github.dansmithy.sanjuan.model.Deck;
 import com.github.dansmithy.sanjuan.model.Play;
 import com.github.dansmithy.sanjuan.model.Player;
 import com.github.dansmithy.sanjuan.model.Role;
@@ -26,32 +25,36 @@ public class ProspectorProcessor implements RoleProcessor {
 	@Override
 	public void initiateNewPlay(GameUpdater gameUpdater) {
 		// do nothing
-	}
+
+        Play play = gameUpdater.getNewPlay();
+        Deck deck = gameUpdater.getGame().getDeck();
+        Player player = gameUpdater.getNewPlayer();
+
+        boolean withPrivilege = play.isHasPrivilige();
+
+        List<Integer> prospectedCards = new ArrayList<Integer>();
+        PlayOffered offered = play.createOffered();
+        if (gameUpdater.getNewPhase().getLeadPlayer().equals(player.getName())) {
+
+            for (int count = 0; count < player.getPlayerNumbers().getTotalProspectedCards(withPrivilege); count++) {
+                Integer prospectedCard = deck.takeOne();
+                prospectedCards.add(prospectedCard);
+            }
+
+            gameUpdater.updateDeck(deck);
+        }
+        offered.setProspected(prospectedCards);
+        gameUpdater.updateDeck(deck);
+    }
 
 	@Override
 	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
 
-		Play play = gameUpdater.getCurrentPlay();
-        boolean withPrivilege = play.isHasPrivilige();
+        PlayOffered offered = gameUpdater.getCurrentPlay().getOffered();
 		Player player = gameUpdater.getCurrentPlayer();
-		Game game = gameUpdater.getGame();
-		
-		if (gameUpdater.getCurrentPhase().getLeadPlayer().equals(player.getName())) {
+        player.addToHand(offered.getProspected());
+		gameUpdater.updatePlayer(player);
 
-            List<Integer> prospectedCards = new ArrayList<Integer>();
-            for (int count = 0; count < player.getPlayerNumbers().getTotalProspectedCards(withPrivilege); count++) {
-                Integer prospectedCard = game.getDeck().takeOne();
-                player.addToHand(prospectedCard);
-                prospectedCards.add(prospectedCard);
-            }
-			PlayOffered offered = play.createOffered();
-			offered.setProspected(prospectedCards);
-			gameUpdater.updateDeck(game.getDeck());
-			gameUpdater.updatePlayer(player);
-		}
-		
-//		gameUpdater.completedPlay(play, playChoice);
-//		gameUpdater.createNextStep();
 	}
 
 }

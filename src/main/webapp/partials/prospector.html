@@ -1,17 +1,24 @@
-        <div class="row" ng:show="responder.game.$round.$phase.$play.hasPrivilige">
-            <div class="span14">
-                <p>You can collect a card!</p>
+
+        <div class="row">
+            <div class="span6">
+                <p>
+                    <span ng:show="responder.prospected.length == 0">No prospected cards for you this time sadly.</span>
+                    <span ng:show="responder.prospected.length == 1">Here is a card you can collect and add to your hand.</span>
+                    <span ng:show="responder.prospected.length >= 2">Here are {{responder.prospected.length}} cards you can collect and add to your hand.</span>
+                </p>
             </div>
-            <div class="span2"><button class="btn success" ng:click="responder.commitResponse()">Collect card</button></div>
+            <div class="span3">
+                <div class="row">
+                    <div class="span1 card" ng:twipsy title="{{cardService.cardType(councillorCard).description}}" ng:repeat="prospectedCard in responder.prospected">
+                        <img ng:src="{{cardService.cardImageUrl(prospectedCard)}}" width="55" height="80" />
+                    </div>
+                    <div class="span1">&nbsp;</div>
+                </div>
+            </div>
+            <div class="span5">&nbsp;</div>
+            <div class="span2"><button class="btn success" ng:click="responder.commitResponse()"><span ng:show="responder.prospected.length >= 1">Collect</span><span ng:show="responder.prospected.length == 0">Continue</span></button></div>
         </div>
 
-        <div class="row" ng:hide="responder.game.$round.$phase.$play.hasPrivilige">
-            <div class="span14">
-                <p>No privilege, so no card for Prospector</p>
-            </div>
-            <div class="span2"><button class="btn" ng:click="responder.commitResponse()">Continue</button></div>
-        </div>
         <div class="row">
             <p>&nbsp;</p>
-        </div>        
-        
+        </div>

@@ -449,6 +449,7 @@ DoSomethingResponder.prototype = {
 function ProspectorResponder($xhr, game, gameCallback) {
 	this.$xhr = $xhr;
 	this.response = { };
+	this.prospected = game.$round.$phase.$play.offered.prospected;
 	this.template = "partials/prospector.html";
 	this.mode = "do_something";
 	this.game = game;

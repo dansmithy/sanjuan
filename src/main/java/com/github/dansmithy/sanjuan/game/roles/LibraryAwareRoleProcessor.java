@@ -26,10 +26,10 @@ public class LibraryAwareRoleProcessor implements RoleProcessor {
 	}
 
     @Override
-	public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
+    public void makeChoice(GameUpdater gameUpdater, PlayChoice playChoice) {
         setUseLibraryForPlayer(gameUpdater.getGame(), gameUpdater.getCurrentRound(), gameUpdater.getCurrentPlayer());
         roleProcessor.makeChoice(gameUpdater, playChoice);
-	}
+    }
 
     private void setUseLibraryForPlayer(Game game, Round round, Player player) {
         if (game.getPlayers().size() >= 3 || !round.getGovernor().equals(player.getName())) {
