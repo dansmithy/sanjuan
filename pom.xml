@@ -7,6 +7,22 @@
     <version>1.0-SNAPSHOT</version>
     <name>San Juan Game</name>
 
+    <!--
+
+    To run all acceptance tests:
+
+        mvn clean verify -Pacceptance
+
+    To start the application so that you can use it locally, in a way that provides an alternative to the Twitter login:
+
+        mvn clean verify -Pacceptance,fake-twitter
+
+    To start the application so that you can use it locally, but use actual Twitter to perform login:
+
+        mvn clean verify -Pacceptance -Dwait
+
+    -->
+
     <properties>
         <aspectj.version>1.6.11</aspectj.version>
         <commons.lang.version>2.6</commons.lang.version>
