@@ -87,15 +87,24 @@ public class FakeTwitterStart extends HttpServlet {
     }
 
     public static void main(String[] args) throws Exception  {
-        String twitterBaseUrl = get(SAN_JUAN_BASE_URL + "/ws/admin/twitter.baseurl").getContent();
-        int port = ATUtils.extractRestDriverPort(twitterBaseUrl);
+        int port = args.length == 0 ? getPortFromRunningApp() : getPortFromArg(args[0]);
         Server server = new Server(port);
-
         ServletHandler handler = new ServletHandler();
         handler.addServletWithMapping(FakeTwitterStart.class, "/oauth/*");
         server.setHandler(handler);
         server.start();
         server.join();
     }
+
+    private static int getPortFromArg(String arg) {
+        return Integer.valueOf(arg);
+    }
+
+    public static int getPortFromRunningApp() {
+        String twitterBaseUrl = get(SAN_JUAN_BASE_URL + "/ws/admin/twitter.baseurl").getContent();
+        return ATUtils.extractRestDriverPort(twitterBaseUrl);
+
+    }
+    
     
 }

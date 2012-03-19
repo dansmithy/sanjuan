@@ -499,7 +499,35 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>    
+        </profile>
+        <profile>
+            <id>fake-twitter</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>com.github.dansmithy.FakeTwitterStart</mainClass>
+                                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                                    <classpathScope>test</classpathScope>
+                                    <arguments>
+                                        <argument>${restdriver.port}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>wait</id>
             <activation>
@@ -518,7 +546,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.2.1</version>
                         <executions>
                             <execution>
                                 <configuration>
