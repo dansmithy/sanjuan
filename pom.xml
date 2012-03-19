@@ -436,6 +436,7 @@
                                     <maxIdleTime>60000</maxIdleTime>
                                 </connector>
                             </connectors>
+
                             <systemProperties>
                                 <systemProperty>
                                     <name>restdriver.port</name>
@@ -444,6 +445,10 @@
                                 <systemProperty>
                                     <name>twitter.baseurl</name>
                                     <value>${twitter.baseurl}</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>suppress_missing_value_exceptions</name>
+                                    <value>true</value>
                                 </systemProperty>
                             </systemProperties>
                             <webApp>

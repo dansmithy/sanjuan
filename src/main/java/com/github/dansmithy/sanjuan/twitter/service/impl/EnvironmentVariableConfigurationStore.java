@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import com.google.common.base.Objects;
+import org.apache.commons.lang.StringUtils;
 
 @Named
 public class EnvironmentVariableConfigurationStore implements ConfigurationStore {
@@ -21,7 +22,11 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
     private static final String ACCESS_SECRET_ENVIRONMENT_KEY = "twitter_access_secret";
 	private static final String SAN_JUAN_BASE_URL_ENVIRONMENT_KEY = "base_url";
 
+    private static final String SUPPRESS_EXCEPTIONS_SYSTEM_KEY = "suppress_missing_value_exceptions";
+
 	private static final String DEFAULT_BASE_URL = "http://localhost:8086";
+    private static final String DEFAULT_DUMMY_VALUE = "empty value";
+
 
     @Override
     public String getSanJuanBaseUrl() {
@@ -70,7 +75,11 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
         try {
             return Objects.firstNonNull(environmentValue, defaultValue);
         } catch (NullPointerException e) {
-            throw new RuntimeException(String.format("Cannot find value for [%s] as environment variable or otherwise", key), e);
+            if (shouldThrowExceptionsOnMissingValues()) {
+                throw new RuntimeException(String.format("Cannot find value for [%s] as environment variable or otherwise", key), e);
+            } else {
+                return DEFAULT_DUMMY_VALUE;
+            }
         }
     }
 
@@ -85,5 +94,9 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
         }
         return properties.getProperty(key);
 	}
+
+    private boolean shouldThrowExceptionsOnMissingValues() {
+        return StringUtils.isEmpty(System.getProperty(SUPPRESS_EXCEPTIONS_SYSTEM_KEY));
+    }
 
 }
