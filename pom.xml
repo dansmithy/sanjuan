@@ -447,8 +447,32 @@
                                     <value>${twitter.baseurl}</value>
                                 </systemProperty>
                                 <systemProperty>
-                                    <name>suppress_missing_value_exceptions</name>
-                                    <value>true</value>
+                                    <name>twitter_consumer_key</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>twitter_consumer_secret</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>twitter_admin_consumer_key</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>twitter_admin_consumer_secret</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>twitter_access_token</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>twitter_access_secret</name>
+                                    <value>dummyValue</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>base_url</name>
+                                    <value>http://localhost:${jetty.port}</value>
                                 </systemProperty>
                             </systemProperties>
                             <webApp>
