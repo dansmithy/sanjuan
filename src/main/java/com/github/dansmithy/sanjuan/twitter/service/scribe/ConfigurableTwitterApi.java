@@ -1,30 +1,26 @@
 package com.github.dansmithy.sanjuan.twitter.service.scribe;
 
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
+import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Objects;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named
 public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurableTwitterApi.class);
+
+    private static final String DEFAULT_TWITTER_BASE_URL = "https://api.twitter.com";
 	
-	private static final String DEFAULT_TWITTER_BASE_URL = "https://api.twitter.com";
-
-	private static final String ENVIRONMENT_KEY_TWITTER_BASE_URL = "twitter.baseurl";
-
 	private String requiredBaseUrl;
-	
-    public ConfigurableTwitterApi() {
-        super();
-        requiredBaseUrl = initializeTwitterBaseUrl();
-        LOGGER.info(String.format("Using Twitter Base URL [%s].", requiredBaseUrl));
+
+    @Inject
+    public ConfigurableTwitterApi(ConfigurationStore configurationStore) {
+        requiredBaseUrl = configurationStore.getTwitterBaseUrl();
     }
 
     @Override
@@ -52,16 +48,5 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	public String getTwitterBaseUrl() {
 		return requiredBaseUrl;
 	}
-
-    public static String initializeTwitterBaseUrl() {
-        String environmentVariable = System.getenv(ENVIRONMENT_KEY_TWITTER_BASE_URL);
-        String systemProperty = System.getProperty(ENVIRONMENT_KEY_TWITTER_BASE_URL);
-        if (StringUtils.isEmpty(systemProperty)) {
-            systemProperty = DEFAULT_TWITTER_BASE_URL;
-        }
-        LOGGER.info(String.format("Environment variable for [%s] is [%s], System property is [%s]", ENVIRONMENT_KEY_TWITTER_BASE_URL, environmentVariable, systemProperty));
-        return Objects.firstNonNull(environmentVariable, systemProperty);
-    }
-
 
 }

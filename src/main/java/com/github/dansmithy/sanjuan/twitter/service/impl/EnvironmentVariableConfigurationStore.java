@@ -19,6 +19,7 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
     private static final String ADMIN_CONSUMER_SECRET_ENVIRONMENT_KEY = "twitter_admin_consumer_secret";
     private static final String ACCESS_TOKEN_ENVIRONMENT_KEY = "twitter_access_token";
     private static final String ACCESS_SECRET_ENVIRONMENT_KEY = "twitter_access_secret";
+    private static final String TWITTER_BASE_URL_ENVIRONMENT_KEY = "twitter_baseurl";
 	private static final String SAN_JUAN_BASE_URL_ENVIRONMENT_KEY = "base_url";
 
     private final String consumerKey;
@@ -27,6 +28,7 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
     private final String adminConsumerSecret;
     private final String accessToken;
     private final String accessSecret;
+    private final String twitterBaseUrl;
     private final String sanJuanBaseUrl;
 
     @Inject
@@ -36,6 +38,7 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
                                                  @Value("${" + ADMIN_CONSUMER_SECRET_ENVIRONMENT_KEY + "}") String adminConsumerSecret,
                                                  @Value("${" + ACCESS_TOKEN_ENVIRONMENT_KEY + "}") String accessToken,
                                                  @Value("${" + ACCESS_SECRET_ENVIRONMENT_KEY + "}") String accessSecret,
+                                                 @Value("${" + TWITTER_BASE_URL_ENVIRONMENT_KEY + "}") String twitterBaseUrl,
                                                  @Value("${" + SAN_JUAN_BASE_URL_ENVIRONMENT_KEY + "}") String sanJuanBaseUrl
                                                  ) {
 
@@ -45,37 +48,50 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
         this.adminConsumerSecret = adminConsumerSecret;
         this.accessToken = accessToken;
         this.accessSecret = accessSecret;
+        this.twitterBaseUrl = twitterBaseUrl;
         this.sanJuanBaseUrl = sanJuanBaseUrl;
         
         LOGGER.info(buildPropertyOutput());
     }
 
+    @Override
     public String getConsumerKey() {
         return consumerKey;
     }
 
+    @Override
     public String getConsumerSecret() {
         return consumerSecret;
     }
 
+    @Override
     public String getAdminConsumerKey() {
         return adminConsumerKey;
     }
 
+    @Override
     public String getAdminConsumerSecret() {
         return adminConsumerSecret;
     }
 
+    @Override
     public String getAccessToken() {
         return accessToken;
     }
 
+    @Override
     public String getAccessSecret() {
         return accessSecret;
     }
 
+    @Override
     public String getSanJuanBaseUrl() {
         return sanJuanBaseUrl;
+    }
+
+    @Override
+    public String getTwitterBaseUrl() {
+        return twitterBaseUrl;
     }
 
     private String buildPropertyOutput() {
@@ -87,6 +103,7 @@ public class EnvironmentVariableConfigurationStore implements ConfigurationStore
         builder.append(createProperty(ADMIN_CONSUMER_SECRET_ENVIRONMENT_KEY, this.adminConsumerSecret)).append("\n");
         builder.append(createProperty(ACCESS_TOKEN_ENVIRONMENT_KEY, this.accessToken)).append("\n");
         builder.append(createProperty(ACCESS_SECRET_ENVIRONMENT_KEY, this.accessSecret)).append("\n");
+        builder.append(createProperty(TWITTER_BASE_URL_ENVIRONMENT_KEY, this.twitterBaseUrl)).append("\n");
         builder.append(createProperty(SAN_JUAN_BASE_URL_ENVIRONMENT_KEY, this.sanJuanBaseUrl)).append("\n");
         return builder.toString();
     }

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import com.github.dansmithy.sanjuan.twitter.service.scribe.ConfigurableTwitterApi;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -16,10 +17,12 @@ import com.github.dansmithy.sanjuan.rest.jaxrs.AdminResource;
 public class AdminBean implements AdminResource {
 
 	private String version;
-	
-	@Inject
-	public AdminBean(@Value("${build.version}") String version) {
+    private final ConfigurationStore configurationStore;
+
+    @Inject
+	public AdminBean(@Value("${build.version}") String version, ConfigurationStore configurationStore) {
 		super();
+        this.configurationStore = configurationStore;
         if ("DEV".equals(version)) {
             this.version = Long.toString(new Date().getTime());
         } else {
@@ -49,7 +52,7 @@ public class AdminBean implements AdminResource {
 
     @Override
     public String getTwitterBaseUrl() {
-        return ConfigurableTwitterApi.initializeTwitterBaseUrl();
+        return configurationStore.getTwitterBaseUrl();
     }
 
 }
