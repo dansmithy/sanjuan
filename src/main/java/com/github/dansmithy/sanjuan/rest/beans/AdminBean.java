@@ -7,8 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
-import com.github.dansmithy.sanjuan.twitter.service.scribe.ConfigurableTwitterApi;
+import com.github.dansmithy.sanjuan.config.ConfigurationStore;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.github.dansmithy.sanjuan.rest.jaxrs.AdminResource;

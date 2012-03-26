@@ -1,6 +1,6 @@
 package com.github.dansmithy.sanjuan.twitter.service.scribe;
 
-import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
+import com.github.dansmithy.sanjuan.config.ConfigurationStore;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.slf4j.Logger;

@@ -1,6 +1,5 @@
-package com.github.dansmithy.sanjuan.twitter.service.impl;
+package com.github.dansmithy.sanjuan.config;
 
-import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

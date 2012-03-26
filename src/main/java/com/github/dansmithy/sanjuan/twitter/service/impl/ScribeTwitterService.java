@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.dansmithy.sanjuan.config.ConfigurationStore;
 import com.github.dansmithy.sanjuan.dao.UserDao;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.exceptions.OAuthException;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.github.dansmithy.sanjuan.twitter.model.OAuthToken;
 import com.github.dansmithy.sanjuan.twitter.model.TwitterUser;
 import com.github.dansmithy.sanjuan.twitter.service.RoleProvider;
-import com.github.dansmithy.sanjuan.twitter.service.ConfigurationStore;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterService;
 import com.github.dansmithy.sanjuan.twitter.service.TwitterUserStore;
 import com.github.dansmithy.sanjuan.twitter.service.exception.TwitterAuthRuntimeException;

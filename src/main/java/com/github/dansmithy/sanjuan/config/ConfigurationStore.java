@@ -1,4 +1,4 @@
-package com.github.dansmithy.sanjuan.twitter.service;
+package com.github.dansmithy.sanjuan.config;
 
 public interface ConfigurationStore {
 
