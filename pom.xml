@@ -534,7 +534,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <restdriver.port>${restdriver.port}</restdriver.port>
-                                <twitter.baseurl>${twitter.baseurl}</twitter.baseurl>
+                                <twitter_baseurl>${twitter_baseurl}</twitter_baseurl>
                             </systemPropertyVariables>
                             <includes>
                                 <include>${at.pattern}</include>
