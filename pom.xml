@@ -419,7 +419,7 @@
             <id>acceptance</id>
 
             <properties>
-                <twitter.baseurl>http://localhost:${restdriver.port}</twitter.baseurl>
+                <twitter_baseurl>http://localhost:${restdriver.port}</twitter_baseurl>
             </properties>
 
             <build>
@@ -443,8 +443,8 @@
                                     <value>${restdriver.port}</value>
                                 </systemProperty>
                                 <systemProperty>
-                                    <name>twitter.baseurl</name>
-                                    <value>${twitter.baseurl}</value>
+                                    <name>twitter_baseurl</name>
+                                    <value>${twitter_baseurl}</value>
                                 </systemProperty>
                                 <systemProperty>
                                     <name>twitter_consumer_key</name>
