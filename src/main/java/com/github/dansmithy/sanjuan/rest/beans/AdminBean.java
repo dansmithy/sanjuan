@@ -54,4 +54,9 @@ public class AdminBean implements AdminResource {
         return configurationStore.getTwitterBaseUrl();
     }
 
+    @Override
+    public String getAdminUsername() {
+        return configurationStore.getAdminUsername();
+    }
+
 }

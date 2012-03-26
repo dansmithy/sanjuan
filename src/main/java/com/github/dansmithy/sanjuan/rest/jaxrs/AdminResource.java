@@ -34,4 +34,10 @@ public interface AdminResource {
     @Path("/twitter.baseurl")
     @Produces("text/plain")
     String getTwitterBaseUrl();
+
+    @GET
+    @Path("/follow")
+    @Produces("text/plain")
+    String getAdminUsername();
+
 }

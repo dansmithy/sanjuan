@@ -2,6 +2,7 @@ package com.github.dansmithy.spring;
 
 import javax.ws.rs.core.Response;
 
+import com.github.dansmithy.sanjuan.config.ConfigurationStore;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -25,13 +26,13 @@ public class BddSpringTestRunner extends SkeletonBddTestRunner<GameDriver> {
 	private TwitterUserStore sessionProvider;
 	private final String adminUsername;
 
-	public BddSpringTestRunner(String adminUsername) {
-		this.adminUsername = adminUsername;
+	public BddSpringTestRunner() {
 		ApplicationContext context = new FileSystemXmlApplicationContext("src/main/webapp/WEB-INF/applicationContext.xml");
 		gameResource = context.getBean(GameResource.class);
 		userResource = context.getBean(UserResource.class);
 		cardResource = context.getBean(CardResource.class);
 		sessionProvider = context.getBean(TwitterUserStore.class);
+        adminUsername = context.getBean(ConfigurationStore.class).getAdminUsername();
 	}
 
 	@Override

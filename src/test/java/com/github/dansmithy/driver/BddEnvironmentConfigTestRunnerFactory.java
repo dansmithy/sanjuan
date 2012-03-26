@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import com.github.dansmithy.bdd.BddTestRunner;
 import com.github.dansmithy.config.JunitConfiguration;
 import com.github.dansmithy.rest.BddRestTestRunner;
-import com.github.dansmithy.sanjuan.twitter.service.impl.BasicRoleProvider;
 import com.github.dansmithy.spring.BddSpringTestRunner;
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
@@ -20,7 +19,6 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 	private static final Logger LOGGER = LoggerFactory.getLogger(BddEnvironmentConfigTestRunnerFactory.class);
 
 	private static final String HTTP_MODE_KEY = "httpMode";
-	private static final String ADMIN_USERNAME_KEY = "adminUsername";
 	private static final String BASE_URI_KEY = "baseUri";
 
 	private JunitConfiguration configuration = new JunitConfiguration();
@@ -36,8 +34,7 @@ public class BddEnvironmentConfigTestRunnerFactory implements
 	}
 
 	private BddTestRunner<GameDriver> createSpringTestRunner() {
-		return new BddSpringTestRunner(configuration.getProperty(
-				ADMIN_USERNAME_KEY, BasicRoleProvider.getAdminUsername()));
+		return new BddSpringTestRunner();
 	}
 
 	private BddTestRunner<GameDriver> createHttpTestRunner() {
@@ -46,9 +43,9 @@ public class BddEnvironmentConfigTestRunnerFactory implements
         String twitterBaseUrl = get(sanJuanBaseUrl + "/ws/admin/twitter.baseurl").getContent();
 		int port = ATUtils.extractRestDriverPort(twitterBaseUrl);
 		LOGGER.info(String.format("Starting ClientDriver on port [%d]", port));
-		ClientDriver clientDriver = new ClientDriverFactory().createClientDriver(port); 
-		return new BddRestTestRunner(sanJuanBaseUrl, configuration.getProperty(
-				ADMIN_USERNAME_KEY, BasicRoleProvider.getAdminUsername()), clientDriver);
+        String adminUsername = get(sanJuanBaseUrl + "/ws/admin/follow").getContent();
+		ClientDriver clientDriver = new ClientDriverFactory().createClientDriver(port);
+		return new BddRestTestRunner(sanJuanBaseUrl, adminUsername, clientDriver);
 	}
 
 }

@@ -17,4 +17,6 @@ public interface ConfigurationStore {
     String getAccessSecret();
 
     String getTwitterBaseUrl();
+
+    String getAdminUsername();
 }
