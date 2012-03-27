@@ -63,13 +63,12 @@ public class GameBean implements GameResource {
 		}
 		return game;
 	}
-	
+    
 	@Override
 	public Game getFullGame(Long gameId) {
-		return getGame(gameId);
+		return gameService.getGame(gameId);
 	}
-	
-	
+
 	@Override
 	public List<Game> getGames(String playerName, String stateName) {
 		if (playerName == null && stateName == null) {
