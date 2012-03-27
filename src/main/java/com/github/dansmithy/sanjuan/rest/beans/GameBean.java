@@ -71,17 +71,12 @@ public class GameBean implements GameResource {
 
 	@Override
 	public List<Game> getGames(String playerName, String stateName) {
-		if (playerName == null && stateName == null) {
-			return gameDao.getGames();
-		}
-		
 		if (stateName == null) {
-			
 			String loggedInUser = userProvider.getCurrentUser().getName();
-			if (!playerName.equals(loggedInUser)) {
+			if (null != playerName && !playerName.equals(loggedInUser)) {
 				throw new AccessUnauthorizedRuntimeException(String.format("Unable to get games as authenticated user is not %s", playerName), AccessUnauthorizedRuntimeException.NOT_MATCHING_PLAYER);
 			}
-			return gameService.getGamesForPlayer(playerName);
+			return gameService.getGamesForPlayer(loggedInUser);
 		} else {
 			GameState gameState = GameState.valueOf(stateName);
 			return gameService.getGamesInState(gameState);

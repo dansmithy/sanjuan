@@ -22,7 +22,7 @@ public class MongoGameDao implements GameDao {
 
 	private static final String GAME_ID_TYPE = "sanJuanGame";
 	
-	private static final String[] BASIC_GAME_FIELDS = { "state", "gameId", "players", "created", "started", "ended", "owner", "winner", "abandonedBy" };
+	private static final String[] BASIC_GAME_FIELDS = { "state", "gameId", "players.name", "created", "started", "ended", "owner", "winner", "abandonedBy" };
 	
 	private final MongoTemplate mongoTemplate;
 	private final MongoIdGenerator mongoIdGenerator;
