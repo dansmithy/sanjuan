@@ -269,6 +269,7 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.createNextStep();
 		RoleProcessor roleProcessor = roleProcessorProvider.getProcessor(role);
 		roleProcessor.initiateNewPlay(gameUpdater);
+        gameUpdater.updateCurrentPlayer();
 
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 	}
@@ -351,10 +352,10 @@ public class DatastoreGameService implements GameService {
 		gameUpdater.updateDeck(game.getDeck());
 		gameUpdater.updatePlayer(player);
 		gameUpdater.updateGovernorStep(step);
+        gameUpdater.updateCurrentPlayer();
 
         String governorText = createGovernorDescription(step);
-
-		sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), playCoords.getGameId(), String.format("@%s has %s in round %d governor phase", loggedInUser, governorText, playCoords.getRoundNumber()));
+		sendNextMoveTweet(loggedInUser, game.getCurrentPlayer(), playCoords.getGameId(), String.format("@%s has %s in round %d governor phase", loggedInUser, governorText, playCoords.getRoundNumber()));
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);
 
 	}
@@ -403,7 +404,8 @@ public class DatastoreGameService implements GameService {
 			if (!gameUpdater.isPhaseChanged()) {
 				roleProcessor.initiateNewPlay(gameUpdater);
 			}
-			sendNextMoveTweet(loggedInUser, game.getCurrentPlayerName(), coords.getGameId(), String.format("@%s has %s for round %d", loggedInUser, gameUpdater.getCurrentPhase().getRole().getPastTense(), coords.getRoundNumber()));
+            gameUpdater.updateCurrentPlayer();
+			sendNextMoveTweet(loggedInUser, game..getCurrentPlayer(), coords.getGameId(), String.format("@%s has %s for round %d", loggedInUser, gameUpdater.getCurrentPhase().getRole().getPastTense(), coords.getRoundNumber()));
 		}
 
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);

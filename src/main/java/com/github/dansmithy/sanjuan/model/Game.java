@@ -39,6 +39,8 @@ public class Game {
 	private Date created;
 	private Date started;
 	private Date ended;
+
+    private String currentPlayer;
 	
 	@Id
 	private ObjectId id;
@@ -69,9 +71,15 @@ public class Game {
 		state = GameState.PLAYING;
 		started = new Date();
 		startNewRound(0);
+        updateCurrentPlayer();
+
 	}
 
-	private void initiateTariffs(TariffBuilder tariffBuilder) {
+    public void updateCurrentPlayer() {
+        currentPlayer = calculateNextPlayer();
+    }
+
+    private void initiateTariffs(TariffBuilder tariffBuilder) {
 		boolean useRandomOrder = tariffs == null;
 		if (useRandomOrder) {
 			tariffs = tariffBuilder.createRandomTariff();
@@ -188,8 +196,12 @@ public class Game {
 	public boolean hasPlayer(String playerName) {
 		return getPlayerIndex(playerName) != -1;
 	}
-	
-	public String getCurrentPlayerName() {
+
+    public String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public String calculateNextPlayer() {
 		if (GameState.PLAYING.equals(getState())) {
 			Round round = getCurrentRound();
 			if (null != round) {

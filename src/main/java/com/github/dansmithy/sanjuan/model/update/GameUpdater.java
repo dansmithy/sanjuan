@@ -211,8 +211,13 @@ public class GameUpdater {
 	
 	public GovernorPhase getGovernorPhase() {
 		return getCurrentRound().getGovernorPhase();
-	}	
-	
+	}
+
+    public void updateCurrentPlayer() {
+        game.updateCurrentPlayer();
+        updates.put("currentPlayer", new PartialUpdate("currentPlayer", game.getCurrentPlayer()));
+    }
+
 	private int getStepIndex(GovernorStep stepToMatch) {
 		int index = 0;
 		for (GovernorStep step : getCurrentRound().getGovernorPhase().getGovernorSteps()) {
@@ -233,4 +238,6 @@ public class GameUpdater {
 	private boolean isNotFirstPlay() {
 		return nextPlayCoords.getPlayNumber() != 1;
 	}
+
+
 }
