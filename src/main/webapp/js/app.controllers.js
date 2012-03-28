@@ -845,14 +845,15 @@ GamesController.prototype = {
 		var otherPlayerNames = [];
 		var delimiter = "";
 		var otherPlayerTextList = "";
-		var authenticatedPlayer = this.userManager.user.username;  
+		var authenticatedPlayer = this.userManager.user.username;
 		angular.forEach(game.players, function(player) {
 			if (player.name !== authenticatedPlayer) {
 				otherPlayerNames.push(player.name);
 			}
 		});
 		for (var i=0; i<otherPlayerNames.length; i++) {
-			otherPlayerTextList += delimiter + "<strong>" + otherPlayerNames[i] + "</strong>";
+		    var playerClass = game.currentPlayer === otherPlayerNames[i] ? "game-owner" : "";
+			otherPlayerTextList += delimiter + "<strong class='" + playerClass + "' >" + otherPlayerNames[i] + "</strong>";
 			delimiter = i === otherPlayerNames.length-2 ? " and " : ", ";
 		}
 		return otherPlayerTextList;

@@ -405,7 +405,7 @@ public class DatastoreGameService implements GameService {
 				roleProcessor.initiateNewPlay(gameUpdater);
 			}
             gameUpdater.updateCurrentPlayer();
-			sendNextMoveTweet(loggedInUser, game..getCurrentPlayer(), coords.getGameId(), String.format("@%s has %s for round %d", loggedInUser, gameUpdater.getCurrentPhase().getRole().getPastTense(), coords.getRoundNumber()));
+			sendNextMoveTweet(loggedInUser, game.getCurrentPlayer(), coords.getGameId(), String.format("@%s has %s for round %d", loggedInUser, gameUpdater.getCurrentPhase().getRole().getPastTense(), coords.getRoundNumber()));
 		}
 
 		return gameDao.gameUpdate(game.getGameId(), gameUpdater);

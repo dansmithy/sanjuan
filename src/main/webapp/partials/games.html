@@ -7,7 +7,7 @@
                     
             <div class="row game-listing" ng:repeat="game in gamesInProgress" ng:class-even="'even-row'" ng:show-fade="game">
                 <div class="span3">
-                    <h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3>
+                    <h3><a ng:href="#/games/{{game.gameId}}" ng:class="'game-link mine-'+(game.currentPlayer == userManager.user.username)">game #{{game.gameId}}</a></h3>
                 </div>
                 <div class="span10">
                     <span>playing with {{otherPlayers(game) | html}}</span>
@@ -33,7 +33,7 @@
                 <h4><small>You can also <a href="" ng:click="createGame()">create a totally new game</a>. You'll have to get at least one other player to join, mind.</small></h4>      
             </div>                    
             <div class="row game-listing" ng:repeat="game in gamesCreated" ng:class-even="'even-row'" ng:show-fade="game">
-                <div class="span3"><h3>game #{{game.gameId}}</h3></div>
+                <div class="span3"><h3 class="game-link">game #{{game.gameId}}</h3></div>
                 <div class="span8">
                     <span ng:show="game.players.length >= 2">{{otherPlayers(game) | html}} <span ng:show="game.players.length == 2">is</span><span ng:show="game.players.length > 2">are</span> also signed up</span>
                     <span ng:show="game.players.length < 2">need a second player before you can start this game.</span>
@@ -57,7 +57,7 @@
             </div>        
                     
             <div class="row game-listing" ng:repeat="game in openGames" ng:class-even="'even-row'" ng:show-fade="game">
-                <div class="span3"><h3>game #{{game.gameId}}</h3></div>
+                <div class="span3"><h3 class="game-link">game #{{game.gameId}}</h3></div>
                 <div class="span8">
                     <span ng:show="game.players.length > 1">{{otherPlayers(game) | html}} joined so far</span>
                     <span ng:show="game.players.length == 1">game created by {{otherPlayers(game) | html}}, and no players joined so far</span>
@@ -76,7 +76,7 @@
                 <h2 class="light-text">games i've finished</h2>
             </div>        
             <div class="row game-listing" ng:repeat="game in gamesCompleted" ng:class-even="'even-row'" ng:show-fade="game">
-                <div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
+                <div class="span3"><h3><a class="game-link" ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
                 <div class="span10">
                     <span>played with {{otherPlayers(game) | html}}, won by <strong>{{game.winner == userManager.user.username | ternary:'you':game.winner}}</strong></span>
                     <p ng:show="game.ended">finished game {{game.ended | prettyDate}}</p>
@@ -90,7 +90,7 @@
             </div>        
                     
             <div class="row game-listing" ng:repeat="game in gamesAbandoned" ng:class-even="'even-row'">
-            	<div class="span3"><h3><a ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
+            	<div class="span3"><h3><a class="game-link" ng:href="#/games/{{game.gameId}}">game #{{game.gameId}}</a></h3></div>
             	<div class="span10">
                     <span>played with {{otherPlayers(game) | html}}, abandoned by <strong>{{game.abandonedBy == userManager.user.username | ternary:'you':game.abandonedBy}}</strong></span>
                     <p ng:show="game.ended">abandoned game {{game.ended | prettyDate}}</p>
